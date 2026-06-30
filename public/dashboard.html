@@ -368,6 +368,17 @@
             <p class="text-dim2">계좌 변경, 지급 지연, 반려 사유 확인은 고객센터 메뉴에서 문의할 수 있도록 연결 예정입니다.</p>
             <button class="btn btn-outline btn-sm" type="button" data-section-jump="support">고객센터 보기</button>
           </div>
+          <div class="card ops-card">
+            <h3>정산 문의 접수</h3>
+            <select class="field-input" id="settlement-inquiry-type">
+              <option>계좌 변경 문의</option>
+              <option>지급 지연 문의</option>
+              <option>반려 사유 확인</option>
+              <option>수수료 문의</option>
+            </select>
+            <textarea class="field-input field-textarea" id="settlement-inquiry-message" rows="3" maxlength="300" placeholder="문의 내용을 입력하세요." style="margin-top:10px;"></textarea>
+            <button class="btn btn-primary btn-sm" id="settlement-inquiry-btn" type="button" style="margin-top:10px;">문의 임시 저장</button>
+          </div>
         </div>
       </div>
     </div>
@@ -818,6 +829,7 @@
               <label><span>2번 프리셋</span><input class="field-input" value="후원금액 1,500원 이상"></label>
               <label><span>3번 프리셋</span><input class="field-input" value="VIP 시민 전용"></label>
             </div>
+            <button class="btn btn-primary btn-sm" type="button" id="save-alert-presets" style="margin-top:12px;">프리셋 임시 저장</button>
           </div>
           <div class="ops-card card">
             <h3>후원 이미지</h3>
@@ -846,7 +858,17 @@
       <div class="ops-deep-panel" data-mounted-panel>
         <div class="ops-section-head"><h3>위젯 카탈로그</h3><p>방송 화면에 추가할 수 있는 위젯들을 카테고리별로 준비했습니다.</p></div>
         <div class="ops-tab-strip"><button class="active" type="button">인기 3</button><button type="button">신규 3</button><button type="button">전체 18</button></div>
-        <div class="widget-catalog-grid">${widgetCatalog.map((name, idx) => `<div class="card widget-catalog-card"><div class="widget-catalog-icon">${idx + 1}</div><strong>${name}</strong><p>${name} 위젯을 방송 화면에 맞춤 설정하여 노출합니다.</p><button class="btn btn-outline btn-sm" type="button">설정</button></div>`).join('')}</div>
+        <div class="widget-catalog-grid">${widgetCatalog.map((name, idx) => `<div class="card widget-catalog-card"><div class="widget-catalog-icon">${idx + 1}</div><strong>${name}</strong><p>${name} 위젯을 방송 화면에 맞춤 설정하여 노출합니다.</p><button class="btn btn-outline btn-sm widget-config-btn" data-widget-name="${name}" type="button">설정</button></div>`).join('')}</div>
+        <div class="card ops-card widget-config-panel" id="widget-config-panel">
+          <div class="ops-section-head"><h3 id="widget-config-title">위젯 설정</h3><p>선택한 위젯의 크기, 위치, 표시 옵션을 임시 저장합니다.</p></div>
+          <div class="dashboard-grid-2">
+            <label class="field"><span class="field-label">가로 크기</span><input class="field-input" id="widget-config-width" type="number" value="800"></label>
+            <label class="field"><span class="field-label">세로 크기</span><input class="field-input" id="widget-config-height" type="number" value="220"></label>
+            <label class="field"><span class="field-label">표시 위치</span><select class="field-input" id="widget-config-position"><option>하단 중앙</option><option>상단 좌측</option><option>상단 우측</option><option>하단 좌측</option><option>하단 우측</option></select></label>
+            <label class="field"><span class="field-label">표시 스타일</span><select class="field-input" id="widget-config-style"><option>기본</option><option>미니멀</option><option>강조</option><option>투명</option></select></label>
+          </div>
+          <div class="ops-actions"><button class="btn btn-primary btn-sm" id="save-widget-config" type="button">위젯 설정 임시 저장</button><button class="btn btn-outline btn-sm" data-open-url="${widgetUrl}" type="button">위젯 미리보기</button></div>
+        </div>
       </div>
     `);
 
@@ -881,6 +903,32 @@
       </div>
     `);
 
+    addOnce('section-support', `
+      <div class="ops-deep-panel" data-mounted-panel>
+        <div class="ops-section-head"><h3>고객센터 상세</h3><p>문의 유형별 접수, 운영 공지, 정책 링크를 한 화면에서 확인합니다.</p></div>
+        <div class="dashboard-grid-2">
+          <div class="card ops-card">
+            <h3>문의 접수</h3>
+            <select class="field-input" id="support-ticket-type"><option>후원 오류</option><option>위젯/알림창</option><option>정산</option><option>계정/로그인</option><option>기타</option></select>
+            <textarea class="field-input field-textarea" id="support-ticket-message" rows="4" maxlength="500" placeholder="문의 내용을 입력하세요." style="margin-top:10px;"></textarea>
+            <button class="btn btn-primary btn-sm" id="support-ticket-save" type="button" style="margin-top:10px;">문의 임시 저장</button>
+          </div>
+          <div class="card ops-card">
+            <h3>운영 공지</h3>
+            <div class="ops-title-list"><span>[안내] 후원 오류 현상 안내</span><span>[정산] 정산 신청 가능 안내</span><span>[점검] 정기 점검 안내</span><span>[패치] 알림창 개선 안내</span></div>
+          </div>
+          <div class="card ops-card">
+            <h3>정책 링크</h3>
+            <div class="ops-title-list"><span>크리에이터 이용약관</span><span>유료서비스 이용약관</span><span>개인정보 처리방침</span><span>수수료 안내</span></div>
+          </div>
+          <div class="card ops-card">
+            <h3>처리 상태</h3>
+            <div class="settlement-status-grid"><div><span>접수</span><strong>0건</strong></div><div><span>처리 중</span><strong>0건</strong></div><div><span>답변 완료</span><strong>0건</strong></div><div><span>보류</span><strong>0건</strong></div></div>
+          </div>
+        </div>
+      </div>
+    `);
+
     document.querySelectorAll('[data-copy-value]').forEach(btn => btn.addEventListener('click', () => copyToClipboard(btn.dataset.copyValue, btn)));
     document.querySelectorAll('[data-open-url]').forEach(btn => btn.addEventListener('click', () => window.open(btn.dataset.openUrl, '_blank', 'noopener')));
     document.getElementById('issue-integration-key')?.addEventListener('click', () => {
@@ -889,6 +937,58 @@
       showToast('연동키가 화면에 발급되었습니다. 실제 저장은 다음 단계에서 연결합니다.');
     });
     document.getElementById('copy-integration-key')?.addEventListener('click', (e) => copyToClipboard(document.getElementById('integration-key-box').textContent, e.currentTarget));
+    const storageKey = (name) => `unation_${name}_${me.handle || 'creator'}`;
+    document.getElementById('save-alert-presets')?.addEventListener('click', () => {
+      const presets = [...document.querySelectorAll('.ops-preset-list input')].map(input => input.value.trim()).filter(Boolean);
+      localStorage.setItem(storageKey('alert_presets'), JSON.stringify(presets));
+      showToast('알림 프리셋을 이 브라우저에 임시 저장했습니다.');
+    });
+
+    let selectedWidget = '';
+    document.querySelectorAll('.widget-config-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        selectedWidget = btn.dataset.widgetName || '';
+        document.querySelectorAll('.widget-config-btn').forEach(item => item.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('widget-config-title').textContent = `${selectedWidget} 설정`;
+        document.getElementById('widget-config-panel')?.classList.add('is-active');
+        document.getElementById('widget-config-panel')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+    });
+    document.getElementById('save-widget-config')?.addEventListener('click', () => {
+      const config = {
+        widget: selectedWidget || '기본 위젯',
+        width: document.getElementById('widget-config-width')?.value || '',
+        height: document.getElementById('widget-config-height')?.value || '',
+        position: document.getElementById('widget-config-position')?.value || '',
+        style: document.getElementById('widget-config-style')?.value || ''
+      };
+      localStorage.setItem(storageKey(`widget_config_${config.widget}`), JSON.stringify(config));
+      showToast(`${config.widget} 설정을 이 브라우저에 임시 저장했습니다.`);
+    });
+
+    document.getElementById('settlement-inquiry-btn')?.addEventListener('click', () => {
+      const message = document.getElementById('settlement-inquiry-message')?.value.trim();
+      if (!message) { showToast('정산 문의 내용을 입력해주세요.'); return; }
+      const ticket = {
+        type: document.getElementById('settlement-inquiry-type')?.value || '정산 문의',
+        message,
+        createdAt: new Date().toISOString()
+      };
+      localStorage.setItem(storageKey('settlement_inquiry'), JSON.stringify(ticket));
+      showToast('정산 문의 내용을 이 브라우저에 임시 저장했습니다.');
+    });
+    document.getElementById('support-ticket-save')?.addEventListener('click', () => {
+      const message = document.getElementById('support-ticket-message')?.value.trim();
+      if (!message) { showToast('고객센터 문의 내용을 입력해주세요.'); return; }
+      const ticket = {
+        type: document.getElementById('support-ticket-type')?.value || '기타',
+        message,
+        createdAt: new Date().toISOString()
+      };
+      localStorage.setItem(storageKey('support_ticket'), JSON.stringify(ticket));
+      showToast('고객센터 문의 내용을 이 브라우저에 임시 저장했습니다.');
+    });
   }
 
   document.getElementById('logout-btn').addEventListener('click', async () => {

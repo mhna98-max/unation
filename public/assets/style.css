@@ -1345,6 +1345,18 @@ html[data-payment-mode="live"] .demo-note{
 .ops-inline-control .widget-url-box{
   flex:1 1 220px;
 }
+.widget-config-panel{
+  transition:border-color .18s ease, box-shadow .18s ease;
+}
+.widget-config-panel.is-active{
+  border-color:rgba(34,211,238,.45);
+  box-shadow:0 0 0 1px rgba(34,211,238,.12), 0 18px 45px rgba(0,0,0,.18);
+}
+.widget-config-btn.active{
+  background:rgba(34,211,238,.16);
+  border-color:rgba(34,211,238,.45);
+  color:var(--text);
+}
 .ops-inline-control .field-input{
   flex:1 1 160px;
 }
