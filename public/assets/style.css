@@ -120,8 +120,24 @@ main{position:relative;z-index:1;}
 .nav-links a:hover{color:var(--text);background:rgba(255,255,255,.07);}
 .nav-actions{display:flex;align-items:center;gap:8px;margin-left:auto;flex-shrink:0;}
 @media(max-width:640px){
-  .nav-links{display:none;}
-  .nav-actions .btn-outline{display:none;}
+  body{padding-top:104px;}
+  .nav{
+    height:auto;
+    min-height:var(--nav-h);
+    padding:8px 16px 10px;
+    flex-wrap:wrap;
+    gap:6px 8px;
+  }
+  .nav-links{
+    display:flex;
+    order:3;
+    flex:0 0 100%;
+    justify-content:center;
+    gap:4px;
+  }
+  .nav-links a{font-size:12.5px;padding:5px 10px;}
+  .nav-actions{gap:6px;}
+  .nav-actions .btn{padding:6px 12px;font-size:12.5px;}
 }
 
 /* ── 버튼 ── */
