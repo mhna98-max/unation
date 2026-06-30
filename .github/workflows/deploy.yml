@@ -13,7 +13,27 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Deploy via SSH
+      - name: Deploy with backup and restart
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            set -e
+
+            echo "1. Backup current server files"
+            BACKUP_DIR="/root/backups/unation_$(date +%F_%H-%M-%S)"
+            mkdir -p "$BACKUP_DIR"
+            cp -a /root/unation/public "$BACKUP_DIR/public"
+            cp -a /root/unation/server "$BACKUP_DIR/server"
+            cp -a /root/unation/package.json "$BACKUP_DIR/package.json"
+            cp -a /root/unation/launcher.js "$BACKUP_DIR/launcher.js"
+
+            echo "Backup created: $BACKUP_DIR"
+
+      - name: Deploy via rsync
         uses: easingthemes/ssh-deploy@main
         with:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_KEY }}
@@ -23,9 +43,9 @@ jobs:
           SOURCE: "./"
           TARGET: "/root/unation"
           ARGS: "-avz --delete"
-          EXCLUDE: "/data/, /.env, /node_modules/, /.git/, /*.log"
+          EXCLUDE: "/data/, /.env, /node_modules/, /.git/, /.github/, /*.log"
 
-      - name: Restart service
+      - name: Install and restart
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOST }}
@@ -33,7 +53,21 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.PORT }}
           script: |
+            set -e
+
             cd /root/unation
-            npm install --omit=dev || true
+
+            echo "2. Install dependencies"
+            npm install --omit=dev
+
+            echo "3. Restart UNATION"
             systemctl restart unation
+            sleep 3
+
+            echo "4. Check service"
             systemctl status unation --no-pager
+
+            echo "5. Health check"
+            curl -fsS https://unation.co.kr/ > /dev/null
+
+            echo "Deploy success"
