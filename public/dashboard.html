@@ -201,6 +201,27 @@
           <h3>최근 7일 후원 추이</h3>
           <span class="text-dim2" style="font-size:12px;" id="chart-range">집계 중…</span>
         </div>
+        <div class="stats-filter-panel">
+          <div class="stats-periods">
+            <button class="active" type="button">오늘</button>
+            <button type="button">1주일</button>
+            <button type="button">1개월</button>
+            <button type="button">3개월</button>
+            <button type="button">6개월</button>
+            <button type="button">1년</button>
+          </div>
+          <div class="stats-date-row">
+            <select class="field-input"><option>연도 선택</option><option>2026</option><option>2025</option></select>
+            <input class="field-input" type="date">
+            <input class="field-input" type="date">
+            <button class="btn btn-primary btn-sm" type="button" id="stats-filter-btn">조회</button>
+          </div>
+          <div class="stats-mode-row">
+            <button class="active" type="button">일간</button>
+            <button type="button">주간</button>
+            <button type="button">월간</button>
+          </div>
+        </div>
         <div class="bar-chart" id="bar-chart"></div>
       </div>
 
@@ -312,6 +333,41 @@
         <div class="card" style="padding:28px;">
           <h3 style="font-family:var(--font-h);font-weight:600;font-size:16px;margin-bottom:16px;">정산 내역</h3>
           <div id="settlement-history"><p class="text-dim2" style="font-size:14px;">정산 내역이 없어요.</p></div>
+        </div>
+      </div>
+      <div class="ops-deep-panel" data-mounted-panel>
+        <div class="ops-section-head">
+          <h3>정산 관리</h3>
+          <p>정산 신청 조건, 계좌 정보, 처리 상태, 수수료 안내를 한 화면에서 확인합니다.</p>
+        </div>
+        <div class="dashboard-grid-2">
+          <div class="card ops-card">
+            <h3>정산 신청 조건</h3>
+            <div class="ops-title-list">
+              <span>최소 정산 가능 금액 충족 후 신청 가능</span>
+              <span>계좌 정보 등록 필요</span>
+              <span>영업일 기준 3~5일 처리</span>
+              <span>수수료 및 보류 금액 확인 후 신청</span>
+            </div>
+          </div>
+          <div class="card ops-card">
+            <h3>정산 상태</h3>
+            <div class="settlement-status-grid">
+              <div><span>신청 가능</span><strong id="settle-status-ready">확인 중</strong></div>
+              <div><span>처리 중</span><strong>0건</strong></div>
+              <div><span>지급 완료</span><strong>0건</strong></div>
+              <div><span>보류/반려</span><strong>0건</strong></div>
+            </div>
+          </div>
+          <div class="card ops-card">
+            <h3>수수료 안내</h3>
+            <p class="text-dim2">현재 유네이션 정산 화면은 운영 정책 확인용 UI입니다. 실제 수수료 정책은 운영 약관 확정 후 반영됩니다.</p>
+          </div>
+          <div class="card ops-card">
+            <h3>정산 문의</h3>
+            <p class="text-dim2">계좌 변경, 지급 지연, 반려 사유 확인은 고객센터 메뉴에서 문의할 수 있도록 연결 예정입니다.</p>
+            <button class="btn btn-outline btn-sm" type="button" data-section-jump="support">고객센터 보기</button>
+          </div>
         </div>
       </div>
     </div>
@@ -884,6 +940,14 @@
   });
   document.getElementById('floating-remote-web')?.addEventListener('click', () => window.open(remoteUrl, '_blank', 'noopener'));
   document.getElementById('floating-remote-test')?.addEventListener('click', () => window.open(widgetTestUrl, '_blank', 'noopener'));
+  document.querySelectorAll('.stats-periods button, .stats-mode-row button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      showToast(`${btn.textContent.trim()} 기준으로 통계 보기를 전환했습니다.`);
+    });
+  });
+  document.getElementById('stats-filter-btn')?.addEventListener('click', () => showToast('선택한 기간 기준으로 후원 통계를 조회했습니다.'));
 
   // ── 개요 통계 ──
   async function loadStats() {
