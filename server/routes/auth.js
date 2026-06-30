@@ -6,14 +6,16 @@
 //   social-login-guide.md 파일을 참고해주세요.
 // ============================================================
 const db = require('../db');
-const { hashPassword, verifyPassword, signToken, setSessionCookie, clearSessionCookie, getAuthFromRequest } = require('../auth');
+const crypto = require('crypto');
+const { hashPassword, verifyPassword, signToken, setSessionCookie, clearSessionCookie, getAuthFromRequest, parseCookies } = require('../auth');
 const { readJsonBody, sendJson, sendError, privateCreator } = require('../helpers');
 const { rateLimit } = require('../rateLimit');
 
 const HANDLE_RE = /^[a-z0-9][a-z0-9_]{2,19}$/;
 const RESERVED_HANDLES = new Set(['me', 'api', 'admin', 'global', 'www', 'unation', 'null', 'undefined']);
-const SOCIAL_PROVIDERS = new Set(['google', 'kakao', 'naver', 'apple', 'microsoft']);
-const SOCIAL_LABELS = { google: 'Google', kakao: '카카오', naver: '네이버', apple: 'Apple', microsoft: 'Microsoft' };
+const SOCIAL_PROVIDERS = new Set(['google', 'kakao', 'naver']);
+const SOCIAL_LABELS = { google: 'Google', kakao: 'Kakao', naver: 'Naver' };
+const OAUTH_STATE_COOKIE = 'unation_oauth_state';
 
 // 휴대폰 인증번호 — 메모리 저장 (데모용, 실서비스는 SMS 발송 + Redis 등 사용 권장)
 const otpStore = new Map(); // phone -> { code, expiresAt }
@@ -28,7 +30,243 @@ function logCreatorIn(res, creator) {
   setSessionCookie(res, token);
 }
 
+function getBaseUrl(req) {
+  return (process.env.BASE_URL || `${req.headers['x-forwarded-proto'] || 'http'}://${req.headers.host}`).replace(/\/+$/, '');
+}
+
+function getOAuthConfig(provider, req) {
+  const baseUrl = getBaseUrl(req);
+  const redirectUri = `${baseUrl}/api/auth/oauth/${provider}/callback`;
+  const configs = {
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      redirectUri,
+      authUrl: 'https://accounts.google.com/o/oauth2/v2/auth',
+      tokenUrl: 'https://oauth2.googleapis.com/token',
+      scope: 'openid email profile',
+    },
+    kakao: {
+      clientId: process.env.KAKAO_CLIENT_ID || process.env.KAKAO_REST_API_KEY,
+      clientSecret: process.env.KAKAO_CLIENT_SECRET,
+      redirectUri,
+      authUrl: 'https://kauth.kakao.com/oauth/authorize',
+      tokenUrl: 'https://kauth.kakao.com/oauth/token',
+      scope: 'profile_nickname,account_email',
+    },
+    naver: {
+      clientId: process.env.NAVER_CLIENT_ID,
+      clientSecret: process.env.NAVER_CLIENT_SECRET,
+      redirectUri,
+      authUrl: 'https://nid.naver.com/oauth2.0/authorize',
+      tokenUrl: 'https://nid.naver.com/oauth2.0/token',
+      scope: '',
+    },
+  };
+  return configs[provider];
+}
+
+function redirect(res, location) {
+  res.statusCode = 302;
+  res.setHeader('Location', location);
+  res.end();
+}
+
+function redirectWithError(res, req, message) {
+  redirect(res, `${getBaseUrl(req)}/login.html?oauth_error=${encodeURIComponent(message)}`);
+}
+
+function setOAuthStateCookie(res, state) {
+  const isProd = process.env.NODE_ENV === 'production';
+  const parts = [
+    `${OAUTH_STATE_COOKIE}=${encodeURIComponent(state)}`,
+    'Path=/',
+    'HttpOnly',
+    'SameSite=Lax',
+    'Max-Age=600',
+  ];
+  if (isProd) parts.push('Secure');
+  res.setHeader('Set-Cookie', parts.join('; '));
+}
+
+function normalizeHandleBase(value, fallback) {
+  const base = String(value || '')
+    .split('@')[0]
+    .toLowerCase()
+    .replace(/[^a-z0-9_]/g, '_')
+    .replace(/_+/g, '_')
+    .replace(/^_+|_+$/g, '');
+  const cleaned = base && /^[a-z0-9]/.test(base) ? base : fallback;
+  return cleaned.slice(0, 16) || fallback;
+}
+
+function makeUniqueHandle(seed, provider) {
+  const base = normalizeHandleBase(seed, `${provider}_${crypto.randomBytes(3).toString('hex')}`);
+  for (let i = 0; i < 50; i += 1) {
+    const suffix = i === 0 ? '' : String(i + 1);
+    const handle = `${base}${suffix}`.slice(0, 20);
+    if (HANDLE_RE.test(handle) && !RESERVED_HANDLES.has(handle) && !db.prepare('SELECT id FROM creators WHERE handle = ?').get(handle)) {
+      return handle;
+    }
+  }
+  return `${provider}_${crypto.randomBytes(5).toString('hex')}`.slice(0, 20);
+}
+
+async function postForm(url, params) {
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' },
+    body: new URLSearchParams(params),
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok || data.error) {
+    throw new Error(data.error_description || data.error || 'OAuth token request failed');
+  }
+  return data;
+}
+
+async function fetchJson(url, headers) {
+  const response = await fetch(url, { headers });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(data.error_description || data.error || 'OAuth profile request failed');
+  return data;
+}
+
+async function exchangeOAuthProfile(provider, code, config) {
+  if (!config.clientId) throw new Error(`${provider} client id is not configured`);
+  if ((provider === 'google' || provider === 'naver') && !config.clientSecret) {
+    throw new Error(`${provider} client secret is not configured`);
+  }
+
+  const tokenParams = {
+    grant_type: 'authorization_code',
+    client_id: config.clientId,
+    redirect_uri: config.redirectUri,
+    code,
+  };
+  if (config.clientSecret) tokenParams.client_secret = config.clientSecret;
+  const token = await postForm(config.tokenUrl, tokenParams);
+  if (!token.access_token) throw new Error('OAuth access token was not returned');
+
+  if (provider === 'google') {
+    const profile = await fetchJson('https://openidconnect.googleapis.com/v1/userinfo', {
+      Authorization: `Bearer ${token.access_token}`,
+    });
+    return {
+      provider,
+      socialId: profile.sub,
+      email: profile.email || null,
+      displayName: profile.name || profile.email || 'Google User',
+    };
+  }
+
+  if (provider === 'kakao') {
+    const profile = await fetchJson('https://kapi.kakao.com/v2/user/me', {
+      Authorization: `Bearer ${token.access_token}`,
+    });
+    const account = profile.kakao_account || {};
+    const kakaoProfile = account.profile || {};
+    return {
+      provider,
+      socialId: String(profile.id || ''),
+      email: account.email || null,
+      displayName: kakaoProfile.nickname || account.email || 'Kakao User',
+    };
+  }
+
+  if (provider === 'naver') {
+    const profile = await fetchJson('https://openapi.naver.com/v1/nid/me', {
+      Authorization: `Bearer ${token.access_token}`,
+    });
+    const naverProfile = profile.response || {};
+    return {
+      provider,
+      socialId: naverProfile.id,
+      email: naverProfile.email || null,
+      displayName: naverProfile.nickname || naverProfile.name || naverProfile.email || 'Naver User',
+    };
+  }
+
+  throw new Error('Unsupported OAuth provider');
+}
+
+function findOrCreateSocialCreator(profile) {
+  if (!profile.socialId) throw new Error('Social profile id was not returned');
+
+  const existingSocial = db.prepare('SELECT * FROM creators WHERE social_provider = ? AND social_id = ?').get(profile.provider, profile.socialId);
+  if (existingSocial) return existingSocial;
+
+  const email = profile.email ? String(profile.email).toLowerCase() : null;
+  if (email) {
+    const existingEmail = db.prepare('SELECT * FROM creators WHERE email = ?').get(email);
+    if (existingEmail) {
+      if (!existingEmail.social_provider && !existingEmail.social_id) {
+        db.prepare('UPDATE creators SET social_provider = ?, social_id = ? WHERE id = ?').run(profile.provider, profile.socialId, existingEmail.id);
+        return db.prepare('SELECT * FROM creators WHERE id = ?').get(existingEmail.id);
+      }
+      return existingEmail;
+    }
+  }
+
+  const handle = makeUniqueHandle(email || profile.displayName, profile.provider);
+  const displayName = String(profile.displayName || `${SOCIAL_LABELS[profile.provider]} User`).trim().slice(0, 40);
+  const result = db.prepare(`
+    INSERT INTO creators (handle, display_name, email, social_provider, social_id)
+    VALUES (?, ?, ?, ?, ?)
+  `).run(handle, displayName || handle, email, profile.provider, profile.socialId);
+  return db.prepare('SELECT * FROM creators WHERE id = ?').get(result.lastInsertRowid);
+}
+
 module.exports = function registerAuthRoutes(router) {
+  router.get('/api/auth/oauth/:provider/start', async (req, res, params) => {
+    const provider = String(params.provider || '');
+    if (!SOCIAL_PROVIDERS.has(provider)) return redirectWithError(res, req, '지원하지 않는 SNS 로그인입니다.');
+    const config = getOAuthConfig(provider, req);
+    if (!config || !config.clientId) return redirectWithError(res, req, `${SOCIAL_LABELS[provider]} 로그인 설정이 아직 완료되지 않았습니다.`);
+
+    const state = `${provider}:${crypto.randomBytes(18).toString('hex')}`;
+    setOAuthStateCookie(res, state);
+    const query = new URLSearchParams({
+      response_type: 'code',
+      client_id: config.clientId,
+      redirect_uri: config.redirectUri,
+      state,
+    });
+    if (config.scope) query.set('scope', config.scope);
+    if (provider === 'google') {
+      query.set('access_type', 'offline');
+      query.set('prompt', 'select_account');
+    }
+    redirect(res, `${config.authUrl}?${query.toString()}`);
+  });
+
+  router.get('/api/auth/oauth/:provider/callback', async (req, res, params) => {
+    const provider = String(params.provider || '');
+    if (!SOCIAL_PROVIDERS.has(provider)) return redirectWithError(res, req, '지원하지 않는 SNS 로그인입니다.');
+
+    try {
+      const url = new URL(req.url, getBaseUrl(req));
+      const code = url.searchParams.get('code');
+      const state = url.searchParams.get('state');
+      const error = url.searchParams.get('error');
+      if (error) throw new Error(url.searchParams.get('error_description') || error);
+      if (!code) throw new Error('OAuth authorization code was not returned');
+
+      const cookies = parseCookies(req);
+      if (!state || cookies[OAUTH_STATE_COOKIE] !== state || !state.startsWith(`${provider}:`)) {
+        throw new Error('OAuth state verification failed');
+      }
+
+      const config = getOAuthConfig(provider, req);
+      const profile = await exchangeOAuthProfile(provider, code, config);
+      const creator = findOrCreateSocialCreator(profile);
+      logCreatorIn(res, creator);
+      redirect(res, `${getBaseUrl(req)}/dashboard.html`);
+    } catch (e) {
+      redirectWithError(res, req, e.message || 'SNS 로그인에 실패했습니다.');
+    }
+  });
+
   router.post('/api/auth/signup', async (req, res) => {
     if (!rateLimit(req, res, 'signup', 10, 10 * 60 * 1000)) return; // 10분에 10회
 
