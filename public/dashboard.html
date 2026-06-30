@@ -41,6 +41,14 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
         개요
       </a>
+      <a class="sb-link" data-section="events" href="#">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M20 12v10H4V12"/><path d="M2 7h20v5H2z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 110-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 100-5C13 2 12 7 12 7z"/></svg>
+        이벤트
+      </a>
+      <a class="sb-link" data-section="ads" href="#">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 11l18-5v12L3 13v-2z"/><path d="M11.6 16.8a3 3 0 11-5.8-1.6"/></svg>
+        유네애드
+      </a>
       <a class="sb-link" data-section="donations" href="#">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
         후원 내역
@@ -103,11 +111,29 @@
   <!-- ── 메인 ── -->
   <main class="dash-main">
 
+    <div class="dash-topbar">
+      <label class="dash-search">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        <input id="dash-search-input" type="search" placeholder="메뉴, 위젯, 정산 검색">
+      </label>
+      <div class="dash-top-actions">
+        <button class="dash-icon-btn" id="dash-theme-btn" type="button">다크</button>
+        <button class="dash-icon-btn" id="dash-guide-btn" type="button">가이드</button>
+        <button class="dash-icon-btn" id="dash-notice-btn" type="button">알림</button>
+      </div>
+    </div>
+
     <!-- 개요 -->
     <div id="section-overview" class="dash-section">
       <div class="dash-header">
         <h1 class="dash-title">개요</h1>
         <div class="badge-live">실시간 업데이트</div>
+      </div>
+
+      <div class="dash-tabs">
+        <button class="dash-tab active" data-section-jump="overview" type="button">대시보드</button>
+        <button class="dash-tab" data-section-jump="events" type="button">이벤트</button>
+        <button class="dash-tab" data-section-jump="ads" type="button">유네애드</button>
       </div>
 
       <div class="stat-grid">
@@ -134,6 +160,42 @@
       </div>
 
       <!-- 차트 -->
+      <div class="dashboard-grid-2" style="margin-bottom:16px;">
+        <div class="card ops-card profile-summary-card">
+          <div class="profile-summary-row">
+            <span class="avatar" style="width:72px;height:72px;font-size:24px;" id="overview-avatar">U</span>
+            <div>
+              <h3 id="overview-name">UNATION</h3>
+              <p class="text-dim2" id="overview-email">크리에이터 계정</p>
+              <div class="profile-badges">
+                <span>유네이션 ID <b id="overview-id">-</b></span>
+                <span id="overview-platform">방송 플랫폼 미설정</span>
+              </div>
+            </div>
+          </div>
+          <div class="profile-donate-box">
+            <strong>내 후원 페이지</strong>
+            <code class="widget-url-box" id="overview-donate-url">—</code>
+            <div class="ops-actions">
+              <button class="btn btn-outline btn-sm" data-copy-target="overview-donate-url">복사</button>
+              <button class="btn btn-primary btn-sm" data-open-target="overview-donate-url">열기</button>
+            </div>
+          </div>
+        </div>
+        <div class="card ops-card">
+          <div class="flex" style="justify-content:space-between;align-items:center;margin-bottom:12px;">
+            <h3>인벤토리 요약</h3>
+            <button class="btn btn-outline btn-sm" data-section-jump="store" type="button">관리</button>
+          </div>
+          <div class="inventory-summary">
+            <div><span>새로 받은 선물</span><strong id="inventory-new-count">0</strong></div>
+            <div><span>유효기간 임박 상품</span><strong id="inventory-expiring-count">0</strong></div>
+            <div><span>배송 신청</span><strong>0</strong></div>
+            <div><span>배송 완료</span><strong>0</strong></div>
+          </div>
+        </div>
+      </div>
+
       <div class="card chart-card" style="margin-bottom:16px;">
         <div class="chart-head">
           <h3>최근 7일 후원 추이</h3>
@@ -163,6 +225,64 @@
     </div>
 
     <!-- 후원 내역 -->
+    <div id="overview-extra-panel" class="dashboard-grid-2" style="margin-top:16px;">
+      <div class="card ops-card">
+        <div class="flex" style="justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <h3>새소식</h3>
+          <button class="btn btn-outline btn-sm" data-section-jump="support" type="button">더 보기</button>
+        </div>
+        <div class="news-list">
+          <button type="button" data-news="[안내] 후원 오류 현상 안내"><span>안내</span><strong>후원 오류 현상 안내</strong></button>
+          <button type="button" data-news="[정산] 오늘부터 정산 신청이 가능합니다."><span>정산</span><strong>오늘부터 정산 신청이 가능합니다.</strong></button>
+          <button type="button" data-news="[점검] 2026년 6월 정기 점검 안내"><span>점검</span><strong>2026년 6월 정기 점검 안내</strong></button>
+          <button type="button" data-news="[패치] 유네이션 알림창 개선"><span>패치</span><strong>유네이션 알림창 개선</strong></button>
+        </div>
+      </div>
+      <div class="card ops-card">
+        <div class="flex" style="justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <h3>빠른 실행</h3>
+          <span class="text-dim2" style="font-size:12px;">방송 시작 전 확인</span>
+        </div>
+        <div class="quick-run-grid">
+          <button type="button" data-section-jump="quick">간편설정</button>
+          <button type="button" data-section-jump="alerts">알림 테스트</button>
+          <button type="button" data-section-jump="remote">리모컨</button>
+          <button type="button" data-section-jump="profile">프로필 설정</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="section-events" class="dash-section" style="display:none;">
+      <div class="dash-header"><h1 class="dash-title">이벤트</h1></div>
+      <div class="dashboard-grid-2">
+        <div class="card ops-card event-card">
+          <span class="event-status">진행 준비</span>
+          <h3>첫 시민 환영 이벤트</h3>
+          <p class="text-dim2">신규 시민에게 감사 메시지를 고정 노출할 수 있는 이벤트 템플릿입니다.</p>
+          <button class="btn btn-primary btn-sm" data-section-jump="alerts" type="button">알림으로 테스트</button>
+        </div>
+        <div class="card ops-card event-card">
+          <span class="event-status">운영 안내</span>
+          <h3>월간 후원 감사 리포트</h3>
+          <p class="text-dim2">후원자 순위와 월간 통계를 한 화면에서 확인하는 기능입니다.</p>
+          <button class="btn btn-outline btn-sm" data-section-jump="ranking" type="button">랭킹 보기</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="section-ads" class="dash-section" style="display:none;">
+      <div class="dash-header"><h1 class="dash-title">유네애드</h1></div>
+      <div class="card ops-card">
+        <h3>크리에이터 프로모션</h3>
+        <p class="text-dim2">후원 페이지와 방송 위젯을 기반으로 광고/프로모션 영역을 준비 중입니다. 실제 광고 집행이나 정산에는 영향을 주지 않습니다.</p>
+        <div class="ad-summary-grid">
+          <div><span>노출 대기</span><strong>0</strong></div>
+          <div><span>진행 중 캠페인</span><strong>0</strong></div>
+          <div><span>이번 달 예상 수익</span><strong>₩0</strong></div>
+        </div>
+      </div>
+    </div>
+
     <div id="section-donations" class="dash-section" style="display:none;">
       <div class="dash-header"><h1 class="dash-title">후원 내역</h1></div>
       <div class="card" style="overflow:hidden;">
@@ -512,6 +632,15 @@
       </div>
     </div>
 
+    <aside class="remote-floating" id="remote-floating">
+      <strong>방송을 할 때 리모컨을 사용하세요!</strong>
+      <p>중요한 후원 기능들을 컨트롤 할 수 있습니다.</p>
+      <div class="ops-actions" style="margin-top:0;">
+        <button class="btn btn-outline btn-sm" id="floating-remote-web" type="button">웹 리모컨</button>
+        <button class="btn btn-primary btn-sm" id="floating-remote-test" type="button">테스트 실행</button>
+      </div>
+    </aside>
+
   </main>
 </div>
 
@@ -530,6 +659,11 @@
   document.getElementById('sb-name').textContent = me.displayName;
   document.getElementById('sb-handle').textContent = '@' + me.handle;
   document.getElementById('view-page-btn').href = `creator.html?handle=${me.handle}`;
+  document.getElementById('overview-avatar').textContent = (me.displayName||me.handle)[0];
+  document.getElementById('overview-name').textContent = me.displayName || me.handle;
+  document.getElementById('overview-email').textContent = me.email || '크리에이터 계정';
+  document.getElementById('overview-id').textContent = me.handle;
+  document.getElementById('overview-platform').textContent = me.platform ? `${me.platform} ${me.platformChannel || ''}`.trim() : '방송 플랫폼 미설정';
 
   const widgetUrl = `${location.origin}/widget.html?handle=${me.handle}`;
   const donateUrl = `${location.origin}/donate.html?handle=${me.handle}`;
@@ -541,6 +675,7 @@
   [
     ['quick-alert-url', widgetUrl],
     ['quick-donate-url', donateUrl],
+    ['overview-donate-url', donateUrl],
     ['alertbox-url', widgetUrl],
     ['alertbox-test-url', widgetTestUrl],
     ['widget-alert-url', widgetUrl],
@@ -571,13 +706,15 @@
   });
 
   // 섹션 전환
-  const sections = ['overview','donations','settlement','store','profile','quick','alerts','widgets','remote','voices','ranking','support'];
+  const sections = ['overview','events','ads','donations','settlement','store','profile','quick','alerts','widgets','remote','voices','ranking','support'];
   function switchSection(sec) {
     document.querySelectorAll('.sb-link').forEach(l => l.classList.remove('active'));
     document.querySelector(`.sb-link[data-section="${sec}"]`)?.classList.add('active');
     sections.forEach(s => {
       document.getElementById(`section-${s}`).style.display = s === sec ? '' : 'none';
     });
+    const overviewExtra = document.getElementById('overview-extra-panel');
+    if (overviewExtra) overviewExtra.style.display = sec === 'overview' ? '' : 'none';
     if (sec === 'donations') loadDonations();
     if (sec === 'settlement') loadSettlement();
     if (sec === 'store') loadStore();
@@ -589,6 +726,29 @@
   document.getElementById('view-all-donations-link').addEventListener('click', e => {
     e.preventDefault(); switchSection('donations');
   });
+  document.querySelectorAll('[data-section-jump]').forEach(btn => {
+    btn.addEventListener('click', () => switchSection(btn.dataset.sectionJump));
+  });
+  const searchMap = [
+    ['이벤트', 'events'], ['광고', 'ads'], ['유네애드', 'ads'], ['후원', 'donations'],
+    ['정산', 'settlement'], ['인벤토리', 'store'], ['스토어', 'store'], ['프로필', 'profile'],
+    ['간편', 'quick'], ['알림', 'alerts'], ['위젯', 'widgets'], ['리모컨', 'remote'],
+    ['보이스', 'voices'], ['랭킹', 'ranking'], ['고객', 'support']
+  ];
+  document.getElementById('dash-search-input')?.addEventListener('keydown', e => {
+    if (e.key !== 'Enter') return;
+    const q = e.currentTarget.value.trim();
+    const found = searchMap.find(([key]) => q.includes(key));
+    if (found) switchSection(found[1]);
+  });
+  document.getElementById('dash-guide-btn')?.addEventListener('click', () => switchSection('quick'));
+  document.getElementById('dash-notice-btn')?.addEventListener('click', () => showToast('새소식 영역에서 운영 안내를 확인할 수 있습니다.'));
+  document.getElementById('dash-theme-btn')?.addEventListener('click', () => showToast('현재 대시보드는 다크 모드로 고정되어 있습니다.'));
+  document.querySelectorAll('.news-list [data-news]').forEach(btn => {
+    btn.addEventListener('click', () => showToast(btn.dataset.news));
+  });
+  document.getElementById('floating-remote-web')?.addEventListener('click', () => window.open(remoteUrl, '_blank', 'noopener'));
+  document.getElementById('floating-remote-test')?.addEventListener('click', () => window.open(widgetTestUrl, '_blank', 'noopener'));
 
   // ── 개요 통계 ──
   async function loadStats() {
