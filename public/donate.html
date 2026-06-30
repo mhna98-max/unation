@@ -253,6 +253,22 @@
   const videoUrlInput=document.getElementById('video-url-input');
   const imageUrlInput=document.getElementById('image-url-input');
   const dtypeHint=document.getElementById('dtype-hint');
+  const isValidYoutubeUrl=(url)=>{
+    const value=String(url||'').trim();
+    if(!value) return false;
+    try{
+      const u=new URL(value.startsWith('http')?value:`https://${value}`);
+      const host=u.hostname.replace(/^www\./,'').replace(/^m\./,'');
+      if(host==='youtu.be') return /^[a-zA-Z0-9_-]{11}$/.test(u.pathname.split('/').filter(Boolean)[0]||'');
+      if(host.endsWith('youtube.com')){
+        if(/^[a-zA-Z0-9_-]{11}$/.test(u.searchParams.get('v')||'')) return true;
+        const parts=u.pathname.split('/').filter(Boolean);
+        const marker=parts.findIndex(part=>['shorts','embed','live'].includes(part));
+        return marker>=0 && /^[a-zA-Z0-9_-]{11}$/.test(parts[marker+1]||'');
+      }
+    }catch(e){}
+    return /(?:v=|youtu\.be\/|shorts\/|embed\/|live\/)([a-zA-Z0-9_-]{11})/.test(value);
+  };
   const DTYPE_HINTS={
     '일반':'방송 위젯에서 메시지가 화면에 표시됩니다.',
     '음성':'방송 위젯에서 닉네임과 메시지를 음성으로 읽어드려요.',
@@ -337,7 +353,7 @@
     if(!document.getElementById('terms').checked){errEl.textContent='이용약관에 동의해주세요.';errEl.style.display='';return;}
     if(dtype==='영상'){
       const yt=videoUrlInput.value.trim();
-      if(!/(?:youtube\.com\/(?:watch\?v=|shorts\/)|youtu\.be\/)[a-zA-Z0-9_-]{11}/.test(yt)){
+      if(!isValidYoutubeUrl(yt)){
         errEl.textContent='유효한 유튜브 영상 주소를 입력해주세요.';errEl.style.display='';return;
       }
     }

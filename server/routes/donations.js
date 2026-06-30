@@ -47,11 +47,31 @@ function mapDonationRow(d) {
   };
 }
 
-// YouTube URL에서 영상 ID 추출 (watch?v=, youtu.be/, shorts/ 형태 모두 지원)
+// YouTube URL에서 영상 ID 추출 (watch, shorts, live, embed, youtu.be, m.youtube.com 형태 지원)
 function extractYouTubeId(url) {
   if (!url) return null;
-  const m = String(url).match(/(?:youtube\.com\/(?:watch\?v=|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
-  return m ? m[1] : null;
+  try {
+    const raw = String(url).trim();
+    const normalized = raw.startsWith('http') ? raw : `https://${raw}`;
+    const u = new URL(normalized);
+    const host = u.hostname.replace(/^www\./, '').replace(/^m\./, '');
+    if (host === 'youtu.be') {
+      const id = u.pathname.split('/').filter(Boolean)[0];
+      return /^[a-zA-Z0-9_-]{11}$/.test(id || '') ? id : null;
+    }
+    if (host.endsWith('youtube.com')) {
+      const fromQuery = u.searchParams.get('v');
+      if (/^[a-zA-Z0-9_-]{11}$/.test(fromQuery || '')) return fromQuery;
+      const parts = u.pathname.split('/').filter(Boolean);
+      const marker = parts.findIndex((part) => ['shorts', 'embed', 'live'].includes(part));
+      const id = marker >= 0 ? parts[marker + 1] : null;
+      return /^[a-zA-Z0-9_-]{11}$/.test(id || '') ? id : null;
+    }
+  } catch (e) {
+    const m = String(url).match(/(?:v=|youtu\.be\/|shorts\/|embed\/|live\/)([a-zA-Z0-9_-]{11})/);
+    return m ? m[1] : null;
+  }
+  return null;
 }
 
 // 이미지 후원용 URL 형식 검증 (http/https + 합리적인 URL 형태)

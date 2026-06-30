@@ -654,6 +654,7 @@
           <div class="ops-actions">
             <button class="btn btn-outline btn-sm" id="alert-preview-btn">미리보기 갱신</button>
             <button class="btn btn-primary btn-sm" id="alert-widget-test-btn">OBS 테스트 열기</button>
+            <button class="btn btn-outline btn-sm" id="alert-video-test-btn" type="button">영상 테스트</button>
           </div>
         </div>
         <div class="card ops-card">
@@ -1580,6 +1581,7 @@
   }
   document.getElementById('alert-preview-btn')?.addEventListener('click', refreshAlertPreview);
   document.getElementById('alert-widget-test-btn')?.addEventListener('click', () => window.open(widgetTestUrl, '_blank', 'noopener'));
+  document.getElementById('alert-video-test-btn')?.addEventListener('click', () => window.open(`${widgetUrl}&testvideo=1`, '_blank', 'noopener'));
 
   document.getElementById('remote-pause-btn')?.addEventListener('click', () => {
     const status = document.getElementById('remote-status');

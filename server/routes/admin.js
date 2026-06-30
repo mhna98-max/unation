@@ -230,7 +230,8 @@ module.exports = function registerAdminRoutes(router) {
       balance,
       donations: donations.map((d) => ({
         id: d.id, nickname: d.nickname, amount: d.amount, message: d.message,
-        donationType: d.donation_type, paymentMethod: d.payment_method, createdAt: d.created_at,
+        donationType: d.donation_type, videoUrl: d.video_url, imageUrl: d.image_url,
+        paymentMethod: d.payment_method, createdAt: d.created_at,
       })),
       settlements: settlements.map((s) => ({
         id: s.id, amount: s.amount, status: s.status, requestedAt: s.requested_at, paidAt: s.paid_at,
@@ -259,6 +260,8 @@ module.exports = function registerAdminRoutes(router) {
         amount: d.amount,
         message: d.message,
         donationType: d.donation_type,
+        videoUrl: d.video_url,
+        imageUrl: d.image_url,
         paymentMethod: d.payment_method,
         status: d.status,
         createdAt: d.created_at,
@@ -378,6 +381,8 @@ module.exports = function registerAdminRoutes(router) {
         amount: d.amount,
         message: d.message,
         donationType: d.donation_type,
+        videoUrl: d.video_url,
+        imageUrl: d.image_url,
         paymentMethod: d.payment_method,
         createdAt: d.created_at,
       })),

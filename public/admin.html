@@ -177,9 +177,9 @@
       <div class="dash-header"><h1 class="dash-title">전체 후원내역</h1></div>
       <div class="card" style="overflow:hidden;">
         <table class="dash-table">
-          <thead><tr><th>크리에이터</th><th>닉네임</th><th>금액</th><th>결제수단</th><th>메시지</th><th>일시</th></tr></thead>
+          <thead><tr><th>크리에이터</th><th>닉네임</th><th>유형</th><th>금액</th><th>결제수단</th><th>콘텐츠</th><th>메시지</th><th>일시</th></tr></thead>
           <tbody id="all-donations-tbody">
-            <tr><td colspan="6" class="text-dim2" style="text-align:center;padding:40px;">불러오는 중…</td></tr>
+            <tr><td colspan="8" class="text-dim2" style="text-align:center;padding:40px;">불러오는 중…</td></tr>
           </tbody>
         </table>
       </div>
@@ -397,7 +397,7 @@
         <div class="mini-row"><span class="text-dim2">정산 계좌</span><span>${creator.bankName ? escapeHtml(creator.bankName + ' ' + creator.bankAccount) : '미등록'}</span></div>
         <h3 style="font-family:var(--font-h);font-weight:600;font-size:14px;margin:22px 0 8px;">최근 후원 (${donations.length})</h3>
         ${donations.slice(0, 10).map(d => `
-          <div class="mini-row"><span>${escapeHtml(d.nickname)}</span><span style="font-family:var(--font-m);">${formatWon(d.amount)}</span></div>
+          <div class="mini-row"><span>${escapeHtml(d.nickname)} <span class="text-dim2">${escapeHtml(d.donationType || '일반')}</span>${d.videoUrl ? ` <a class="link-purple" href="${escapeHtml(d.videoUrl)}" target="_blank" rel="noopener">영상</a>` : ''}${d.imageUrl ? ` <a class="link-purple" href="${escapeHtml(d.imageUrl)}" target="_blank" rel="noopener">이미지</a>` : ''}</span><span style="font-family:var(--font-m);">${formatWon(d.amount)}</span></div>
         `).join('') || '<p class="text-dim2" style="font-size:13px;">후원 내역이 없어요.</p>'}
         <h3 style="font-family:var(--font-h);font-weight:600;font-size:14px;margin:22px 0 8px;">정산 신청 내역 (${settlements.length})</h3>
         ${settlements.slice(0, 10).map(s => `
@@ -484,24 +484,33 @@
   // ── 전체 후원내역 ──
   async function loadAllDonations() {
     const tbody = document.getElementById('all-donations-tbody');
-    tbody.innerHTML = `<tr><td colspan="6" class="text-dim2" style="text-align:center;padding:40px;">불러오는 중…</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="8" class="text-dim2" style="text-align:center;padding:40px;">불러오는 중…</td></tr>`;
     try {
       const { donations } = await apiFetch('/api/admin/donations?limit=100');
       if (!donations.length) {
-        tbody.innerHTML = `<tr><td colspan="6" class="text-dim2" style="text-align:center;padding:40px;">후원 내역이 없어요.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" class="text-dim2" style="text-align:center;padding:40px;">후원 내역이 없어요.</td></tr>`;
         return;
       }
-      tbody.innerHTML = donations.map(d => `
-        <tr>
-          <td>${escapeHtml(d.creatorName)} <span class="text-dim2" style="font-size:12px;">@${escapeHtml(d.creatorHandle)}</span></td>
-          <td style="font-weight:500;">${escapeHtml(d.nickname)}</td>
-          <td style="font-family:var(--font-m);color:var(--cyan);font-weight:600;">${formatWon(d.amount)}</td>
-          <td class="text-dim2" style="font-size:12px;">${escapeHtml(d.paymentMethod || '—')}</td>
-          <td class="text-dim2" style="font-size:13px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(d.message || '—')}</td>
-          <td class="text-dim2" style="font-size:12px;white-space:nowrap;">${(d.createdAt || '').slice(0, 16)}</td>
-        </tr>`).join('');
+      tbody.innerHTML = donations.map(d => {
+        const contentLink = d.videoUrl
+          ? `<a class="link-purple" href="${escapeHtml(d.videoUrl)}" target="_blank" rel="noopener">영상</a>`
+          : d.imageUrl
+            ? `<a class="link-purple" href="${escapeHtml(d.imageUrl)}" target="_blank" rel="noopener">이미지</a>`
+            : '<span class="text-dim2">—</span>';
+        return `
+          <tr>
+            <td>${escapeHtml(d.creatorName)} <span class="text-dim2" style="font-size:12px;">@${escapeHtml(d.creatorHandle)}</span></td>
+            <td style="font-weight:500;">${escapeHtml(d.nickname)}</td>
+            <td class="text-dim2" style="font-size:12px;">${escapeHtml(d.donationType || '일반')}</td>
+            <td style="font-family:var(--font-m);color:var(--cyan);font-weight:600;">${formatWon(d.amount)}</td>
+            <td class="text-dim2" style="font-size:12px;">${escapeHtml(d.paymentMethod || '—')}</td>
+            <td class="text-dim2" style="font-size:12px;">${contentLink}</td>
+            <td class="text-dim2" style="font-size:13px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(d.message || '—')}</td>
+            <td class="text-dim2" style="font-size:12px;white-space:nowrap;">${(d.createdAt || '').slice(0, 16)}</td>
+          </tr>`;
+      }).join('');
     } catch (e) {
-      tbody.innerHTML = `<tr><td colspan="6" class="text-dim2" style="text-align:center;padding:32px;">불러오기 실패</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="8" class="text-dim2" style="text-align:center;padding:32px;">불러오기 실패</td></tr>`;
     }
   }
 
@@ -558,7 +567,7 @@
         <div class="mini-row"><span class="text-dim2">연락처 기록</span><span>${escapeHtml(unator.lastContact || '없음')}</span></div>
         <h3 style="font-family:var(--font-h);font-weight:600;font-size:14px;margin:22px 0 8px;">후원 내역 (${donations.length})</h3>
         ${donations.slice(0, 12).map(d => `
-          <div class="mini-row"><span>${escapeHtml(d.creatorName)} <span class="text-dim2">@${escapeHtml(d.creatorHandle)}</span></span><span style="font-family:var(--font-m);">${formatWon(d.amount)}</span></div>
+          <div class="mini-row"><span>${escapeHtml(d.creatorName)} <span class="text-dim2">@${escapeHtml(d.creatorHandle)}</span> <span class="text-dim2">${escapeHtml(d.donationType || '일반')}</span>${d.videoUrl ? ` <a class="link-purple" href="${escapeHtml(d.videoUrl)}" target="_blank" rel="noopener">영상</a>` : ''}${d.imageUrl ? ` <a class="link-purple" href="${escapeHtml(d.imageUrl)}" target="_blank" rel="noopener">이미지</a>` : ''}</span><span style="font-family:var(--font-m);">${formatWon(d.amount)}</span></div>
         `).join('') || '<p class="text-dim2" style="font-size:13px;">후원 내역이 없어요.</p>'}
         <h3 style="font-family:var(--font-h);font-weight:600;font-size:14px;margin:22px 0 8px;">스토어 구매 (${orders.length})</h3>
         ${orders.slice(0, 12).map(o => `
