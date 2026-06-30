@@ -686,6 +686,7 @@
     const el = document.getElementById(id);
     if (el) el.textContent = value;
   });
+  mountCreatorOpsPanels();
   document.querySelectorAll('[data-copy-target]').forEach(btn => {
     btn.addEventListener('click', () => {
       const target = document.getElementById(btn.dataset.copyTarget);
@@ -699,6 +700,140 @@
       if (url) window.open(url, '_blank', 'noopener');
     });
   });
+
+  function mountCreatorOpsPanels() {
+    const addOnce = (sectionId, html) => {
+      const section = document.getElementById(sectionId);
+      if (!section || section.querySelector('[data-mounted-panel]')) return;
+      section.insertAdjacentHTML('beforeend', html);
+    };
+
+    addOnce('section-donations', `
+      <div class="ops-deep-panel" data-mounted-panel>
+        <div class="ops-section-head">
+          <h3>후원관리+</h3>
+          <p>후원 페이지 공개 범위, 후원자 표시, 필터링, 칭호를 한 곳에서 관리합니다.</p>
+        </div>
+        <div class="ops-tab-strip">
+          <button class="active" type="button">후원 페이지</button><button type="button">후원 리스트</button><button type="button">후원 순위</button><button type="button">후원 필터링</button><button type="button">칭호 설정</button>
+        </div>
+        <div class="dashboard-grid-2">
+          <div class="ops-card card">
+            <h3>후원 페이지 링크 설정</h3>
+            <label class="field-label">후원 페이지 URL</label>
+            <div class="ops-inline-control"><code class="widget-url-box">${donateUrl}</code><button class="btn btn-outline btn-sm" type="button" data-copy-value="${donateUrl}">복사</button><button class="btn btn-outline btn-sm" type="button">중복확인</button></div>
+            <label class="field-label" style="margin-top:14px;">한 줄 메시지</label>
+            <input class="field-input" maxlength="80" placeholder="후원 페이지에 표시할 짧은 안내 문구">
+          </div>
+          <div class="ops-card card">
+            <h3>후원 페이지 옵션</h3>
+            <div class="ops-settings-list">
+              <label><span>후원순위 공개</span><select class="field-input"><option>공개</option><option>비공개</option></select></label>
+              <label><span>후원 금액 공개</span><select class="field-input"><option>공개</option><option>비공개</option></select></label>
+              <label><span>받은 후원 내역 공개</span><select class="field-input"><option>공개</option><option>비공개</option></select></label>
+              <label><span>후원 닉네임 변경</span><select class="field-input"><option>변경 가능</option><option>변경 불가</option></select></label>
+            </div>
+          </div>
+          <div class="ops-card card">
+            <h3>후원 필터링</h3>
+            <div class="ops-filter-grid">
+              <label><input type="checkbox"> 금칙어 자동 숨김</label><label><input type="checkbox"> 중복 메시지 제한</label><label><input type="checkbox"> 링크 포함 메시지 검토</label><label><input type="checkbox"> VIP 전용 이펙트 사용</label>
+            </div>
+          </div>
+          <div class="ops-card card">
+            <h3>칭호 설정</h3>
+            <div class="ops-title-list"><span>브론즈 시민 · 1회 이상</span><span>실버 시민 · 10,000원 이상</span><span>골드 시민 · 50,000원 이상</span><span>VIP 시민 · 100,000원 이상</span></div>
+          </div>
+        </div>
+      </div>
+    `);
+
+    addOnce('section-alerts', `
+      <div class="ops-deep-panel" data-mounted-panel>
+        <div class="ops-section-head">
+          <h3>알림 상세 설정</h3>
+          <p>프리셋, 이미지, 음성, 후원 테스트까지 방송 전 점검에 필요한 항목을 모았습니다.</p>
+        </div>
+        <div class="dashboard-grid-2">
+          <div class="ops-card card">
+            <h3>프리셋 설정</h3>
+            <div class="ops-preset-list">
+              <label><span>1번 프리셋</span><input class="field-input" value="후원금액 500원 이상"></label>
+              <label><span>2번 프리셋</span><input class="field-input" value="후원금액 1,500원 이상"></label>
+              <label><span>3번 프리셋</span><input class="field-input" value="VIP 시민 전용"></label>
+            </div>
+          </div>
+          <div class="ops-card card">
+            <h3>후원 이미지</h3>
+            <label class="ops-toggle-row"><span>사용하기</span><input type="checkbox" checked></label>
+            <div class="upload-placeholder">+ 이미지 등록</div>
+          </div>
+          <div class="ops-card card">
+            <h3>보이스 설정</h3>
+            <label class="ops-toggle-row"><span>사용하기</span><input type="checkbox" checked></label>
+            <label class="field-label">글자 수 제한</label>
+            <input class="field-input" type="number" value="120">
+            <div class="ops-filter-grid" style="margin-top:12px;"><label><input type="checkbox"> 인터뷰</label><label><input type="checkbox"> 사이렌</label><label><input type="checkbox"> 휴대폰</label><label><input type="checkbox"> 안드로이드</label></div>
+          </div>
+          <div class="ops-card card">
+            <h3>후원 테스트</h3>
+            <div class="ops-inline-control"><select class="field-input"><option>텍스트 후원</option><option>영상 후원</option><option>음성 후원</option><option>룰렛 후원</option></select><input class="field-input" type="number" value="1000"></div>
+            <input class="field-input" style="margin-top:10px;" value="후원 테스트 입니다.">
+            <button class="btn btn-primary btn-sm" type="button" data-open-url="${widgetTestUrl}" style="margin-top:10px;">후원 테스트</button>
+          </div>
+        </div>
+      </div>
+    `);
+
+    const widgetCatalog = ['채팅창','후원 QR코드','후원목표','후원누적금액','최근알림','이벤트','미니후원','후원랭킹','커스텀 사운드','위시리스트','투표','퀘스트','그림후원','크루 후원','뽑기 후원','벽지','럭키박스','플레이 후원'];
+    addOnce('section-widgets', `
+      <div class="ops-deep-panel" data-mounted-panel>
+        <div class="ops-section-head"><h3>위젯 카탈로그</h3><p>방송 화면에 추가할 수 있는 위젯들을 카테고리별로 준비했습니다.</p></div>
+        <div class="ops-tab-strip"><button class="active" type="button">인기 3</button><button type="button">신규 3</button><button type="button">전체 18</button></div>
+        <div class="widget-catalog-grid">${widgetCatalog.map((name, idx) => `<div class="card widget-catalog-card"><div class="widget-catalog-icon">${idx + 1}</div><strong>${name}</strong><p>${name} 위젯을 방송 화면에 맞춤 설정하여 노출합니다.</p><button class="btn btn-outline btn-sm" type="button">설정</button></div>`).join('')}</div>
+      </div>
+    `);
+
+    addOnce('section-store', `
+      <div class="ops-deep-panel" data-mounted-panel>
+        <div class="ops-section-head"><h3>인벤토리</h3><p>선물 수령 정보, 배송 현황, 후기 관리, 아이템 검색을 관리합니다.</p></div>
+        <div class="dashboard-grid-2">
+          <div class="ops-card card"><h3>선물 & 배송 현황</h3><div class="inventory-summary"><div><span>미사용 아이템</span><strong>0</strong></div><div><span>유효기간 3일 남은 아이템</span><strong>0</strong></div><div><span>작성 가능한 후기</span><strong>0</strong></div><div><span>배송 준비 중</span><strong>0</strong></div></div></div>
+          <div class="ops-card card"><h3>수령정보 입력</h3><input class="field-input" placeholder="받는 분"><input class="field-input" style="margin-top:8px;" placeholder="연락처"><input class="field-input" style="margin-top:8px;" placeholder="주소"><p class="text-dim2" style="font-size:12px;margin-top:8px;">배송 업체에는 배송에 필요한 정보만 전달됩니다.</p></div>
+        </div>
+        <div class="card ops-card" style="margin-top:16px;"><div class="ops-inline-control"><input class="field-input" placeholder="아이템 검색"><select class="field-input"><option>전체아이템</option><option>기프티콘</option><option>배송아이템</option><option>유네이션</option></select><select class="field-input"><option>최신획득순</option><option>유효기간순</option></select></div><div class="empty-state">상품이 없습니다.</div></div>
+      </div>
+    `);
+
+    addOnce('section-profile', `
+      <div class="ops-deep-panel" data-mounted-panel>
+        <div class="ops-section-head"><h3>계정설정 상세</h3><p>기본 설정, 채널 관리, 연동키, 언어, 마케팅/광고 동의를 관리합니다.</p></div>
+        <div class="ops-tab-strip"><button class="active" type="button">기본 설정</button><button type="button">채널 관리</button><button type="button">프로필 설정</button><button type="button">ID 관리</button></div>
+        <div class="dashboard-grid-2">
+          <div class="ops-card card"><h3>연동키 발급</h3><code class="widget-url-box" id="integration-key-box">연동키를 발급해 주세요.</code><div class="ops-actions"><button class="btn btn-outline btn-sm" type="button" id="copy-integration-key">복사</button><button class="btn btn-primary btn-sm" type="button" id="issue-integration-key">연동키 발급</button></div></div>
+          <div class="ops-card card"><h3>언어 설정</h3><div class="ops-settings-list"><label><span>웹사이트 언어</span><select class="field-input"><option>한국어</option><option>English</option><option>繁體中文</option></select></label><label><span>위젯 언어</span><select class="field-input"><option>한국어</option><option>English</option><option>繁體中文</option></select></label></div></div>
+          <div class="ops-card card"><h3>방송 노출 설정</h3><label class="ops-toggle-row"><span>유네이션 플레이 방송 노출</span><input type="checkbox" checked></label><label class="ops-toggle-row"><span>마케팅 정보 수신 동의</span><input type="checkbox"></label></div>
+          <div class="ops-card card"><h3>유네애드 약관</h3><p class="text-dim2">광고 조건과 방송 플랫폼별 약관을 확인한 뒤 단계적으로 연결합니다.</p><label class="ops-toggle-row"><span>투네애드형 광고 약관 동의</span><input type="checkbox"></label></div>
+        </div>
+      </div>
+    `);
+
+    addOnce('section-voices', `
+      <div class="ops-deep-panel" data-mounted-panel>
+        <div class="ops-section-head"><h3>모두의 보이스 진행 단계</h3><p>녹음, 학습, 등록 완료의 3단계 플로우를 준비했습니다.</p></div>
+        <div class="voice-step-grid"><div class="card voice-step-card"><b>1</b><strong>보이스 녹음</strong><p>크리에이터 본인의 목소리를 녹음합니다.</p><button class="btn btn-outline btn-sm">녹음하러 가기</button></div><div class="card voice-step-card"><b>2</b><strong>보이스 학습</strong><p>학습은 최대 3일 정도 소요될 수 있습니다.</p><button class="btn btn-outline btn-sm">학습 상태 확인</button></div><div class="card voice-step-card"><b>3</b><strong>보이스 등록 완료</strong><p>학습 후 등록 및 알림 설정에 사용할 수 있습니다.</p><button class="btn btn-primary btn-sm">보이스 설정</button></div></div>
+      </div>
+    `);
+
+    document.querySelectorAll('[data-copy-value]').forEach(btn => btn.addEventListener('click', () => copyToClipboard(btn.dataset.copyValue, btn)));
+    document.querySelectorAll('[data-open-url]').forEach(btn => btn.addEventListener('click', () => window.open(btn.dataset.openUrl, '_blank', 'noopener')));
+    document.getElementById('issue-integration-key')?.addEventListener('click', () => {
+      const key = `UNATION-${me.handle}-${Math.random().toString(36).slice(2, 10).toUpperCase()}`;
+      document.getElementById('integration-key-box').textContent = key;
+      showToast('연동키가 화면에 발급되었습니다. 실제 저장은 다음 단계에서 연결합니다.');
+    });
+    document.getElementById('copy-integration-key')?.addEventListener('click', (e) => copyToClipboard(document.getElementById('integration-key-box').textContent, e.currentTarget));
+  }
 
   document.getElementById('logout-btn').addEventListener('click', async () => {
     await apiFetch('/api/auth/logout',{method:'POST'}).catch(()=>{});
