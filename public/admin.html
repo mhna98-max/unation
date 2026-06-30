@@ -76,6 +76,10 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
         전체 후원내역
       </a>
+      <a class="sb-link" data-section="unators" href="#">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M16 11a4 4 0 10-8 0"/><path d="M4 21a8 8 0 0116 0"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>
+        유네이터
+      </a>
       <a class="sb-link" data-section="settlements" href="#">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
         정산 관리
@@ -181,6 +185,22 @@
       </div>
     </div>
 
+    <div id="section-unators" class="dash-section" style="display:none;">
+      <div class="dash-header"><h1 class="dash-title">유네이터</h1></div>
+      <div class="admin-toolbar">
+        <input class="field-input admin-search" id="unator-search" type="search" placeholder="닉네임, 유네이터 검색">
+        <button class="btn btn-outline btn-sm" id="unator-search-btn">검색</button>
+      </div>
+      <div class="card" style="overflow:hidden;">
+        <table class="dash-table">
+          <thead><tr><th>유네이터</th><th>전역 칭호</th><th>후원 횟수</th><th>받은금액</th><th>구매금액</th><th>후원 크리에이터</th><th>연락처 기록</th><th>최근 활동</th></tr></thead>
+          <tbody id="unators-tbody">
+            <tr><td colspan="8" class="text-dim2" style="text-align:center;padding:40px;">불러오는 중…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
     <!-- 정산 관리 -->
     <div id="section-settlements" class="dash-section" style="display:none;">
       <div class="dash-header"><h1 class="dash-title">정산 관리</h1></div>
@@ -251,7 +271,7 @@
   });
 
   // ── 섹션 전환 ──
-  const sections = ['overview', 'creators', 'donations', 'settlements', 'notices'];
+  const sections = ['overview', 'creators', 'donations', 'unators', 'settlements', 'notices'];
   function switchSection(sec) {
     document.querySelectorAll('.sb-link').forEach(l => l.classList.remove('active'));
     document.querySelector(`.sb-link[data-section="${sec}"]`)?.classList.add('active');
@@ -260,6 +280,7 @@
     });
     if (sec === 'creators') loadCreators();
     if (sec === 'donations') loadAllDonations();
+    if (sec === 'unators') loadUnators();
     if (sec === 'settlements') loadSettlements();
     if (sec === 'notices') loadNotices();
   }
@@ -477,6 +498,71 @@
         </tr>`).join('');
     } catch (e) {
       tbody.innerHTML = `<tr><td colspan="6" class="text-dim2" style="text-align:center;padding:32px;">불러오기 실패</td></tr>`;
+    }
+  }
+
+  async function loadUnators() {
+    const tbody = document.getElementById('unators-tbody');
+    const q = document.getElementById('unator-search')?.value.trim() || '';
+    tbody.innerHTML = `<tr><td colspan="8" class="text-dim2" style="text-align:center;padding:40px;">불러오는 중…</td></tr>`;
+    try {
+      const { unators } = await apiFetch(`/api/admin/unators${q ? `?q=${encodeURIComponent(q)}` : ''}`);
+      if (!unators.length) {
+        tbody.innerHTML = `<tr><td colspan="8" class="text-dim2" style="text-align:center;padding:40px;">확인 가능한 유네이터가 없어요.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = unators.map((u) => {
+        const tier = getTier(u.donationTotal);
+        const creators = (u.creatorNames || []).join(', ');
+        return `
+          <tr class="row-clickable" data-unator-key="${encodeURIComponent(u.key)}">
+            <td style="font-weight:600;">${escapeHtml(u.nickname)}</td>
+            <td><span class="cc-tier ${tier.cls}" style="font-size:9px;padding:3px 7px;">${tier.icon} ${escapeHtml(tier.label)}</span></td>
+            <td style="font-family:var(--font-m);">${Number(u.donationCount || 0).toLocaleString()}건</td>
+            <td style="font-family:var(--font-m);color:var(--cyan);font-weight:600;">${formatWon(u.donationTotal)}</td>
+            <td style="font-family:var(--font-m);">${formatWon(u.orderTotal)}</td>
+            <td class="text-dim2" style="font-size:12px;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(creators || `${u.creatorCount || 0}명`)}</td>
+            <td class="text-dim2" style="font-size:12px;">${escapeHtml(u.lastContact || '없음')}</td>
+            <td class="text-dim2" style="font-size:12px;white-space:nowrap;">${(u.lastDonationAt || u.lastOrderAt || '').slice(0, 16)}</td>
+          </tr>`;
+      }).join('');
+      tbody.querySelectorAll('tr[data-unator-key]').forEach(tr => {
+        tr.addEventListener('click', () => openUnatorDrawer(tr.dataset.unatorKey));
+      });
+    } catch (e) {
+      tbody.innerHTML = `<tr><td colspan="8" class="text-dim2" style="text-align:center;padding:32px;">불러오기 실패</td></tr>`;
+    }
+  }
+  document.getElementById('unator-search-btn')?.addEventListener('click', loadUnators);
+  document.getElementById('unator-search')?.addEventListener('keydown', e => {
+    if (e.key === 'Enter') loadUnators();
+  });
+
+  async function openUnatorDrawer(key) {
+    drawer.classList.add('open'); backdrop.classList.add('open');
+    const content = document.getElementById('drawer-content');
+    content.innerHTML = '<p class="text-dim2">불러오는 중…</p>';
+    try {
+      const { unator, donations, orders } = await apiFetch(`/api/admin/unators/${key}`);
+      const tier = getTier(unator.donationTotal);
+      content.innerHTML = `
+        <h2 style="font-family:var(--font-h);font-weight:700;font-size:19px;margin:8px 0 2px;">${escapeHtml(unator.nickname)}</h2>
+        <p class="text-dim2" style="font-size:13px;margin-bottom:18px;">${tier.icon} ${escapeHtml(tier.label)} · 유네이터 상세</p>
+        <div class="mini-row"><span class="text-dim2">받은금액</span><span style="font-family:var(--font-m);font-weight:600;color:var(--cyan);">${formatWon(unator.donationTotal)}</span></div>
+        <div class="mini-row"><span class="text-dim2">후원 횟수</span><span style="font-family:var(--font-m);font-weight:600;">${unator.donationCount.toLocaleString()}건</span></div>
+        <div class="mini-row"><span class="text-dim2">구매금액</span><span style="font-family:var(--font-m);font-weight:600;">${formatWon(unator.orderTotal)}</span></div>
+        <div class="mini-row"><span class="text-dim2">연락처 기록</span><span>${escapeHtml(unator.lastContact || '없음')}</span></div>
+        <h3 style="font-family:var(--font-h);font-weight:600;font-size:14px;margin:22px 0 8px;">후원 내역 (${donations.length})</h3>
+        ${donations.slice(0, 12).map(d => `
+          <div class="mini-row"><span>${escapeHtml(d.creatorName)} <span class="text-dim2">@${escapeHtml(d.creatorHandle)}</span></span><span style="font-family:var(--font-m);">${formatWon(d.amount)}</span></div>
+        `).join('') || '<p class="text-dim2" style="font-size:13px;">후원 내역이 없어요.</p>'}
+        <h3 style="font-family:var(--font-h);font-weight:600;font-size:14px;margin:22px 0 8px;">스토어 구매 (${orders.length})</h3>
+        ${orders.slice(0, 12).map(o => `
+          <div class="mini-row"><span>${escapeHtml(o.productName)} <span class="text-dim2">${o.quantity}개</span></span><span style="font-family:var(--font-m);">${formatWon(o.amount)}</span></div>
+        `).join('') || '<p class="text-dim2" style="font-size:13px;">구매 내역이 없어요.</p>'}
+      `;
+    } catch (e) {
+      content.innerHTML = `<p class="text-dim2">불러오지 못했어요: ${escapeHtml(e.message || '')}</p>`;
     }
   }
 

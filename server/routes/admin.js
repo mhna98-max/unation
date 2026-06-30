@@ -267,6 +267,134 @@ module.exports = function registerAdminRoutes(router) {
   });
 
   // ── 전체 정산 목록 ──
+  router.get('/api/admin/unators', async (req, res) => {
+    if (!requireAdmin(req, res)) return;
+    const url = new URL(req.url, 'http://x');
+    const q = String(url.searchParams.get('q') || '').trim().toLowerCase().slice(0, 40);
+    const params = [];
+    let where = "WHERE d.status='completed' AND TRIM(d.nickname) != ''";
+    if (q) {
+      where += " AND LOWER(d.nickname) LIKE ?";
+      params.push(`%${q}%`);
+    }
+
+    const rows = db.prepare(`
+      SELECT
+        LOWER(TRIM(d.nickname)) AS unator_key,
+        MIN(d.nickname) AS nickname,
+        COUNT(d.id) AS donation_count,
+        COALESCE(SUM(d.amount),0) AS donation_total,
+        COUNT(DISTINCT d.creator_id) AS creator_count,
+        MAX(d.created_at) AS last_donation_at,
+        (
+          SELECT d2.message FROM donations d2
+          WHERE d2.status='completed' AND LOWER(TRIM(d2.nickname)) = LOWER(TRIM(d.nickname))
+          ORDER BY d2.created_at DESC LIMIT 1
+        ) AS last_message,
+        (
+          SELECT GROUP_CONCAT(DISTINCT c.display_name)
+          FROM donations dx JOIN creators c ON c.id = dx.creator_id
+          WHERE dx.status='completed' AND LOWER(TRIM(dx.nickname)) = LOWER(TRIM(d.nickname))
+        ) AS creator_names
+      FROM donations d
+      ${where}
+      GROUP BY LOWER(TRIM(d.nickname))
+      ORDER BY donation_total DESC, last_donation_at DESC
+      LIMIT 200
+    `).all(...params);
+
+    const orderRows = db.prepare(`
+      SELECT
+        LOWER(TRIM(buyer_nickname)) AS unator_key,
+        COALESCE(SUM(amount),0) AS order_total,
+        COUNT(*) AS order_count,
+        MAX(created_at) AS last_order_at,
+        MAX(NULLIF(TRIM(buyer_contact),'')) AS last_contact
+      FROM orders
+      WHERE status='completed' AND TRIM(buyer_nickname) != ''
+      GROUP BY LOWER(TRIM(buyer_nickname))
+    `).all();
+    const orderMap = new Map(orderRows.map((o) => [o.unator_key, o]));
+
+    sendJson(res, 200, {
+      unators: rows.map((u) => {
+        const order = orderMap.get(u.unator_key) || {};
+        return {
+          key: u.unator_key,
+          nickname: u.nickname,
+          donationCount: u.donation_count,
+          donationTotal: u.donation_total,
+          creatorCount: u.creator_count,
+          creatorNames: u.creator_names ? String(u.creator_names).split(',').slice(0, 8) : [],
+          lastDonationAt: u.last_donation_at,
+          lastMessage: u.last_message || '',
+          orderCount: order.order_count || 0,
+          orderTotal: order.order_total || 0,
+          lastOrderAt: order.last_order_at || null,
+          lastContact: order.last_contact || '',
+        };
+      }),
+    });
+  });
+
+  router.get('/api/admin/unators/:key', async (req, res, params) => {
+    if (!requireAdmin(req, res)) return;
+    const key = decodeURIComponent(params.key || '').trim().toLowerCase();
+    if (!key) return sendError(res, 400, '유네이터 키를 확인해주세요.');
+
+    const donations = db.prepare(`
+      SELECT d.*, c.handle AS creator_handle, c.display_name AS creator_name
+      FROM donations d JOIN creators c ON c.id = d.creator_id
+      WHERE d.status='completed' AND LOWER(TRIM(d.nickname)) = ?
+      ORDER BY d.created_at DESC LIMIT 100
+    `).all(key);
+
+    const orders = db.prepare(`
+      SELECT o.*, p.name AS product_name, c.handle AS creator_handle, c.display_name AS creator_name
+      FROM orders o
+      JOIN products p ON p.id = o.product_id
+      JOIN creators c ON c.id = o.creator_id
+      WHERE o.status='completed' AND LOWER(TRIM(o.buyer_nickname)) = ?
+      ORDER BY o.created_at DESC LIMIT 100
+    `).all(key);
+
+    const donationTotal = donations.reduce((sum, d) => sum + Number(d.amount || 0), 0);
+    const orderTotal = orders.reduce((sum, o) => sum + Number(o.amount || 0), 0);
+
+    sendJson(res, 200, {
+      unator: {
+        key,
+        nickname: donations[0]?.nickname || orders[0]?.buyer_nickname || key,
+        donationTotal,
+        donationCount: donations.length,
+        orderTotal,
+        orderCount: orders.length,
+        lastContact: orders.find((o) => o.buyer_contact)?.buyer_contact || '',
+      },
+      donations: donations.map((d) => ({
+        id: d.id,
+        creatorName: d.creator_name,
+        creatorHandle: d.creator_handle,
+        amount: d.amount,
+        message: d.message,
+        donationType: d.donation_type,
+        paymentMethod: d.payment_method,
+        createdAt: d.created_at,
+      })),
+      orders: orders.map((o) => ({
+        id: o.id,
+        creatorName: o.creator_name,
+        creatorHandle: o.creator_handle,
+        productName: o.product_name,
+        amount: o.amount,
+        quantity: o.quantity,
+        contact: o.buyer_contact,
+        paymentMethod: o.payment_method,
+        createdAt: o.created_at,
+      })),
+    });
+  });
+
   router.get('/api/admin/settlements', async (req, res) => {
     if (!requireAdmin(req, res)) return;
     const url = new URL(req.url, 'http://x');
