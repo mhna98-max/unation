@@ -164,9 +164,9 @@
       </div>
       <div class="card" style="overflow:hidden;">
         <table class="dash-table">
-          <thead><tr><th>핸들</th><th>방송명</th><th>이메일</th><th>로그인</th><th>가입일</th><th>누적 후원금</th><th>정산 가능액</th></tr></thead>
+          <thead><tr><th>핸들</th><th>방송명</th><th>이메일</th><th>연락처</th><th>로그인</th><th>가입일</th><th>누적 후원금</th><th>정산 가능액</th></tr></thead>
           <tbody id="creators-tbody">
-            <tr><td colspan="7" class="text-dim2" style="text-align:center;padding:40px;">불러오는 중…</td></tr>
+            <tr><td colspan="8" class="text-dim2" style="text-align:center;padding:40px;">불러오는 중…</td></tr>
           </tbody>
         </table>
       </div>
@@ -343,11 +343,11 @@
   async function loadCreators() {
     const tbody = document.getElementById('creators-tbody');
     const q = document.getElementById('creator-search')?.value.trim() || '';
-    tbody.innerHTML = `<tr><td colspan="7" class="text-dim2" style="text-align:center;padding:40px;">불러오는 중…</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="8" class="text-dim2" style="text-align:center;padding:40px;">불러오는 중…</td></tr>`;
     try {
       const { creators } = await apiFetch(`/api/admin/creators${q ? `?q=${encodeURIComponent(q)}` : ''}`);
       if (!creators.length) {
-        tbody.innerHTML = `<tr><td colspan="7" class="text-dim2" style="text-align:center;padding:40px;">등록된 크리에이터가 없어요.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" class="text-dim2" style="text-align:center;padding:40px;">등록된 크리에이터가 없어요.</td></tr>`;
         return;
       }
       tbody.innerHTML = creators.map(c => `
@@ -355,6 +355,7 @@
           <td style="font-family:var(--font-m);">@${escapeHtml(c.handle)}</td>
           <td style="font-weight:500;">${escapeHtml(c.displayName)}</td>
           <td class="text-dim2" style="font-size:13px;">${escapeHtml(c.email || '—')}</td>
+          <td class="text-dim2" style="font-size:13px;">${escapeHtml(c.phone || '미등록')}</td>
           <td class="text-dim2" style="font-size:12px;">${escapeHtml(c.loginProvider || 'unknown')}</td>
           <td class="text-dim2" style="font-size:12px;">${(c.createdAt || '').slice(0, 10)}</td>
           <td style="font-family:var(--font-m);color:var(--cyan);font-weight:600;">${formatWon(c.lifetimeTotal)}</td>
@@ -364,7 +365,7 @@
         tr.addEventListener('click', () => openCreatorDrawer(tr.dataset.creatorId));
       });
     } catch (e) {
-      tbody.innerHTML = `<tr><td colspan="7" class="text-dim2" style="text-align:center;padding:32px;">불러오기 실패</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="8" class="text-dim2" style="text-align:center;padding:32px;">불러오기 실패</td></tr>`;
     }
   }
   document.getElementById('creator-search-btn')?.addEventListener('click', loadCreators);
@@ -388,6 +389,9 @@
       content.innerHTML = `
         <h2 style="font-family:var(--font-h);font-weight:700;font-size:19px;margin:8px 0 2px;">${escapeHtml(creator.displayName)}</h2>
         <p class="text-dim2" style="font-size:13px;margin-bottom:18px;">@${escapeHtml(creator.handle)} · ${escapeHtml(creator.email || '이메일 없음')}</p>
+        <div class="mini-row"><span class="text-dim2">이메일</span><span>${escapeHtml(creator.email || '미등록')}</span></div>
+        <div class="mini-row"><span class="text-dim2">휴대폰</span><span>${escapeHtml(creator.phone || '미등록')}</span></div>
+        <div class="mini-row"><span class="text-dim2">방송 플랫폼</span><span>${escapeHtml(creator.platform || '미등록')}</span></div>
         <div class="mini-row"><span class="text-dim2">누적 후원금</span><span style="font-family:var(--font-m);font-weight:600;">${formatWon(balance.lifetimeTotal)}</span></div>
         <div class="mini-row"><span class="text-dim2">정산 가능 금액</span><span style="font-family:var(--font-m);font-weight:600;color:var(--cyan);">${formatWon(balance.available)}</span></div>
         <div class="mini-row"><span class="text-dim2">정산 계좌</span><span>${creator.bankName ? escapeHtml(creator.bankName + ' ' + creator.bankAccount) : '미등록'}</span></div>
