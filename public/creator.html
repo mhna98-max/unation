@@ -60,12 +60,13 @@
         </a>
       </div>
       <a id="store-btn" href="store.html" class="btn btn-outline" style="display:none;">스토어</a>
+      <a id="unator-lounge-btn" href="unator.html" class="btn btn-outline">유네이터 라운지</a>
       <a id="donate-btn" href="donate.html" class="btn btn-primary">후원하기</a>
     </div>
 
     <!-- 통계 스트립 -->
     <div class="stat-strip">
-      <div class="card"><div class="num" id="stat-citizens">—</div><div class="label">시민(후원자)</div></div>
+      <div class="card"><div class="num" id="stat-citizens">—</div><div class="label">유네이터</div></div>
       <div class="card"><div class="num" id="stat-month">—</div><div class="label">이번 달 후원금</div></div>
       <div class="card"><div class="num" id="stat-lifetime">—</div><div class="label">누적 후원금</div></div>
     </div>
@@ -119,8 +120,8 @@
 
     <!-- CTA 배너 -->
     <div class="card" id="cta-section" style="margin-top:48px;padding:56px 40px;text-align:center;background:linear-gradient(135deg,rgba(22,18,50,.95),rgba(13,10,28,.98));border-color:rgba(139,92,246,.2);">
-      <span class="eyebrow" style="justify-content:center;">UNATION CITIZENSHIP</span>
-      <h2 class="h-display" style="font-size:28px;margin-top:14px;margin-bottom:28px;" id="cta-title">네이션의<br>시민이 되어보세요.</h2>
+      <span class="eyebrow" style="justify-content:center;">UNATION UNATORSHIP</span>
+      <h2 class="h-display" style="font-size:28px;margin-top:14px;margin-bottom:28px;" id="cta-title">네이션의<br>유네이터가 되어보세요.</h2>
       <a id="cta-donate-btn" href="donate.html" class="btn btn-primary" style="padding:12px 28px;font-size:15px;">후원하기</a>
     </div>
 
@@ -220,7 +221,8 @@
     }
     document.getElementById('about-title').textContent = `안녕하세요, ${creator.displayName}입니다`;
     document.getElementById('about-bio').textContent = creator.bio || '아직 소개가 작성되지 않았어요.';
-    document.getElementById('cta-title').innerHTML = `${escapeHtml(creator.displayName)} 네이션의<br>시민이 되어보세요.`;
+    document.getElementById('unator-lounge-btn').href = `unator.html?handle=${creator.handle}`;
+    document.getElementById('cta-title').innerHTML = `${escapeHtml(creator.displayName)} 네이션의<br>유네이터가 되어보세요.`;
     document.getElementById('stat-citizens').textContent = stats.citizenCount.toLocaleString('ko-KR') + '명';
     document.getElementById('stat-month').textContent = formatWon(stats.thisMonthTotal);
     document.getElementById('stat-lifetime').textContent = formatWon(stats.lifetimeTotal);

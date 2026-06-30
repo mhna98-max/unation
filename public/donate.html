@@ -50,7 +50,7 @@
 
       <div class="field">
         <label class="field-label" for="nickname">닉네임 <span class="field-hint">방송에 표시 · 최대 20자</span></label>
-        <input class="field-input" id="nickname" type="text" placeholder="익명의 시민" maxlength="20">
+        <input class="field-input" id="nickname" type="text" placeholder="익명의 유네이터" maxlength="20">
       </div>
 
       <div class="field">
@@ -139,11 +139,11 @@
 
     <!-- 우: 미리보기 (데스크탑만) -->
     <div class="preview-sticky">
-      <div class="preview-label">시민증 미리보기</div>
+      <div class="preview-label">유네이터 카드 미리보기</div>
       <div class="citizen-card">
         <div class="cc-top">
           <span class="cc-brand"><svg width="10" height="10" viewBox="0 0 32 32"><rect width="32" height="32" rx="9" fill="#06b6d4"/></svg> UNATION MEMBERSHIP</span>
-          <span class="cc-tier" id="prev-tier">NEW CITIZEN</span>
+          <span class="cc-tier" id="prev-tier">FR UNATOR</span>
         </div>
         <div>
           <div class="cc-nation" id="prev-nation">— NATION</div>
@@ -152,7 +152,7 @@
         <div class="cc-bottom">
           <div class="cc-user">
             <span class="avatar" style="width:26px;height:26px;font-size:11px;" id="prev-avatar">시</span>
-            <span style="font-size:13px;"><strong id="prev-name">익명의 시민</strong> 시민</span>
+            <span style="font-size:13px;"><strong id="prev-name">익명의 유네이터</strong> 유네이터</span>
           </div>
           <span class="chip-amount" id="prev-amount">₩—</span>
         </div>
@@ -170,12 +170,12 @@
 <div id="modal" class="modal-backdrop" style="display:none;">
   <div class="modal-card">
     <div class="modal-icon">🎉</div>
-    <h2 class="modal-title">시민이 되셨어요!</h2>
+    <h2 class="modal-title">유네이터가 되셨어요!</h2>
     <p id="modal-desc" class="text-dim" style="text-align:center;font-size:14px;line-height:1.7;margin-bottom:22px;"></p>
     <div class="citizen-card" style="margin-bottom:16px;">
       <div class="cc-top">
         <span class="cc-brand"><svg width="10" height="10" viewBox="0 0 32 32"><rect width="32" height="32" rx="9" fill="#06b6d4"/></svg> UNATION MEMBERSHIP</span>
-        <span class="cc-tier" id="modal-tier">CITIZEN</span>
+        <span class="cc-tier" id="modal-tier">UNATOR</span>
       </div>
       <div>
         <div class="cc-nation" id="modal-nation">— NATION</div>
@@ -184,7 +184,7 @@
       <div class="cc-bottom">
         <div class="cc-user">
           <span class="avatar" style="width:26px;height:26px;font-size:11px;" id="modal-avatar">시</span>
-          <span style="font-size:13px;"><strong id="modal-name">—</strong> 시민</span>
+          <span style="font-size:13px;"><strong id="modal-name">—</strong> 유네이터</span>
         </div>
         <span class="chip-amount" id="modal-amount">₩—</span>
       </div>
@@ -238,7 +238,7 @@
   // 닉네임 미리보기
   const nickEl=document.getElementById('nickname');
   nickEl.addEventListener('input',()=>{
-    const n=nickEl.value.trim()||'익명의 시민';
+    const n=nickEl.value.trim()||'익명의 유네이터';
     document.getElementById('prev-name').textContent=n;
     document.getElementById('prev-avatar').textContent=n[0];
   });
@@ -309,7 +309,7 @@
     document.getElementById('prev-amount').textContent=amt>0?formatWon(amt):'₩—';
     const previewTier=getTier(amt);
     const prevTierEl=document.getElementById('prev-tier');
-    prevTierEl.textContent=`${previewTier.icon} ${previewTier.short} CITIZEN`;
+    prevTierEl.textContent=`${previewTier.icon} ${previewTier.short} UNATOR`;
     prevTierEl.className='cc-tier '+previewTier.cls;
   };
 
@@ -354,7 +354,7 @@
       errEl.textContent='스티커와 위치를 선택해주세요.';errEl.style.display='';return;
     }
     const pay=document.querySelector('input[name="pay"]:checked')?.value||'card';
-    const nick=nickEl.value.trim()||'익명의 시민';
+    const nick=nickEl.value.trim()||'익명의 유네이터';
     submitBtn.disabled=true;submitBtn.textContent='결제 처리 중…';
     try{
       const{donation} = isDemoMode
@@ -375,9 +375,9 @@
       document.getElementById('modal-amount').textContent=formatWon(donation.amount);
       const modalTier=getTier(donation.amount);
       const modalTierEl=document.getElementById('modal-tier');
-      modalTierEl.textContent=`${modalTier.icon} ${modalTier.short} CITIZEN`;
+      modalTierEl.textContent=`${modalTier.icon} ${modalTier.short} UNATOR`;
       modalTierEl.className='cc-tier '+modalTier.cls;
-      const baseDesc = `${creatorName} 네이션의 ${donation.citizenNumber}번 시민이 되셨습니다. 진심으로 감사해요!`;
+      const baseDesc = `${creatorName} 네이션의 ${donation.citizenNumber}번 유네이터가 되셨습니다. 진심으로 감사해요!`;
       document.getElementById('modal-desc').textContent = donation.rouletteResult
         ? `${baseDesc} 🎰 룰렛 결과: ${donation.rouletteResult}`
         : baseDesc;
@@ -396,7 +396,7 @@
     nickEl.value='';msgEl.value='';
     document.getElementById('msg-cnt').textContent='0/150';
     document.getElementById('terms').checked=false;
-    document.getElementById('prev-name').textContent='익명의 시민';
+    document.getElementById('prev-name').textContent='익명의 유네이터';
     document.getElementById('prev-avatar').textContent='시';
     amt=0;sync();
   });

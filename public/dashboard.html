@@ -143,7 +143,7 @@
           <div class="stat-delta" id="d-month-delta"></div>
         </div>
         <div class="card stat-card">
-          <div class="stat-label">총 시민 수</div>
+          <div class="stat-label">총 유네이터 수</div>
           <div class="stat-val" id="d-citizens">—</div>
           <div class="stat-delta" id="d-citizens-delta"></div>
         </div>
@@ -278,8 +278,8 @@
       <div class="dashboard-grid-2">
         <div class="card ops-card event-card">
           <span class="event-status">진행 준비</span>
-          <h3>첫 시민 환영 이벤트</h3>
-          <p class="text-dim2">신규 시민에게 감사 메시지를 고정 노출할 수 있는 이벤트 템플릿입니다.</p>
+          <h3>첫 유네이터 환영 이벤트</h3>
+          <p class="text-dim2">신규 유네이터에게 감사 메시지를 고정 노출할 수 있는 이벤트 템플릿입니다.</p>
           <button class="btn btn-primary btn-sm" data-section-jump="alerts" type="button">알림으로 테스트</button>
         </div>
         <div class="card ops-card event-card">
@@ -293,7 +293,7 @@
         <div class="card ops-card">
           <h3>이벤트 빠른 설정</h3>
           <div class="ops-settings-list">
-            <label><span>이벤트 유형</span><select class="field-input" id="event-plan-type"><option>첫 시민 환영</option><option>월간 후원 감사</option><option>목표 달성 이벤트</option><option>VIP 시민 감사</option></select></label>
+            <label><span>이벤트 유형</span><select class="field-input" id="event-plan-type"><option>첫 유네이터 환영</option><option>월간 후원 감사</option><option>목표 달성 이벤트</option><option>VIP 유네이터 감사</option></select></label>
             <label><span>노출 위치</span><select class="field-input" id="event-plan-position"><option>후원 페이지 상단</option><option>알림창 하단</option><option>채널 카드</option><option>대시보드 공지</option></select></label>
             <label><span>진행 상태</span><select class="field-input" id="event-plan-status"><option>준비 중</option><option>진행 중</option><option>종료</option></select></label>
           </div>
@@ -328,7 +328,7 @@
           <h3>프로모션 캠페인 설정</h3>
           <div class="ops-settings-list">
             <label><span>캠페인 위치</span><select class="field-input" id="ad-plan-placement"><option>후원 페이지 배너</option><option>크리에이터 카드</option><option>알림창 하단</option><option>공지 영역</option></select></label>
-            <label><span>노출 대상</span><select class="field-input" id="ad-plan-target"><option>전체 방문자</option><option>신규 후원자</option><option>시민 등급 보유자</option><option>VIP 시민</option></select></label>
+            <label><span>노출 대상</span><select class="field-input" id="ad-plan-target"><option>전체 방문자</option><option>신규 후원자</option><option>유네이터 등급 보유자</option><option>VIP 유네이터</option></select></label>
             <label><span>집행 상태</span><select class="field-input" id="ad-plan-status"><option>검토 중</option><option>대기</option><option>진행</option><option>중지</option></select></label>
           </div>
           <input class="field-input" id="ad-plan-title" maxlength="60" placeholder="캠페인 이름" style="margin-top:10px;">
@@ -350,7 +350,7 @@
       <div class="dash-header"><h1 class="dash-title">후원 내역</h1></div>
       <div class="card" style="overflow:hidden;">
         <table class="dash-table">
-          <thead><tr><th>시민번호</th><th>닉네임</th><th>등급</th><th>금액</th><th>메시지</th><th>일시</th></tr></thead>
+          <thead><tr><th>유네이터 번호</th><th>닉네임</th><th>등급</th><th>금액</th><th>메시지</th><th>일시</th></tr></thead>
           <tbody id="donations-tbody">
             <tr><td colspan="6" class="text-dim2" style="text-align:center;padding:40px;">불러오는 중…</td></tr>
           </tbody>
@@ -756,7 +756,7 @@
             <button type="button">전체</button>
           </div>
           <div class="ops-settings-list" style="margin-top:12px;">
-            <label><span>표시 기준</span><select class="field-input" id="ranking-display-mode"><option>후원 금액</option><option>후원 횟수</option><option>시민 등급</option></select></label>
+            <label><span>표시 기준</span><select class="field-input" id="ranking-display-mode"><option>후원 금액</option><option>후원 횟수</option><option>유네이터 등급</option></select></label>
             <label><span>공개 범위</span><select class="field-input" id="ranking-visibility"><option>후원 페이지 공개</option><option>대시보드에서만 보기</option><option>비공개</option></select></label>
           </div>
           <button class="btn btn-primary btn-sm" id="ranking-setting-save" type="button" style="margin-top:10px;">랭킹 설정 임시 저장</button>
@@ -767,7 +767,7 @@
             <div><span>랭킹 대상</span><strong>0명</strong></div>
             <div><span>최고 후원</span><strong>₩0</strong></div>
             <div><span>반복 후원</span><strong>0건</strong></div>
-            <div><span>VIP 시민</span><strong>0명</strong></div>
+            <div><span>VIP 유네이터</span><strong>0명</strong></div>
           </div>
         </div>
       </div>
@@ -897,7 +897,7 @@
           </div>
           <div class="ops-card card">
             <h3>칭호 설정</h3>
-            <div class="ops-title-list"><span>브론즈 시민 · 1회 이상</span><span>실버 시민 · 10,000원 이상</span><span>골드 시민 · 50,000원 이상</span><span>VIP 시민 · 100,000원 이상</span></div>
+            <div class="ops-title-list"><span>프렌드 유네이터 · 기본 등급</span><span>브론즈 유네이터 · 10,000원 이상</span><span>실버 유네이터 · 50,000원 이상</span><span>골드 유네이터 · 100,000원 이상</span><span>VIP 유네이터 · 500,000원 이상</span></div>
           </div>
         </div>
       </div>
@@ -915,7 +915,7 @@
             <div class="ops-preset-list">
               <label><span>1번 프리셋</span><input class="field-input" value="후원금액 500원 이상"></label>
               <label><span>2번 프리셋</span><input class="field-input" value="후원금액 1,500원 이상"></label>
-              <label><span>3번 프리셋</span><input class="field-input" value="VIP 시민 전용"></label>
+              <label><span>3번 프리셋</span><input class="field-input" value="VIP 유네이터 전용"></label>
             </div>
             <button class="btn btn-primary btn-sm" type="button" id="save-alert-presets" style="margin-top:12px;">프리셋 임시 저장</button>
           </div>

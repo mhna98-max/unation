@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>유네이터 라운지 — UNATION</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="aurora-bg" aria-hidden="true">
+  <span class="blob blob-1"></span><span class="blob blob-2"></span><span class="blob blob-3"></span>
+</div>
+
+<div class="nav-wrap">
+  <nav class="nav">
+    <a href="index.html" class="logo">
+      <svg class="logo-mark" viewBox="0 0 32 32"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#22d3ee"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg)"/><text x="16" y="22" font-family="'Space Grotesk',sans-serif" font-weight="700" font-size="16" fill="#fff" text-anchor="middle">U</text></svg>
+      UNATION
+    </a>
+    <div class="nav-actions">
+      <a href="index.html" class="btn btn-outline btn-sm">홈</a>
+      <a id="lounge-donate-link" href="donate.html" class="btn btn-primary btn-sm">후원하기</a>
+    </div>
+  </nav>
+</div>
+
+<main class="container unator-page">
+  <section class="unator-hero">
+    <div>
+      <span class="eyebrow">UNATOR LOUNGE</span>
+      <h1 class="h-display">유네이터 라운지</h1>
+      <p class="text-dim">후원으로 발급된 전역 레벨, 칭호, 선물, 보호권을 한 화면에서 확인하는 후원자 전용 라운지입니다.</p>
+    </div>
+    <div class="unator-profile-card card">
+      <div class="profile-summary-row">
+        <span class="avatar" id="unator-avatar">U</span>
+        <div>
+          <h3 id="unator-name">유네이터</h3>
+          <p class="text-dim2" id="unator-meta">Lv.2 · 칭호 없음</p>
+        </div>
+      </div>
+      <div class="unator-level-bar">
+        <div class="unator-level-label"><span>프렌드</span><strong>FR</strong></div>
+        <div class="progress-track"><div class="progress-fill" style="width:0%"></div></div>
+        <p class="text-dim2">다음 티어까지 5,000,000 캐시 후원 필요</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="unator-tabs card">
+    <div class="ops-tab-strip unator-tab-strip">
+      <button class="active" type="button" data-unator-tab="benefits">내 혜택</button>
+      <button type="button" data-unator-tab="gifts">내 선물</button>
+      <button type="button" data-unator-tab="guards">내 보호권</button>
+      <button type="button" data-unator-tab="levels">전역 레벨 칭호</button>
+    </div>
+
+    <div class="unator-panel" id="unator-tab-benefits">
+      <div class="dashboard-grid-2">
+        <div class="card ops-card">
+          <h3>활성화된 혜택</h3>
+          <p class="text-dim2">아직 활성화된 혜택이 없습니다. VIP 유네이터 달성 시 사용 가능한 혜택이 표시됩니다.</p>
+          <button class="btn btn-primary btn-sm" type="button" data-unator-jump="levels">VIP 혜택 자세히 보기</button>
+        </div>
+        <div class="card ops-card">
+          <h3>혜택 예고</h3>
+          <div class="ops-title-list"><span>전용 칭호 표시</span><span>후원 메시지 강조</span><span>이벤트 우선 참여</span><span>강등 보호권 지급</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="unator-panel" id="unator-tab-gifts" style="display:none;">
+      <div class="dashboard-grid-2">
+        <div class="card ops-card">
+          <h3>받을 선물</h3>
+          <p class="text-dim2">받을 선물 내역이 없습니다.</p>
+        </div>
+        <div class="card ops-card">
+          <h3>받은 선물 내역</h3>
+          <p class="text-dim2">선물을 수령하면 배송 상태와 사용 내역이 여기에 표시됩니다.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="unator-panel" id="unator-tab-guards" style="display:none;">
+      <div class="dashboard-grid-2">
+        <div class="card ops-card">
+          <h3>보유한 보호권</h3>
+          <p class="text-dim2">보유한 보호권이 없습니다.</p>
+        </div>
+        <div class="card ops-card">
+          <h3>보호권 안내</h3>
+          <div class="ops-title-list"><span>강등 보호권은 등급 강등 조건이 되었을 때 현재 등급을 방어합니다.</span><span>SVIP 최초 달성 보호권은 강등 시 자동 사용됩니다.</span><span>사용한 보호권 내역은 추후 이 라운지에서 확인합니다.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="unator-panel" id="unator-tab-levels" style="display:none;">
+      <div class="unator-tier-grid">
+        <div class="card unator-tier-card"><span>FR</span><strong>프렌드 유네이터</strong><p>0 캐시 이상</p></div>
+        <div class="card unator-tier-card"><span>BR</span><strong>브론즈 유네이터</strong><p>10,000 캐시 이상</p></div>
+        <div class="card unator-tier-card"><span>SV</span><strong>실버 유네이터</strong><p>50,000 캐시 이상</p></div>
+        <div class="card unator-tier-card"><span>GD</span><strong>골드 유네이터</strong><p>100,000 캐시 이상</p></div>
+        <div class="card unator-tier-card"><span>VIP</span><strong>VIP 유네이터</strong><p>500,000 캐시 이상</p></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script src="assets/script.js"></script>
+<script>
+(() => {
+  const params = new URLSearchParams(location.search);
+  const handle = params.get('handle') || 'unation_official';
+  document.getElementById('lounge-donate-link').href = `donate.html?handle=${encodeURIComponent(handle)}`;
+  document.querySelectorAll('[data-unator-tab]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('[data-unator-tab]').forEach(item => item.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.unator-panel').forEach(panel => panel.style.display = 'none');
+      document.getElementById(`unator-tab-${btn.dataset.unatorTab}`).style.display = '';
+    });
+  });
+  document.querySelectorAll('[data-unator-jump]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelector(`[data-unator-tab="${btn.dataset.unatorJump}"]`)?.click();
+    });
+  });
+})();
+</script>
+</body>
+</html>

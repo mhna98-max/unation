@@ -43,11 +43,11 @@ function formatWon(n) {
 // 후원 금액에 따라 5단계 등급을 부여합니다. 이 함수가 등급의 유일한 기준이며,
 // donate.html / widget.html / creator.html 어디서든 이 함수만 사용해야 합니다.
 const TIER_LEVELS = [
-  { key: 'platinum', min: 500000, label: '플래티넘 시민', short: 'PLATINUM', icon: '💎', cls: 'tier-platinum' },
-  { key: 'gold',      min: 100000, label: '골드 시민',     short: 'GOLD',     icon: '🥇', cls: 'tier-gold' },
-  { key: 'silver',    min: 50000,  label: '실버 시민',     short: 'SILVER',   icon: '🥈', cls: 'tier-silver' },
-  { key: 'bronze',    min: 10000,  label: '브론즈 시민',   short: 'BRONZE',   icon: '🥉', cls: 'tier-bronze' },
-  { key: 'new',       min: 0,      label: '뉴 시민',       short: 'NEW',      icon: '🎫', cls: 'tier-new' },
+  { key: 'platinum', min: 500000, label: 'VIP 유네이터',      short: 'VIP',    icon: '💎', cls: 'tier-platinum' },
+  { key: 'gold',      min: 100000, label: '골드 유네이터',     short: 'GOLD',   icon: '🥇', cls: 'tier-gold' },
+  { key: 'silver',    min: 50000,  label: '실버 유네이터',     short: 'SILVER', icon: '🥈', cls: 'tier-silver' },
+  { key: 'bronze',    min: 10000,  label: '브론즈 유네이터',   short: 'BRONZE', icon: '🥉', cls: 'tier-bronze' },
+  { key: 'new',       min: 0,      label: '프렌드 유네이터',   short: 'FR',     icon: '🎫', cls: 'tier-new' },
 ];
 function getTier(amount) {
   const n = Number(amount) || 0;
