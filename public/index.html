@@ -269,12 +269,27 @@
   </div>
 </section>
 
+<section class="section-sm">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">공지사항</span>
+      <h2 class="h-display" style="font-size:clamp(24px,3.5vw,34px);margin-top:12px;">UNATION 소식</h2>
+    </div>
+    <div class="bento reveal" id="notices-grid"></div>
+    <p id="notices-empty" class="text-dim2" style="text-align:center;padding:24px;display:none;">등록된 공지사항이 없어요.</p>
+  </div>
+</section>
+
 <!-- 크리에이터 목록 -->
 <section class="section-sm">
   <div class="container">
     <div class="section-head reveal">
       <span class="eyebrow">크리에이터</span>
       <h2 class="h-display" style="font-size:clamp(26px,4vw,40px);margin-top:12px;">지금 성장하고 있는 네이션들</h2>
+    </div>
+    <div class="flex gap-10 reveal" style="justify-content:center;flex-wrap:wrap;margin:-18px auto 24px;max-width:520px;">
+      <input class="field-input" id="creator-search" type="search" placeholder="크리에이터 이름 또는 핸들 검색" style="flex:1;min-width:220px;">
+      <button class="btn btn-outline" id="creator-search-btn">검색</button>
     </div>
     <div class="bento reveal" id="creators-grid"></div>
     <p id="creators-empty" class="text-dim2" style="text-align:center;padding:32px;display:none;">아직 등록된 크리에이터가 없어요.</p>
@@ -332,9 +347,33 @@
     if (totalStat) totalStat.textContent='₩'+f(thisMonthTotal);
   }catch(e){}
 
-  try{
-    const{creators}=await apiFetch('/api/creators?limit=6');
+  async function loadNotices(){
+    const grid=document.getElementById('notices-grid');
+    const empty=document.getElementById('notices-empty');
+    if(!grid)return;
+    try{
+      const{notices}=await apiFetch('/api/notices?limit=3');
+      grid.innerHTML='';
+      empty.style.display=notices.length?'none':'';
+      notices.forEach(n=>{
+        const card=document.createElement('article');
+        card.className='card feature-card';
+        card.innerHTML=`
+          <h3>${escapeHtml(n.title)}</h3>
+          <p>${escapeHtml((n.body||'').slice(0,90))}${(n.body||'').length>90?'…':''}</p>
+          <span class="text-dim2" style="font-size:12px;">${escapeHtml((n.createdAt||'').slice(0,10))}</span>`;
+        grid.appendChild(card);
+      });
+    }catch(e){
+      empty.style.display='';
+    }
+  }
+  await loadNotices();
+
+  async function loadCreators(q=''){
+    const{creators}=await apiFetch(`/api/creators?limit=6${q ? `&q=${encodeURIComponent(q)}` : ''}`);
     const grid=document.getElementById('creators-grid');
+    grid.innerHTML='';
     document.getElementById('creators-empty').style.display=creators.length?'none':'';
     creators.forEach(c=>{
       const a=document.createElement('a');
@@ -358,6 +397,13 @@
           <span style="font-size:12px;color:var(--dim-2);">월 ${formatWon(c.totalAmount)}</span>
         </div>`;
       grid.appendChild(a);
+    });
+  }
+  try{
+    await loadCreators();
+    document.getElementById('creator-search-btn')?.addEventListener('click',()=>loadCreators(document.getElementById('creator-search').value.trim()).catch(()=>{}));
+    document.getElementById('creator-search')?.addEventListener('keydown',e=>{
+      if(e.key==='Enter')loadCreators(e.currentTarget.value.trim()).catch(()=>{});
     });
   }catch(e){}
 

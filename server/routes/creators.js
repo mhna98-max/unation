@@ -17,19 +17,48 @@ module.exports = function registerCreatorRoutes(router) {
     sendJson(res, 200, { totalCreators, totalCitizens, thisMonthTotal: thisMonth });
   });
 
+  router.get('/api/notices', async (req, res) => {
+    const url = new URL(req.url, 'http://x');
+    const limit = Math.min(parseInt(url.searchParams.get('limit') || '3', 10) || 3, 10);
+    const rows = db.prepare(`
+      SELECT id, title, body, created_at
+      FROM notices
+      WHERE is_published = 1
+      ORDER BY created_at DESC
+      LIMIT ?
+    `).all(limit);
+    sendJson(res, 200, {
+      notices: rows.map((n) => ({
+        id: n.id,
+        title: n.title,
+        body: n.body || '',
+        createdAt: n.created_at,
+      })),
+    });
+  });
+
   // 성장 중인 크리에이터 목록 (시민 수 기준 상위 N명)
   router.get('/api/creators', async (req, res) => {
     const url = new URL(req.url, 'http://x');
     const limit = Math.min(parseInt(url.searchParams.get('limit') || '6', 10) || 6, 20);
+    const q = String(url.searchParams.get('q') || '').trim().toLowerCase().slice(0, 40);
+    const params = [];
+    let where = "WHERE c.role != 'admin'";
+    if (q) {
+      where += " AND (LOWER(c.handle) LIKE ? OR LOWER(c.display_name) LIKE ? OR LOWER(COALESCE(c.bio,'')) LIKE ?)";
+      const like = `%${q}%`;
+      params.push(like, like, like);
+    }
+    params.push(limit);
     const rows = db.prepare(`
       SELECT c.*, COUNT(d.id) AS citizen_count, COALESCE(SUM(d.amount),0) AS total_amount
       FROM creators c
       LEFT JOIN donations d ON d.creator_id = c.id AND d.status = 'completed'
-      WHERE c.role != 'admin'
+      ${where}
       GROUP BY c.id
       ORDER BY citizen_count DESC, c.created_at DESC
       LIMIT ?
-    `).all(limit);
+    `).all(...params);
     sendJson(res, 200, {
       creators: rows.map((c) => ({ ...publicCreator(c), citizenCount: c.citizen_count, totalAmount: c.total_amount })),
     });

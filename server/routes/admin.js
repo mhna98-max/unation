@@ -3,7 +3,7 @@
 // 일반 크리에이터 계정과 분리된 role='admin' 계정만 접근할 수 있습니다.
 // ============================================================
 const db = require('../db');
-const { sendJson, sendError } = require('../helpers');
+const { readJsonBody, sendJson, sendError } = require('../helpers');
 const { getAdminFromRequest } = require('../auth');
 const { computeBalance } = require('../ledger');
 
@@ -14,6 +14,17 @@ function requireAdmin(req, res) {
     return null;
   }
   return admin;
+}
+
+function mapNotice(row) {
+  return {
+    id: row.id,
+    title: row.title,
+    body: row.body || '',
+    isPublished: !!row.is_published,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
 }
 
 module.exports = function registerAdminRoutes(router) {
@@ -98,10 +109,19 @@ module.exports = function registerAdminRoutes(router) {
   router.get('/api/admin/creators', async (req, res) => {
     if (!requireAdmin(req, res)) return;
 
+    const url = new URL(req.url, 'http://x');
+    const q = String(url.searchParams.get('q') || '').trim().toLowerCase().slice(0, 40);
+    const params = [];
+    let where = "WHERE role != 'admin'";
+    if (q) {
+      where += " AND (LOWER(handle) LIKE ? OR LOWER(display_name) LIKE ? OR LOWER(COALESCE(email,'')) LIKE ? OR LOWER(COALESCE(phone,'')) LIKE ?)";
+      const like = `%${q}%`;
+      params.push(like, like, like, like);
+    }
     const rows = db.prepare(`
-      SELECT id, handle, display_name, email, phone, platform, created_at
-      FROM creators WHERE role != 'admin' ORDER BY created_at DESC
-    `).all();
+      SELECT id, handle, display_name, email, phone, password_hash, social_provider, platform, created_at
+      FROM creators ${where} ORDER BY created_at DESC
+    `).all(...params);
 
     const creators = rows.map((c) => {
       const balance = computeBalance(c.id);
@@ -111,6 +131,7 @@ module.exports = function registerAdminRoutes(router) {
         displayName: c.display_name,
         email: c.email,
         phone: c.phone,
+        loginProvider: c.social_provider || (c.password_hash ? 'email' : (c.phone ? 'phone' : 'unknown')),
         platform: c.platform,
         createdAt: c.created_at,
         lifetimeTotal: balance.lifetimeTotal,
@@ -119,6 +140,55 @@ module.exports = function registerAdminRoutes(router) {
     });
 
     sendJson(res, 200, { creators });
+  });
+
+  router.get('/api/admin/notices', async (req, res) => {
+    if (!requireAdmin(req, res)) return;
+    const rows = db.prepare('SELECT * FROM notices ORDER BY created_at DESC LIMIT 100').all();
+    sendJson(res, 200, { notices: rows.map(mapNotice) });
+  });
+
+  router.post('/api/admin/notices', async (req, res) => {
+    if (!requireAdmin(req, res)) return;
+    const body = await readJsonBody(req);
+    const title = String(body.title || '').trim().slice(0, 80);
+    const noticeBody = String(body.body || '').trim().slice(0, 1000);
+    const isPublished = body.isPublished === false ? 0 : 1;
+    if (!title) return sendError(res, 400, '공지 제목을 입력해주세요.');
+    const result = db.prepare(`
+      INSERT INTO notices (title, body, is_published, updated_at)
+      VALUES (?, ?, ?, datetime('now'))
+    `).run(title, noticeBody, isPublished);
+    const notice = db.prepare('SELECT * FROM notices WHERE id = ?').get(result.lastInsertRowid);
+    sendJson(res, 201, { notice: mapNotice(notice) });
+  });
+
+  router.put('/api/admin/notices/:id', async (req, res, params) => {
+    if (!requireAdmin(req, res)) return;
+    const id = parseInt(params.id, 10);
+    const body = await readJsonBody(req);
+    const title = String(body.title || '').trim().slice(0, 80);
+    const noticeBody = String(body.body || '').trim().slice(0, 1000);
+    const isPublished = body.isPublished === false ? 0 : 1;
+    if (!Number.isInteger(id)) return sendError(res, 400, '공지 ID를 확인해주세요.');
+    if (!title) return sendError(res, 400, '공지 제목을 입력해주세요.');
+    const updated = db.prepare(`
+      UPDATE notices
+      SET title = ?, body = ?, is_published = ?, updated_at = datetime('now')
+      WHERE id = ?
+    `).run(title, noticeBody, isPublished, id);
+    if (!updated.changes) return sendError(res, 404, '공지사항을 찾을 수 없습니다.');
+    const notice = db.prepare('SELECT * FROM notices WHERE id = ?').get(id);
+    sendJson(res, 200, { notice: mapNotice(notice) });
+  });
+
+  router.delete('/api/admin/notices/:id', async (req, res, params) => {
+    if (!requireAdmin(req, res)) return;
+    const id = parseInt(params.id, 10);
+    if (!Number.isInteger(id)) return sendError(res, 400, '공지 ID를 확인해주세요.');
+    const deleted = db.prepare('DELETE FROM notices WHERE id = ?').run(id);
+    if (!deleted.changes) return sendError(res, 404, '공지사항을 찾을 수 없습니다.');
+    sendJson(res, 200, { ok: true });
   });
 
   // ── 특정 크리에이터 상세 (후원/정산 내역 포함) ──

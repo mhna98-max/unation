@@ -89,10 +89,20 @@ db.exec(`
     created_at TEXT DEFAULT (datetime('now'))
   );
 
+  CREATE TABLE IF NOT EXISTS notices (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    body TEXT DEFAULT '',
+    is_published INTEGER NOT NULL DEFAULT 1,
+    created_at TEXT DEFAULT (datetime('now')),
+    updated_at TEXT DEFAULT (datetime('now'))
+  );
+
   CREATE INDEX IF NOT EXISTS idx_donations_creator ON donations(creator_id, created_at);
   CREATE INDEX IF NOT EXISTS idx_settlements_creator ON settlements(creator_id);
   CREATE INDEX IF NOT EXISTS idx_products_creator ON products(creator_id);
   CREATE INDEX IF NOT EXISTS idx_orders_creator ON orders(creator_id, created_at);
+  CREATE INDEX IF NOT EXISTS idx_notices_published ON notices(is_published, created_at);
 `);
 
 // ---------- 기존 DB 마이그레이션 (이미 만들어진 DB에 새 컬럼 추가) ----------
