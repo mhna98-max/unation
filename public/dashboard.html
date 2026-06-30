@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>대시보드 — UNATION</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body class="dashboard-body">
+<div class="aurora-bg" aria-hidden="true">
+  <span class="blob blob-1"></span><span class="blob blob-2"></span><span class="blob blob-3"></span>
+</div>
+
+<div class="dash-layout">
+
+  <!-- ── 사이드바 ── -->
+  <aside class="dash-sidebar">
+    <div class="sb-logo">
+      <a href="index.html" class="logo">
+        <svg class="logo-mark" viewBox="0 0 32 32" style="width:28px;height:28px;"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#22d3ee"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg)"/><text x="16" y="22" font-family="'Space Grotesk',sans-serif" font-weight="700" font-size="16" fill="#fff" text-anchor="middle">U</text></svg>
+        UNATION
+      </a>
+    </div>
+
+    <div class="sb-creator">
+      <span class="avatar" style="width:38px;height:38px;font-size:16px;flex-shrink:0;" id="sb-avatar">?</span>
+      <div class="sb-info">
+        <div class="sb-name" id="sb-name">—</div>
+        <div class="sb-handle" id="sb-handle">@—</div>
+      </div>
+    </div>
+
+    <div class="sb-section">메뉴</div>
+    <nav class="sb-nav">
+      <a class="sb-link active" data-section="overview" href="#">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        개요
+      </a>
+      <a class="sb-link" data-section="donations" href="#">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+        후원 내역
+      </a>
+      <a class="sb-link" data-section="settlement" href="#">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+        정산
+      </a>
+      <a class="sb-link" data-section="store" href="#">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 9l1.5-5h15L21 9"/><path d="M3 9h18v10a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path d="M9 13a3 3 0 006 0"/></svg>
+        스토어
+      </a>
+      <a class="sb-link" data-section="profile" href="#">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        프로필 설정
+      </a>
+
+      <div class="sb-divider"></div>
+
+      <a id="view-page-btn" href="creator.html" class="sb-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        내 페이지 보기
+      </a>
+      <button id="logout-btn" class="sb-link" style="border:none;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        로그아웃
+      </button>
+    </nav>
+  </aside>
+
+  <!-- ── 메인 ── -->
+  <main class="dash-main">
+
+    <!-- 개요 -->
+    <div id="section-overview" class="dash-section">
+      <div class="dash-header">
+        <h1 class="dash-title">개요</h1>
+        <div class="badge-live">실시간 업데이트</div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="card stat-card">
+          <div class="stat-label">이번 달 후원금</div>
+          <div class="stat-val" id="d-month-total">—</div>
+          <div class="stat-delta" id="d-month-delta"></div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-label">총 시민 수</div>
+          <div class="stat-val" id="d-citizens">—</div>
+          <div class="stat-delta" id="d-citizens-delta"></div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-label">평균 후원액</div>
+          <div class="stat-val" id="d-avg">—</div>
+          <div class="stat-delta" id="d-avg-delta"></div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-label">정산 가능 금액</div>
+          <div class="stat-val" id="d-available">—</div>
+          <div class="stat-delta" style="color:var(--dim-2);">수수료 3% 차감 후</div>
+        </div>
+      </div>
+
+      <!-- 차트 -->
+      <div class="card chart-card" style="margin-bottom:16px;">
+        <div class="chart-head">
+          <h3>최근 7일 후원 추이</h3>
+          <span class="text-dim2" style="font-size:12px;" id="chart-range">집계 중…</span>
+        </div>
+        <div class="bar-chart" id="bar-chart"></div>
+      </div>
+
+      <!-- 최근 후원 + OBS 위젯 -->
+      <div class="dash-2col">
+        <div class="card" style="padding:24px;">
+          <div class="flex" style="justify-content:space-between;margin-bottom:14px;">
+            <h3 style="font-family:var(--font-h);font-weight:600;font-size:15px;">최근 후원</h3>
+            <a href="#" class="text-dim2" id="view-all-donations-link" style="font-size:12.5px;" data-section="donations">전체 보기 →</a>
+          </div>
+          <ul class="feed-list" id="overview-feed"></ul>
+          <p class="text-dim2" id="overview-feed-empty" style="font-size:13px;">아직 후원 알림이 없어요. OBS 위젯을 방송에 연결하고 첫 후원을 받아보세요!</p>
+        </div>
+
+        <div class="card" style="padding:24px;">
+          <h3 style="font-family:var(--font-h);font-weight:600;font-size:15px;margin-bottom:6px;">OBS 위젯 주소</h3>
+          <p class="text-dim2" style="font-size:13px;margin-bottom:14px;">OBS 브라우저 소스에 붙여넣으면 실시간 후원 알림이 표시됩니다.</p>
+          <code class="widget-url-box" id="widget-url">—</code>
+          <button class="btn btn-outline btn-sm" id="copy-widget-btn" style="width:100%;margin-top:12px;">주소 복사</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 후원 내역 -->
+    <div id="section-donations" class="dash-section" style="display:none;">
+      <div class="dash-header"><h1 class="dash-title">후원 내역</h1></div>
+      <div class="card" style="overflow:hidden;">
+        <table class="dash-table">
+          <thead><tr><th>시민번호</th><th>닉네임</th><th>등급</th><th>금액</th><th>메시지</th><th>일시</th></tr></thead>
+          <tbody id="donations-tbody">
+            <tr><td colspan="6" class="text-dim2" style="text-align:center;padding:40px;">불러오는 중…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 정산 -->
+    <div id="section-settlement" class="dash-section" style="display:none;">
+      <div class="dash-header"><h1 class="dash-title">정산</h1></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div class="card" style="padding:28px;">
+          <h3 style="font-family:var(--font-h);font-weight:600;font-size:16px;margin-bottom:20px;">정산 신청</h3>
+          <div class="stat-label">정산 가능 금액</div>
+          <div style="font-family:var(--font-h);font-weight:700;font-size:34px;letter-spacing:-.02em;margin:8px 0 6px;" id="settle-available">—</div>
+          <p class="text-dim2" style="font-size:12.5px;margin-bottom:20px;">플랫폼 수수료 3% 차감 후 금액입니다. (<span id="settle-min-note">최소 정산 금액 확인 중…</span>)</p>
+          <div id="settle-bank-hint" class="demo-hint" style="display:none;margin-bottom:16px;"></div>
+          <div id="settle-error" class="field-error" style="display:none;margin-bottom:12px;"></div>
+          <button class="btn btn-primary" id="settle-btn" style="width:100%;" disabled>정산 신청하기</button>
+          <p class="text-dim2" style="font-size:12px;margin-top:12px;">영업일 기준 3~5일 내 처리됩니다. (현재 모의 환경)</p>
+        </div>
+        <div class="card" style="padding:28px;">
+          <h3 style="font-family:var(--font-h);font-weight:600;font-size:16px;margin-bottom:16px;">정산 내역</h3>
+          <div id="settlement-history"><p class="text-dim2" style="font-size:14px;">정산 내역이 없어요.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 스토어 -->
+    <div id="section-store" class="dash-section" style="display:none;">
+      <div class="dash-header">
+        <h1 class="dash-title">스토어</h1>
+        <button class="btn btn-primary btn-sm" id="add-product-btn" style="margin-left:auto;">+ 상품 등록</button>
+      </div>
+
+      <!-- 상품 등록/수정 폼 -->
+      <div class="card" id="product-form-card" style="padding:24px;margin-bottom:20px;display:none;">
+        <h3 style="font-family:var(--font-h);font-weight:600;font-size:15px;margin-bottom:14px;" id="product-form-title">새 상품 등록</h3>
+        <div id="product-form-error" class="field-error" style="display:none;margin-bottom:12px;"></div>
+        <div class="field">
+          <label class="field-label" for="pf-name">상품명</label>
+            <input class="field-input" id="pf-name" type="text" maxlength="60" placeholder="예: UNATION 키링">
+        </div>
+        <div class="field">
+          <label class="field-label" for="pf-desc">설명</label>
+          <textarea class="field-input field-textarea" id="pf-desc" rows="3" maxlength="500" placeholder="상품에 대한 설명을 입력해주세요"></textarea>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+          <div class="field">
+            <label class="field-label" for="pf-price">가격 (원)</label>
+            <input class="field-input" id="pf-price" type="number" min="1" placeholder="15000">
+          </div>
+          <div class="field">
+            <label class="field-label" for="pf-stock">재고 수량 <span class="field-hint">비워두면 무제한</span></label>
+            <input class="field-input" id="pf-stock" type="number" min="0" placeholder="비워두면 무제한">
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label" for="pf-image">이미지 주소 <span class="field-hint">선택</span></label>
+          <input class="field-input" id="pf-image" type="text" placeholder="https://...">
+        </div>
+        <div style="display:flex;gap:10px;">
+          <button class="btn btn-outline" id="product-form-cancel" style="flex:1;">취소</button>
+          <button class="btn btn-primary" id="product-form-save" style="flex:2;">저장하기</button>
+        </div>
+      </div>
+
+      <div class="card" style="overflow:hidden;margin-bottom:24px;">
+        <table class="dash-table">
+          <thead><tr><th>상품</th><th>가격</th><th>재고</th><th>상태</th><th></th></tr></thead>
+          <tbody id="products-tbody">
+            <tr><td colspan="5" class="text-dim2" style="text-align:center;padding:40px;">불러오는 중…</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 style="font-family:var(--font-h);font-weight:600;font-size:15px;margin-bottom:14px;">최근 주문</h3>
+      <div class="card" style="overflow:hidden;">
+        <table class="dash-table">
+          <thead><tr><th>상품</th><th>구매자</th><th>수량</th><th>금액</th><th>연락처</th><th>일시</th></tr></thead>
+          <tbody id="orders-tbody">
+            <tr><td colspan="6" class="text-dim2" style="text-align:center;padding:40px;">불러오는 중…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 프로필 설정 -->
+    <div id="section-profile" class="dash-section" style="display:none;">
+      <div class="dash-header"><h1 class="dash-title">프로필 설정</h1></div>
+
+      <div class="card" style="padding:32px;max-width:560px;">
+        <div id="profile-error" class="field-error" style="display:none;"></div>
+        <div id="profile-success" class="field-success" style="display:none;"></div>
+
+        <div class="field">
+          <label class="field-label" for="p-name">방송명 (표시 이름)</label>
+          <input class="field-input" id="p-name" type="text" maxlength="40">
+        </div>
+        <div class="field">
+          <label class="field-label" for="p-bio">소개글</label>
+          <textarea class="field-input field-textarea" id="p-bio" rows="4" maxlength="400" placeholder="팬들에게 나를 소개해보세요"></textarea>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+          <div class="field">
+            <label class="field-label" for="p-goal-label">목표 이름</label>
+            <input class="field-input" id="p-goal-label" type="text" placeholder="예: 마이크 교체" maxlength="40">
+          </div>
+          <div class="field">
+            <label class="field-label" for="p-goal-amount">목표 금액 (원)</label>
+            <input class="field-input" id="p-goal-amount" type="number" min="0" placeholder="500000">
+          </div>
+        </div>
+
+        <div style="border-top:1px solid var(--border);margin:4px 0 20px;padding-top:20px;">
+          <h4 style="font-family:var(--font-h);font-weight:600;font-size:14px;margin-bottom:6px;color:var(--dim);">공개 설정</h4>
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13.5px;">
+            <input type="checkbox" id="p-show-donations" style="width:16px;height:16px;">
+            후원 내역을 후원 페이지에 공개하기 (끄면 최근 후원·랭킹 목록이 숨겨져요)
+          </label>
+        </div>
+
+        <div style="border-top:1px solid var(--border);margin:4px 0 20px;padding-top:20px;">
+          <h4 style="font-family:var(--font-h);font-weight:600;font-size:14px;margin-bottom:6px;color:var(--dim);">🎰 룰렛 후원 설정</h4>
+          <p class="text-dim2" style="font-size:12.5px;margin-bottom:14px;line-height:1.6;">룰렛 결과 항목과 확률 가중치를 직접 설정할 수 있어요. 결과는 연출용이며 실제 정산 금액에는 영향을 주지 않아요.</p>
+          <div id="roulette-rows"></div>
+          <button class="btn btn-outline btn-sm" id="roulette-add-row" style="margin-top:8px;">+ 항목 추가</button>
+          <div id="roulette-error" class="field-error" style="display:none;margin-top:10px;"></div>
+          <button class="btn btn-primary btn-sm" id="roulette-save" style="margin-top:14px;">룰렛 설정 저장</button>
+        </div>
+
+        <div style="border-top:1px solid var(--border);margin:4px 0 20px;padding-top:20px;">
+          <h4 style="font-family:var(--font-h);font-weight:600;font-size:14px;margin-bottom:6px;color:var(--dim);">방송 플랫폼 &amp; 채팅 위젯</h4>
+          <p class="text-dim2" style="font-size:12.5px;margin-bottom:14px;">방송하는 플랫폼을 선택하면 채널 페이지에 배지가 표시되고, 라이브 중 사용할 수 있는 채팅 위젯 주소가 발급됩니다.</p>
+          <div class="field">
+            <label class="field-label">플랫폼</label>
+            <div class="donation-type-row">
+              <label class="dtype-chip"><input type="radio" name="platform" value=""><span>선택 안 함</span></label>
+              <label class="dtype-chip"><input type="radio" name="platform" value="twitch"><span>🟣 트위치</span></label>
+              <label class="dtype-chip"><input type="radio" name="platform" value="soop"><span>🔵 SOOP(아프리카TV)</span></label>
+              <label class="dtype-chip"><input type="radio" name="platform" value="chzzk"><span>🟢 치지직</span></label>
+              <label class="dtype-chip"><input type="radio" name="platform" value="youtube"><span>🔴 유튜브</span></label>
+            </div>
+          </div>
+          <div class="field" id="p-channel-field" style="display:none;">
+            <label class="field-label" id="p-channel-label" for="p-channel">채널 ID</label>
+            <input class="field-input" id="p-channel" type="text" placeholder="트위치 채널명 (예: unation)" maxlength="60">
+          </div>
+          <div class="field" id="p-chaturl-field" style="display:none;">
+            <label class="field-label" for="p-chaturl">채팅 임베드 URL <span class="field-hint">선택 — SOOP/치지직은 공식 공개 임베드가 없어요</span></label>
+            <input class="field-input" id="p-chaturl" type="text" placeholder="채팅 팝업/임베드 가능한 URL을 붙여넣어주세요" maxlength="500">
+            <p class="text-dim2" style="font-size:11.5px;margin-top:6px;line-height:1.6;">SOOP·치지직은 공식 공개 채팅 임베드를 제공하지 않아요. 본인 채널의 채팅 팝업 URL이나, Chazzy 같은 통합 채팅 뷰어 도구의 URL을 붙여넣어 사용할 수 있어요.</p>
+          </div>
+          <div class="field" id="p-chaturl-display-field" style="display:none;">
+            <label class="field-label">채팅 위젯 주소 <span class="field-hint">OBS에 추가</span></label>
+            <code class="widget-url-box" id="p-chat-widget-url">—</code>
+          </div>
+        </div>
+
+        <div style="border-top:1px solid var(--border);margin:4px 0 20px;padding-top:20px;">
+          <h4 style="font-family:var(--font-h);font-weight:600;font-size:14px;margin-bottom:16px;color:var(--dim);">정산 계좌 정보</h4>
+          <div class="field">
+            <label class="field-label" for="p-bank-name">은행명</label>
+            <input class="field-input" id="p-bank-name" type="text" placeholder="신한은행" maxlength="20">
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+            <div class="field">
+              <label class="field-label" for="p-bank-account">계좌번호</label>
+              <input class="field-input" id="p-bank-account" type="text" placeholder="110-123-456789" maxlength="30">
+            </div>
+            <div class="field">
+              <label class="field-label" for="p-bank-holder">예금주</label>
+              <input class="field-input" id="p-bank-holder" type="text" placeholder="홍길동" maxlength="20">
+            </div>
+          </div>
+        </div>
+
+        <button class="btn btn-primary" id="profile-save-btn" style="width:100%;">저장하기</button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="assets/script.js"></script>
+<script>
+(async () => {
+  // 인증 확인
+  let me;
+  try {
+    const data = await apiFetch('/api/auth/me');
+    me = data.creator;
+  } catch(e) { location.href = 'login.html'; return; }
+
+  // 사이드바
+  document.getElementById('sb-avatar').textContent = (me.displayName||me.handle)[0];
+  document.getElementById('sb-name').textContent = me.displayName;
+  document.getElementById('sb-handle').textContent = '@' + me.handle;
+  document.getElementById('view-page-btn').href = `creator.html?handle=${me.handle}`;
+
+  const widgetUrl = `${location.origin}/widget.html?handle=${me.handle}`;
+  document.getElementById('widget-url').textContent = widgetUrl;
+  document.getElementById('copy-widget-btn').addEventListener('click', () => copyToClipboard(widgetUrl, document.getElementById('copy-widget-btn')));
+
+  document.getElementById('logout-btn').addEventListener('click', async () => {
+    await apiFetch('/api/auth/logout',{method:'POST'}).catch(()=>{});
+    location.href = 'login.html';
+  });
+
+  // 섹션 전환
+  const sections = ['overview','donations','settlement','store','profile'];
+  function switchSection(sec) {
+    document.querySelectorAll('.sb-link').forEach(l => l.classList.remove('active'));
+    document.querySelector(`.sb-link[data-section="${sec}"]`)?.classList.add('active');
+    sections.forEach(s => {
+      document.getElementById(`section-${s}`).style.display = s === sec ? '' : 'none';
+    });
+    if (sec === 'donations') loadDonations();
+    if (sec === 'settlement') loadSettlement();
+    if (sec === 'store') loadStore();
+  }
+  document.querySelectorAll('.sb-link[data-section]').forEach(link => {
+    link.addEventListener('click', e => { e.preventDefault(); switchSection(link.dataset.section); });
+  });
+  document.getElementById('view-all-donations-link').addEventListener('click', e => {
+    e.preventDefault(); switchSection('donations');
+  });
+
+  // ── 개요 통계 ──
+  async function loadStats() {
+    try {
+      const s = await apiFetch('/api/me/stats');
+      const fmtDelta = (pct) => {
+        if (!pct) return `<span class="text-dim2" style="font-size:12px;">전월 대비 데이터 없음</span>`;
+        const cls = pct > 0 ? 'delta-up' : 'delta-down';
+        return `<span class="${cls}" style="font-size:12px;">${pct > 0 ? '↑' : '↓'} ${Math.abs(pct)}% 전월 대비</span>`;
+      };
+      document.getElementById('d-month-total').textContent = formatWon(s.thisMonthTotal);
+      document.getElementById('d-month-delta').innerHTML = fmtDelta(s.thisMonthDeltaPct);
+      document.getElementById('d-citizens').textContent = s.totalCitizens.toLocaleString() + '명';
+      document.getElementById('d-citizens-delta').innerHTML = `<span class="text-dim2" style="font-size:12px;">최근 7일 +${s.citizensLast7d}명</span>`;
+      document.getElementById('d-avg').textContent = formatWon(s.avgDonation);
+      document.getElementById('d-avg-delta').innerHTML = fmtDelta(s.avgDeltaPct);
+      document.getElementById('d-available').textContent = formatWon(s.availableSettlement);
+
+      // 바 차트
+      const chart = document.getElementById('bar-chart');
+      const max = Math.max(...s.last7.map(d => d.total), 1);
+      if (s.last7.length) {
+        const first = s.last7[0].date, last = s.last7[s.last7.length-1].date;
+        document.getElementById('chart-range').textContent = `${first} ~ ${last}`;
+      }
+      chart.innerHTML = s.last7.map(d => {
+        const h = Math.max(4, Math.round((d.total / max) * 110));
+        return `<div class="bar-col">
+          <div class="bar-tip">${formatWon(d.total)}</div>
+          <div class="bar" style="height:${h}px;"></div>
+          <div class="bar-lbl">${d.label}</div>
+        </div>`;
+      }).join('');
+    } catch(e) {}
+  }
+  await loadStats();
+
+  // ── 개요: 최근 후원 미니 피드 ──
+  async function loadOverviewFeed() {
+    const listEl = document.getElementById('overview-feed');
+    const emptyEl = document.getElementById('overview-feed-empty');
+    try {
+      const { donations } = await apiFetch('/api/donations/me?limit=5');
+      if (!donations.length) { emptyEl.style.display = ''; return; }
+      emptyEl.style.display = 'none';
+      listEl.innerHTML = '';
+      donations.forEach(d => listEl.appendChild(buildFeedItem(d)));
+    } catch(e) {}
+  }
+  await loadOverviewFeed();
+
+  // ── 후원 내역 ──
+  async function loadDonations() {
+    const tbody = document.getElementById('donations-tbody');
+    tbody.innerHTML = `<tr><td colspan="6" class="text-dim2" style="text-align:center;padding:40px;">불러오는 중…</td></tr>`;
+    try {
+      const { donations } = await apiFetch('/api/donations/me?limit=50');
+      if (!donations.length) {
+        tbody.innerHTML = `<tr><td colspan="6" class="text-dim2" style="text-align:center;padding:40px;">아직 후원 내역이 없어요.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = donations.map(d => {
+        const tier = getTier(d.amount);
+        return `
+        <tr>
+          <td><span class="chip-amount" style="font-size:12px;">No.${String(d.citizenNumber).padStart(3,'0')}</span></td>
+          <td style="font-weight:500;">${escapeHtml(d.nickname)}</td>
+          <td><span class="cc-tier ${tier.cls}">${tier.icon} ${tier.short}</span></td>
+          <td style="font-family:var(--font-m);color:var(--cyan);font-weight:600;">${formatWon(d.amount)}</td>
+          <td class="text-dim2" style="font-size:13px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(d.message||'—')}</td>
+          <td class="text-dim2" style="font-size:12px;white-space:nowrap;">${d.createdAt.slice(0,16)}</td>
+        </tr>`;
+      }).join('');
+    } catch(e) {
+      tbody.innerHTML = `<tr><td colspan="6" class="text-dim2" style="text-align:center;padding:32px;">불러오기 실패</td></tr>`;
+    }
+  }
+
+  // ── 정산 ──
+  async function loadSettlement() {
+    try {
+      const s = await apiFetch('/api/me/stats');
+      document.getElementById('settle-available').textContent = formatWon(s.availableSettlement);
+      document.getElementById('settle-min-note').textContent = `최소 정산 금액 ${formatWon(s.minSettlementAmount)}`;
+      const btn = document.getElementById('settle-btn');
+      const meetsMin = s.availableSettlement >= s.minSettlementAmount;
+      btn.disabled = !meetsMin;
+      btn.textContent = meetsMin
+        ? `${formatWon(s.availableSettlement)} 정산 신청하기`
+        : (s.availableSettlement > 0 ? `최소 ${formatWon(s.minSettlementAmount)}부터 신청 가능` : '정산 가능 금액 없음');
+    } catch(e) {}
+
+    // 계좌 힌트
+    const hintEl = document.getElementById('settle-bank-hint');
+    hintEl.style.display = '';
+    if (me.bankName && me.bankAccount) {
+      hintEl.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg> 정산 계좌: ${escapeHtml(me.bankName)} ${escapeHtml(me.bankAccount)} (${escapeHtml(me.bankHolder||'')})`;
+    } else {
+      hintEl.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> 정산 계좌를 먼저 등록해주세요. (프로필 설정 탭)`;
+    }
+
+    const btn = document.getElementById('settle-btn');
+    const errEl = document.getElementById('settle-error');
+    // 이전 이벤트 리스너 방지용 clone
+    const newBtn = btn.cloneNode(true);
+    btn.parentNode.replaceChild(newBtn, btn);
+    newBtn.addEventListener('click', async () => {
+      errEl.style.display = 'none';
+      newBtn.disabled = true; newBtn.textContent = '처리 중…';
+      try {
+        await apiFetch('/api/settlements', { method:'POST' });
+        showToast('정산 신청이 완료됐어요!');
+        await loadSettlement(); await loadStats();
+      } catch(e) {
+        errEl.textContent = e.message; errEl.style.display = '';
+        newBtn.disabled = false;
+      }
+    });
+
+    // 정산 내역
+    try {
+      const { settlements } = await apiFetch('/api/settlements/me');
+      const histEl = document.getElementById('settlement-history');
+      if (!settlements.length) { histEl.innerHTML = '<p class="text-dim2" style="font-size:14px;">정산 내역이 없어요.</p>'; return; }
+      const label = { requested:'신청됨', paid:'지급완료' };
+      histEl.innerHTML = settlements.map(s => `
+        <div class="settle-row">
+          <div>
+            <div style="font-family:var(--font-m);font-weight:600;color:var(--cyan);font-size:15px;">${formatWon(s.amount)}</div>
+            <div class="text-dim2" style="font-size:12px;margin-top:2px;">${s.requestedAt.slice(0,10)} 신청</div>
+          </div>
+          <span class="settle-badge ${s.status}">${label[s.status]||s.status}</span>
+        </div>`).join('');
+    } catch(e) {}
+  }
+
+  // ── 프로필 폼 ──
+  document.getElementById('p-name').value = me.displayName||'';
+  document.getElementById('p-bio').value = me.bio||'';
+  document.getElementById('p-goal-label').value = me.goalLabel||'';
+  document.getElementById('p-goal-amount').value = me.goalAmount||'';
+  document.getElementById('p-bank-name').value = me.bankName||'';
+  document.getElementById('p-bank-account').value = me.bankAccount||'';
+  document.getElementById('p-bank-holder').value = me.bankHolder||'';
+  document.getElementById('p-channel').value = me.platformChannel||'';
+  document.getElementById('p-chaturl').value = me.chatEmbedUrl||'';
+  document.getElementById('p-show-donations').checked = me.showDonationsPublicly !== false;
+
+  // ── 룰렛 설정 ──
+  const rouletteRowsEl = document.getElementById('roulette-rows');
+  function rouletteRowHtml(label, weight) {
+    return `<div class="flex gap-12" style="margin-bottom:8px;align-items:center;">
+      <input class="field-input rl-label" type="text" maxlength="20" placeholder="항목 이름 (예: 잭팟)" value="${escapeHtml(label||'')}" style="flex:2;">
+      <input class="field-input rl-weight" type="number" min="1" max="1000" placeholder="가중치" value="${weight||''}" style="flex:1;">
+      <button type="button" class="btn btn-outline btn-sm rl-remove" style="flex-shrink:0;">삭제</button>
+    </div>`;
+  }
+  function renderRouletteRows(segments) {
+    rouletteRowsEl.innerHTML = segments.map(s => rouletteRowHtml(s.label, s.weight)).join('');
+  }
+  renderRouletteRows(me.rouletteSegments && me.rouletteSegments.length ? me.rouletteSegments : [{label:'',weight:''}]);
+
+  rouletteRowsEl.addEventListener('click', (e) => {
+    if (e.target.classList.contains('rl-remove')) {
+      e.target.closest('div').remove();
+    }
+  });
+  document.getElementById('roulette-add-row').addEventListener('click', () => {
+    rouletteRowsEl.insertAdjacentHTML('beforeend', rouletteRowHtml('', ''));
+  });
+  document.getElementById('roulette-save').addEventListener('click', async () => {
+    const errEl = document.getElementById('roulette-error');
+    errEl.style.display = 'none';
+    const segments = [...rouletteRowsEl.querySelectorAll('.flex')].map(row => ({
+      label: row.querySelector('.rl-label').value.trim(),
+      weight: parseInt(row.querySelector('.rl-weight').value, 10),
+    })).filter(s => s.label);
+    if (!segments.length) {
+      errEl.textContent = '룰렛 항목을 1개 이상 입력해주세요.';
+      errEl.style.display = '';
+      return;
+    }
+    const btn = document.getElementById('roulette-save');
+    btn.disabled = true; btn.textContent = '저장 중…';
+    try {
+      await apiFetch('/api/creators/me', { method:'PUT', body:{ rouletteSegments: segments } });
+      showToast('룰렛 설정이 저장됐어요!');
+    } catch (e) {
+      errEl.textContent = e.message; errEl.style.display = '';
+    }
+    btn.disabled = false; btn.textContent = '룰렛 설정 저장';
+  });
+
+  const PLATFORM_LABELS = { twitch:'트위치 채널명', soop:'SOOP(아프리카TV) 아이디', chzzk:'치지직 채널 코드', youtube:'유튜브 채널 핸들/ID' };
+  const PLATFORM_PLACEHOLDERS = { twitch:'예: unation', soop:'예: afreecapd', chzzk:'예: c42cd75ec4855a9edf204a407c3c1dd2', youtube:'예: @unation' };
+
+  function updateChatWidgetUrl() {
+    const platform = document.querySelector('input[name="platform"]:checked')?.value || '';
+    const channel = document.getElementById('p-channel').value.trim();
+    const chatUrl = document.getElementById('p-chaturl').value.trim();
+    const display = document.getElementById('p-chaturl-display-field');
+    const hasChat = platform === 'twitch' ? !!channel : (platform && !!chatUrl);
+    if (hasChat) {
+      display.style.display = '';
+      document.getElementById('p-chat-widget-url').textContent = `${location.origin}/chat.html?handle=${me.handle}`;
+    } else {
+      display.style.display = 'none';
+    }
+  }
+
+  function syncPlatformFields() {
+    const platform = document.querySelector('input[name="platform"]:checked')?.value || '';
+    const channelField = document.getElementById('p-channel-field');
+    const chatUrlField = document.getElementById('p-chaturl-field');
+    if (!platform) {
+      channelField.style.display = 'none';
+      chatUrlField.style.display = 'none';
+    } else {
+      channelField.style.display = '';
+      document.getElementById('p-channel-label').textContent = PLATFORM_LABELS[platform] || '채널 ID';
+      document.getElementById('p-channel').placeholder = PLATFORM_PLACEHOLDERS[platform] || '';
+      chatUrlField.style.display = platform === 'twitch' ? 'none' : '';
+    }
+    updateChatWidgetUrl();
+  }
+
+  document.querySelectorAll('input[name="platform"]').forEach(r => {
+    if (r.value === (me.platform||'')) r.checked = true;
+    r.addEventListener('change', () => {
+      document.querySelectorAll('#section-profile .dtype-chip').forEach(c=>c.classList.remove('active'));
+      r.closest('.dtype-chip')?.classList.add('active');
+      syncPlatformFields();
+    });
+  });
+  document.querySelector(`input[name="platform"][value="${me.platform||''}"]`)?.closest('.dtype-chip')?.classList.add('active');
+  document.getElementById('p-channel').addEventListener('input', updateChatWidgetUrl);
+  document.getElementById('p-chaturl').addEventListener('input', updateChatWidgetUrl);
+  syncPlatformFields();
+
+  document.getElementById('profile-save-btn').addEventListener('click', async () => {
+    const errEl = document.getElementById('profile-error');
+    const sucEl = document.getElementById('profile-success');
+    errEl.style.display = 'none'; sucEl.style.display = 'none';
+    const btn = document.getElementById('profile-save-btn');
+    btn.disabled = true; btn.textContent = '저장 중…';
+    try {
+      const { creator } = await apiFetch('/api/creators/me', { method:'PUT', body:{
+        displayName: document.getElementById('p-name').value.trim(),
+        bio: document.getElementById('p-bio').value.trim(),
+        goalLabel: document.getElementById('p-goal-label').value.trim(),
+        goalAmount: parseInt(document.getElementById('p-goal-amount').value,10)||null,
+        bankName: document.getElementById('p-bank-name').value.trim(),
+        bankAccount: document.getElementById('p-bank-account').value.trim(),
+        bankHolder: document.getElementById('p-bank-holder').value.trim(),
+        platform: document.querySelector('input[name="platform"]:checked')?.value || '',
+        platformChannel: document.getElementById('p-channel').value.trim(),
+        chatEmbedUrl: document.getElementById('p-chaturl').value.trim(),
+        showDonationsPublicly: document.getElementById('p-show-donations').checked,
+      }});
+      me = { ...me, ...creator };
+      document.getElementById('sb-name').textContent = me.displayName;
+      document.getElementById('sb-avatar').textContent = (me.displayName||me.handle)[0];
+      sucEl.textContent = '프로필이 저장됐어요!'; sucEl.style.display = '';
+    } catch(e) { errEl.textContent = e.message; errEl.style.display = ''; }
+    btn.disabled = false; btn.textContent = '저장하기';
+  });
+
+  // ── 스토어 (상품 관리 + 주문내역) ──
+  let editingProductId = null;
+  const productFormCard = document.getElementById('product-form-card');
+
+  function openProductForm(product) {
+    editingProductId = product ? product.id : null;
+    document.getElementById('product-form-title').textContent = product ? '상품 수정' : '새 상품 등록';
+    document.getElementById('pf-name').value = product?.name || '';
+    document.getElementById('pf-desc').value = product?.description || '';
+    document.getElementById('pf-price').value = product?.price || '';
+    document.getElementById('pf-stock').value = product?.stock ?? '';
+    document.getElementById('pf-image').value = product?.imageUrl || '';
+    document.getElementById('product-form-error').style.display = 'none';
+    productFormCard.style.display = '';
+  }
+  document.getElementById('add-product-btn').addEventListener('click', () => openProductForm(null));
+  document.getElementById('product-form-cancel').addEventListener('click', () => { productFormCard.style.display = 'none'; });
+
+  document.getElementById('product-form-save').addEventListener('click', async () => {
+    const errEl = document.getElementById('product-form-error');
+    errEl.style.display = 'none';
+    const body = {
+      name: document.getElementById('pf-name').value.trim(),
+      description: document.getElementById('pf-desc').value.trim(),
+      price: parseInt(document.getElementById('pf-price').value, 10),
+      stock: document.getElementById('pf-stock').value.trim() === '' ? null : parseInt(document.getElementById('pf-stock').value, 10),
+      imageUrl: document.getElementById('pf-image').value.trim() || null,
+    };
+    const btn = document.getElementById('product-form-save');
+    btn.disabled = true; btn.textContent = '저장 중…';
+    try {
+      if (editingProductId) {
+        await apiFetch(`/api/products/${editingProductId}`, { method:'PUT', body });
+      } else {
+        await apiFetch('/api/products', { method:'POST', body });
+      }
+      productFormCard.style.display = 'none';
+      showToast('상품이 저장됐어요!');
+      await loadProducts();
+    } catch (e) {
+      errEl.textContent = e.message; errEl.style.display = '';
+    }
+    btn.disabled = false; btn.textContent = '저장하기';
+  });
+
+  let myProducts = [];
+  async function loadProducts() {
+    const tbody = document.getElementById('products-tbody');
+    tbody.innerHTML = `<tr><td colspan="5" class="text-dim2" style="text-align:center;padding:40px;">불러오는 중…</td></tr>`;
+    try {
+      const { products } = await apiFetch('/api/products/me');
+      myProducts = products;
+      if (!products.length) {
+        tbody.innerHTML = `<tr><td colspan="5" class="text-dim2" style="text-align:center;padding:40px;">등록된 상품이 없어요. 위에서 첫 상품을 등록해보세요!</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = products.map(p => `
+        <tr>
+          <td style="font-weight:500;">${escapeHtml(p.name)}</td>
+          <td style="font-family:var(--font-m);color:var(--cyan);">${formatWon(p.price)}</td>
+          <td class="text-dim2">${p.stock === null ? '무제한' : p.stock + '개'}</td>
+          <td>${p.isActive ? '<span class="settle-badge paid">판매중</span>' : '<span class="settle-badge rejected">비활성</span>'}</td>
+          <td>
+            <button class="btn btn-outline btn-sm pf-edit" data-id="${p.id}" style="margin-right:6px;">수정</button>
+            <button class="btn btn-outline btn-sm pf-toggle" data-id="${p.id}" style="margin-right:6px;">${p.isActive ? '숨기기' : '판매재개'}</button>
+            <button class="btn btn-outline btn-sm pf-delete" data-id="${p.id}">삭제</button>
+          </td>
+        </tr>`).join('');
+
+      tbody.querySelectorAll('.pf-edit').forEach(btn => {
+        btn.addEventListener('click', () => openProductForm(myProducts.find(p => p.id === parseInt(btn.dataset.id, 10))));
+      });
+      tbody.querySelectorAll('.pf-toggle').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const p = myProducts.find(p => p.id === parseInt(btn.dataset.id, 10));
+          await apiFetch(`/api/products/${p.id}`, { method:'PUT', body:{ isActive: !p.isActive } });
+          await loadProducts();
+        });
+      });
+      tbody.querySelectorAll('.pf-delete').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          if (!confirm('이 상품을 삭제할까요?')) return;
+          const data = await apiFetch(`/api/products/${btn.dataset.id}`, { method:'DELETE' });
+          showToast(data.deactivated ? '이미 주문이 있어 비활성화 처리했어요.' : '상품을 삭제했어요.');
+          await loadProducts();
+        });
+      });
+    } catch (e) {
+      tbody.innerHTML = `<tr><td colspan="5" class="text-dim2" style="text-align:center;padding:32px;">불러오기 실패</td></tr>`;
+    }
+  }
+
+  async function loadOrders() {
+    const tbody = document.getElementById('orders-tbody');
+    tbody.innerHTML = `<tr><td colspan="6" class="text-dim2" style="text-align:center;padding:40px;">불러오는 중…</td></tr>`;
+    try {
+      const { orders } = await apiFetch('/api/orders/me?limit=50');
+      if (!orders.length) {
+        tbody.innerHTML = `<tr><td colspan="6" class="text-dim2" style="text-align:center;padding:40px;">아직 주문이 없어요.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = orders.map(o => `
+        <tr>
+          <td style="font-weight:500;">${escapeHtml(o.productName)}</td>
+          <td>${escapeHtml(o.buyerNickname)}</td>
+          <td>${o.quantity}개</td>
+          <td style="font-family:var(--font-m);color:var(--cyan);font-weight:600;">${formatWon(o.amount)}</td>
+          <td class="text-dim2" style="font-size:12.5px;">${escapeHtml(o.buyerContact)}</td>
+          <td class="text-dim2" style="font-size:12px;white-space:nowrap;">${(o.createdAt||'').slice(0,16)}</td>
+        </tr>`).join('');
+    } catch (e) {
+      tbody.innerHTML = `<tr><td colspan="6" class="text-dim2" style="text-align:center;padding:32px;">불러오기 실패</td></tr>`;
+    }
+  }
+
+  async function loadStore() {
+    await loadProducts();
+    await loadOrders();
+  }
+
+  // ── 실시간 SSE ──
+  connectStream(me.handle, async () => {
+    await loadStats();
+    await loadOverviewFeed();
+    if (document.getElementById('section-donations').style.display !== 'none') await loadDonations();
+  });
+})();
+</script>
+</body>
+</html>

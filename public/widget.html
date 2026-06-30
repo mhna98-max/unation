@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UNATION 위젯</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" media="print" onload="this.media='all'">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 800px;
+    min-height: 200px;
+    background: transparent;
+    overflow: hidden;
+    font-family: 'Pretendard Variable', 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+  }
+
+  #widget-root {
+    width: 100%;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .alert-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: linear-gradient(135deg, rgba(13,10,28,.92), rgba(22,18,40,.88));
+    border: 1px solid rgba(139,92,246,.55);
+    border-radius: 16px;
+    padding: 14px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,.55), 0 0 0 1px rgba(139,92,246,.2) inset;
+    backdrop-filter: blur(12px);
+    max-width: 520px;
+    animation: slide-in .38s cubic-bezier(.22,1,.36,1) both;
+    position: relative;
+    overflow: hidden;
+  }
+  .alert-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(139,92,246,.12) 0%, rgba(34,211,238,.08) 100%);
+    pointer-events: none;
+  }
+  .alert-card.fade-out {
+    animation: fade-out .5s ease-out forwards;
+  }
+  .alert-card.tts-active {
+    border-color: rgba(34,211,238,.65);
+    box-shadow: 0 8px 32px rgba(0,0,0,.55), 0 0 0 1px rgba(34,211,238,.25) inset, 0 0 24px rgba(34,211,238,.25);
+  }
+
+  @keyframes slide-in {
+    from { opacity: 0; transform: translateX(-40px) scale(.96); }
+    to   { opacity: 1; transform: translateX(0) scale(1); }
+  }
+  @keyframes fade-out {
+    from { opacity: 1; transform: scale(1); }
+    to   { opacity: 0; transform: scale(.94); }
+  }
+
+  .alert-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #8b5cf6, #22d3ee);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 700;
+    color: #07060f;
+    font-family: 'Space Grotesk', sans-serif;
+    flex-shrink: 0;
+  }
+  .alert-body { flex: 1; min-width: 0; }
+  .alert-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 4px;
+  }
+  .alert-name {
+    font-weight: 700;
+    font-size: 15px;
+    color: #f3f1fb;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+  }
+  .alert-amount {
+    font-family: 'Space Grotesk', monospace;
+    font-weight: 700;
+    font-size: 15px;
+    color: #22d3ee;
+    background: rgba(34,211,238,.12);
+    padding: 2px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .alert-msg {
+    font-size: 13px;
+    color: rgba(243,241,251,.65);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .alert-badge {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .05em;
+    color: rgba(139,92,246,.8);
+    text-transform: uppercase;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .alert-type-icon {
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+
+  .sparkle {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    font-size: 18px;
+    animation: sparkle-pop .6s ease-out both;
+  }
+  @keyframes sparkle-pop {
+    0%   { opacity: 0; transform: scale(0) rotate(-20deg); }
+    60%  { opacity: 1; transform: scale(1.3) rotate(5deg); }
+    100% { opacity: 1; transform: scale(1) rotate(0deg); }
+  }
+
+  /* 영상 후원 카드 */
+  .video-card {
+    width: 100%;
+    max-width: 720px;
+    background: linear-gradient(135deg, rgba(13,10,28,.95), rgba(22,18,40,.92));
+    border: 1px solid rgba(139,92,246,.55);
+    border-radius: 16px;
+    padding: 14px;
+    box-shadow: 0 8px 32px rgba(0,0,0,.6), 0 0 0 1px rgba(139,92,246,.2) inset;
+    backdrop-filter: blur(12px);
+    animation: slide-in .38s cubic-bezier(.22,1,.36,1) both;
+  }
+  .video-card.fade-out { animation: fade-out .5s ease-out forwards; }
+  .video-card-head {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+  }
+  .video-card-head .alert-avatar { width: 32px; height: 32px; font-size: 14px; }
+  .video-frame-wrap {
+    position: relative; width: 100%;
+    aspect-ratio: 16/9;
+    border-radius: 10px; overflow: hidden;
+    background: #000;
+  }
+  .video-frame-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+
+  /* 이미지 후원 카드 */
+  .image-card {
+    width: 100%;
+    max-width: 560px;
+    background: linear-gradient(135deg, rgba(13,10,28,.95), rgba(22,18,40,.92));
+    border: 1px solid rgba(34,211,238,.5);
+    border-radius: 16px;
+    padding: 14px;
+    box-shadow: 0 8px 32px rgba(0,0,0,.6), 0 0 0 1px rgba(34,211,238,.18) inset;
+    backdrop-filter: blur(12px);
+    animation: slide-in .38s cubic-bezier(.22,1,.36,1) both;
+  }
+  .image-card.fade-out { animation: fade-out .5s ease-out forwards; }
+  .image-card-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .image-card-head .alert-avatar { width: 32px; height: 32px; font-size: 14px; }
+  .image-frame-wrap {
+    width: 100%; max-height: 360px;
+    border-radius: 10px; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(0,0,0,.3);
+  }
+  .image-frame-wrap img { width: 100%; max-height: 360px; object-fit: contain; display: block; }
+
+  /* 퀴즈 후원 카드 */
+  .quiz-card {
+    width: 100%;
+    max-width: 560px;
+    background: linear-gradient(135deg, rgba(28,16,13,.95), rgba(40,22,18,.9));
+    border: 1px solid rgba(251,191,36,.55);
+    border-radius: 16px;
+    padding: 18px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,.6), 0 0 0 1px rgba(251,191,36,.2) inset;
+    backdrop-filter: blur(12px);
+    animation: slide-in .38s cubic-bezier(.22,1,.36,1) both;
+  }
+  .quiz-card.fade-out { animation: fade-out .5s ease-out forwards; }
+  .quiz-card-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .quiz-card-head .alert-avatar { width: 32px; height: 32px; font-size: 14px; }
+  .quiz-label {
+    font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: #fbbf24; display: flex; align-items: center; gap: 6px; margin-bottom: 6px;
+  }
+  .quiz-question {
+    font-size: 19px; font-weight: 700; color: #f3f1fb; line-height: 1.4;
+  }
+  /* 룰렛 후원 */
+  .roulette-card {
+    width: 100%; max-width: 560px;
+    background: linear-gradient(135deg, rgba(20,12,38,.95), rgba(30,16,50,.9));
+    border: 1px solid rgba(168,85,247,.55);
+    border-radius: 16px; padding: 18px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,.6), 0 0 0 1px rgba(168,85,247,.2) inset;
+    backdrop-filter: blur(12px);
+    animation: slide-in .38s cubic-bezier(.22,1,.36,1) both;
+    text-align: center;
+  }
+  .roulette-card.fade-out { animation: fade-out .5s ease-out forwards; }
+  .roulette-label {
+    font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: #c084fc; margin-bottom: 10px;
+  }
+  .roulette-spin-row { display:flex; justify-content:center; gap:6px; margin-bottom:12px; min-height:40px; align-items:center; }
+  .roulette-chip {
+    padding: 8px 14px; border-radius: 999px; background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.12); font-size: 13px; font-weight: 600; color: rgba(255,255,255,.5);
+    transition: all .15s ease;
+  }
+  .roulette-chip.landed { background: rgba(168,85,247,.25); border-color: #a855f7; color: #fff; transform: scale(1.08); }
+  .roulette-result { font-size: 20px; font-weight: 700; color: #fff; }
+
+  /* 스티커 후원 — 방송 화면 임의 위치에 등장 */
+  .sticker-pop {
+    position: fixed; transform: translate(-50%,-50%) scale(0); font-size: 56px;
+    transition: transform .4s cubic-bezier(.34,1.56,.64,1), opacity .4s ease;
+    opacity: 0; z-index: 50; filter: drop-shadow(0 4px 12px rgba(0,0,0,.5));
+    text-align: center;
+  }
+  .sticker-pop.show { transform: translate(-50%,-50%) scale(1); opacity: 1; }
+  .sticker-pop-msg {
+    margin-top: 4px; font-size: 13px; font-weight: 600; color: #fff;
+    background: rgba(13,10,28,.85); border-radius: 999px; padding: 4px 12px;
+    white-space: nowrap; max-width: 240px; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  /* 미니후원 — 화면 하단에 짧게 스쳐 지나가는 가벼운 버블 */
+  .mini-ticker{
+    position:fixed; left:50%; bottom:24px; transform:translate(-50%,12px);
+    display:flex; align-items:center; gap:8px;
+    background:rgba(13,10,28,.92); border:1px solid rgba(139,92,246,.4);
+    border-radius:999px; padding:8px 16px; opacity:0; transition:all .35s ease;
+    font-size:13px; color:#f3f1fb; white-space:nowrap; max-width:90vw; overflow:hidden;
+  }
+  .mini-ticker.show{ opacity:1; transform:translate(-50%,0); }
+  .mini-ticker-name{ font-weight:700; }
+  .mini-ticker-amt{ color:#22d3ee; font-family:'JetBrains Mono','SF Mono',monospace; font-weight:600; }
+  .mini-ticker-msg{ color:rgba(243,241,251,.75); overflow:hidden; text-overflow:ellipsis; }
+</style>
+</head>
+<body>
+<div id="widget-root"></div>
+<script src="assets/script.js"></script>
+<script>
+(async () => {
+  const params = new URLSearchParams(location.search);
+  const handle = params.get('handle');
+  if (!handle) {
+    document.body.innerHTML = '<p style="color:#fb7185;font-size:13px;padding:12px;">위젯 주소에 ?handle=핸들 을 붙여주세요.</p>';
+    return;
+  }
+
+  const root = document.getElementById('widget-root');
+  const queue = [];
+  let busy = false;
+
+  function showAlert(donation) {
+    if (donation.donationType === '미니') { showMiniTicker(donation); return; }
+    queue.push(donation);
+    if (!busy) processQueue();
+  }
+
+  // ── 미니후원 (가벼운 텍스트 전용 후원) — 메인 알림 큐를 막지 않고 화면 하단에 짧게 스쳐 지나갑니다 ──
+  function showMiniTicker(d) {
+    const name = d.nickname || '익명의 시민';
+    const msg = d.message || '미니후원을 보냈어요!';
+    const bubble = document.createElement('div');
+    bubble.className = 'mini-ticker';
+    bubble.innerHTML = `<span class="mini-ticker-name">${escapeHtml(name)}</span><span class="mini-ticker-amt">${formatWon(d.amount)}</span><span class="mini-ticker-msg">${escapeHtml(msg)}</span>`;
+    document.body.appendChild(bubble);
+    requestAnimationFrame(() => bubble.classList.add('show'));
+    setTimeout(() => {
+      bubble.classList.remove('show');
+      setTimeout(() => bubble.remove(), 400);
+    }, 4000);
+  }
+
+  // ── TTS (음성으로 읽어주기) ──
+  function speakDonation(d) {
+    return new Promise((resolve) => {
+      if (!('speechSynthesis' in window)) return resolve();
+      try {
+        const name = d.nickname || '익명의 시민';
+        const amountText = (d.amount || 0).toLocaleString('ko-KR') + '원';
+        const msg = d.message ? ` ${d.message}` : '';
+        const utter = new SpeechSynthesisUtterance(`${name}님이 ${amountText} 후원했습니다.${msg}`);
+        utter.lang = 'ko-KR';
+        utter.rate = 1.02;
+        utter.onend = resolve;
+        utter.onerror = resolve;
+        speechSynthesis.speak(utter);
+        // 혹시 onend가 안 불리는 환경 대비 안전장치
+        setTimeout(resolve, 9000);
+      } catch (e) { resolve(); }
+    });
+  }
+
+  function processQueue() {
+    if (!queue.length) { busy = false; return; }
+    busy = true;
+    const d = queue.shift();
+
+    if (d.donationType === '영상' && d.videoUrl) {
+      showVideoCard(d);
+    } else if (d.donationType === '이미지' && d.imageUrl) {
+      showImageCard(d);
+    } else if (d.donationType === '퀴즈') {
+      showQuizCard(d);
+    } else if (d.donationType === '룰렛') {
+      showRouletteCard(d);
+    } else if (d.donationType === '스티커' && d.stickerEmoji) {
+      showStickerCard(d);
+    } else {
+      showNormalCard(d);
+    }
+  }
+
+  function showNormalCard(d) {
+    const card = document.createElement('div');
+    card.className = 'alert-card';
+    const isTts = d.donationType === '음성';
+    if (isTts) card.classList.add('tts-active');
+    const name = d.nickname || '익명의 시민';
+    const msg = d.message || '시민이 되었습니다!';
+    const tier = getTier(d.amount);
+    const typeIcon = isTts ? '<span class="alert-type-icon">🔊</span>' : '';
+    card.innerHTML = `
+      <div class="alert-avatar">${escapeHtml(name[0])}</div>
+      <div class="alert-body">
+        <div class="alert-top">
+          ${typeIcon}
+          <span class="alert-name">${escapeHtml(name)}</span>
+          <span class="alert-amount">${formatWon(d.amount)}</span>
+          <span class="alert-badge">${tier.icon} ${tier.short}</span>
+        </div>
+        <div class="alert-msg">${escapeHtml(msg)}</div>
+      </div>
+      <span class="sparkle">✨</span>
+    `;
+    root.appendChild(card);
+
+    const minDisplay = isTts ? speakDonation(d) : Promise.resolve();
+    const minTimer = new Promise((r) => setTimeout(r, 5000));
+
+    Promise.all([minDisplay, minTimer]).then(() => {
+      card.classList.add('fade-out');
+      setTimeout(() => {
+        card.remove();
+        setTimeout(processQueue, 200);
+      }, 500);
+    });
+  }
+
+  // ── 영상 후원 카드 ──
+  let ytApiReady = null;
+  function loadYouTubeApi() {
+    if (ytApiReady) return ytApiReady;
+    ytApiReady = new Promise((resolve) => {
+      if (window.YT && window.YT.Player) return resolve();
+      const tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      document.head.appendChild(tag);
+      window.onYouTubeIframeAPIReady = resolve;
+      setTimeout(resolve, 4000); // 안전장치: API 로드 실패해도 진행
+    });
+    return ytApiReady;
+  }
+
+  async function showVideoCard(d) {
+    const name = d.nickname || '익명의 시민';
+    const msg = d.message || '영상 후원을 보냈어요!';
+
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.innerHTML = `
+      <div class="video-card-head">
+        <div class="alert-avatar">${escapeHtml(name[0])}</div>
+        <div class="alert-body">
+          <div class="alert-top">
+            <span class="alert-type-icon">🎬</span>
+            <span class="alert-name">${escapeHtml(name)}</span>
+            <span class="alert-amount">${formatWon(d.amount)}</span>
+          </div>
+          <div class="alert-msg">${escapeHtml(msg)}</div>
+        </div>
+      </div>
+      <div class="video-frame-wrap" id="yt-target-${d.id || Date.now()}"></div>
+    `;
+    root.appendChild(card);
+
+    const finish = () => {
+      card.classList.add('fade-out');
+      setTimeout(() => {
+        card.remove();
+        setTimeout(processQueue, 200);
+      }, 500);
+    };
+
+    await loadYouTubeApi();
+    const targetId = `yt-target-${d.id || Date.now()}`;
+    const targetEl = document.getElementById(targetId);
+    const videoIdMatch = (d.videoUrl || '').match(/embed\/([a-zA-Z0-9_-]{11})/);
+    const videoId = videoIdMatch ? videoIdMatch[1] : null;
+
+    let finished = false;
+    const safeFinish = () => { if (!finished) { finished = true; finish(); } };
+
+    if (window.YT && window.YT.Player && videoId && targetEl) {
+      new window.YT.Player(targetId, {
+        videoId,
+        playerVars: { autoplay: 1, mute: 0, controls: 0, rel: 0 },
+        events: {
+          onStateChange: (e) => { if (e.data === window.YT.PlayerState.ENDED) safeFinish(); },
+          onError: () => safeFinish(),
+        },
+      });
+      setTimeout(safeFinish, 60000); // 최대 60초 안전장치
+    } else if (targetEl && d.videoUrl) {
+      // YouTube API 로드 실패 시 일반 iframe으로 대체
+      targetEl.innerHTML = `<iframe src="${d.videoUrl}?autoplay=1" allow="autoplay" allowfullscreen></iframe>`;
+      setTimeout(safeFinish, 30000);
+    } else {
+      safeFinish();
+    }
+  }
+
+  // ── 이미지 후원 카드 ──
+  function showImageCard(d) {
+    const name = d.nickname || '익명의 시민';
+    const msg = d.message || '이미지 후원을 보냈어요!';
+    const card = document.createElement('div');
+    card.className = 'image-card';
+    card.innerHTML = `
+      <div class="image-card-head">
+        <div class="alert-avatar">${escapeHtml(name[0])}</div>
+        <div class="alert-body">
+          <div class="alert-top">
+            <span class="alert-type-icon">🖼️</span>
+            <span class="alert-name">${escapeHtml(name)}</span>
+            <span class="alert-amount">${formatWon(d.amount)}</span>
+          </div>
+          <div class="alert-msg">${escapeHtml(msg)}</div>
+        </div>
+      </div>
+      <div class="image-frame-wrap"><img src="${escapeHtml(d.imageUrl)}" alt="후원 이미지"></div>
+    `;
+    root.appendChild(card);
+
+    const finish = () => {
+      card.classList.add('fade-out');
+      setTimeout(() => {
+        card.remove();
+        setTimeout(processQueue, 200);
+      }, 500);
+    };
+    const imgEl = card.querySelector('img');
+    imgEl.addEventListener('error', () => {
+      card.querySelector('.image-frame-wrap').innerHTML = '<p style="color:rgba(243,241,251,.5);font-size:13px;padding:24px;">이미지를 불러올 수 없어요</p>';
+    });
+    setTimeout(finish, 8000);
+  }
+
+  // ── 퀴즈 후원 카드 ──
+  function showQuizCard(d) {
+    const name = d.nickname || '익명의 시민';
+    const card = document.createElement('div');
+    card.className = 'quiz-card';
+    card.innerHTML = `
+      <div class="quiz-card-head">
+        <div class="alert-avatar">${escapeHtml(name[0])}</div>
+        <div class="alert-body">
+          <div class="alert-top">
+            <span class="alert-name">${escapeHtml(name)}</span>
+            <span class="alert-amount">${formatWon(d.amount)}</span>
+          </div>
+        </div>
+      </div>
+      <div class="quiz-label">❓ 퀴즈 후원 — 채팅으로 맞혀보세요!</div>
+      <div class="quiz-question">${escapeHtml(d.message || '문제가 없어요')}</div>
+    `;
+    root.appendChild(card);
+
+    setTimeout(() => {
+      card.classList.add('fade-out');
+      setTimeout(() => {
+        card.remove();
+        setTimeout(processQueue, 200);
+      }, 500);
+    }, 8000);
+  }
+
+  // ── 룰렛 후원 — 결과는 서버가 이미 결정해서 보내줍니다. 여기서는 연출(스핀 애니메이션)만 담당 ──
+  function showRouletteCard(d) {
+    const name = d.nickname || '익명의 시민';
+    const card = document.createElement('div');
+    card.className = 'roulette-card';
+    card.innerHTML = `
+      <div class="roulette-label">🎰 ${escapeHtml(name)}님의 룰렛 후원 — ${formatWon(d.amount)}</div>
+      <div class="roulette-spin-row" id="roulette-spin-row"></div>
+      <div class="roulette-result" id="roulette-result-text" style="display:none;"></div>
+    `;
+    root.appendChild(card);
+
+    const row = card.querySelector('#roulette-spin-row');
+    const resultText = card.querySelector('#roulette-result-text');
+    const result = d.rouletteResult || '꽝';
+    // 후보 라벨이 없으니, 결과를 포함한 간단한 더미 칩 세트로 스핀 연출만 보여줍니다.
+    const dummyLabels = ['🍀', '⭐', '💎', '🔥', result, '✨'];
+    let i = 0;
+    const spinInterval = setInterval(() => {
+      row.innerHTML = dummyLabels.map((l, idx) =>
+        `<span class="roulette-chip${idx === (i % dummyLabels.length) ? ' landed' : ''}">${escapeHtml(l)}</span>`
+      ).join('');
+      i++;
+    }, 110);
+
+    setTimeout(() => {
+      clearInterval(spinInterval);
+      row.style.display = 'none';
+      resultText.style.display = '';
+      resultText.textContent = `🎉 ${result}`;
+    }, 1800);
+
+    setTimeout(() => {
+      card.classList.add('fade-out');
+      setTimeout(() => {
+        card.remove();
+        setTimeout(processQueue, 200);
+      }, 500);
+    }, 4200);
+  }
+
+  // ── 스티커 후원 — 방송 화면의 지정된 위치(%)에 스티커가 잠깐 나타납니다 ──
+  function showStickerCard(d) {
+    const pop = document.createElement('div');
+    pop.className = 'sticker-pop';
+    pop.style.left = `${d.posX ?? 50}%`;
+    pop.style.top = `${d.posY ?? 50}%`;
+    pop.innerHTML = `
+      <div>${escapeHtml(d.stickerEmoji)}</div>
+      <div class="sticker-pop-msg">${escapeHtml(d.nickname || '익명의 시민')} · ${escapeHtml(d.message || formatWon(d.amount))}</div>
+    `;
+    document.body.appendChild(pop);
+    requestAnimationFrame(() => pop.classList.add('show'));
+
+    setTimeout(() => {
+      pop.classList.remove('show');
+      setTimeout(() => {
+        pop.remove();
+        processQueue();
+      }, 400);
+    }, 5000);
+  }
+
+  // SSE 구독
+  connectStream(handle, showAlert);
+
+  // 테스트용: 쿼리에 ?test=1 이 있으면 더미 알림을 표시
+  if (params.get('test') === '1') {
+    setTimeout(() => showAlert({ nickname: '테스트시민', amount: 5000, message: '위젯 테스트입니다!', citizenNumber: 1, donationType: '일반' }), 1500);
+    setTimeout(() => showAlert({ nickname: '코드네임R', amount: 100000, message: '골드 시민 테스트', citizenNumber: 2, donationType: '일반' }), 4000);
+  }
+  if (params.get('testtts') === '1') {
+    setTimeout(() => showAlert({ nickname: 'TTS테스터', amount: 10000, message: '음성 후원 테스트입니다', citizenNumber: 3, donationType: '음성' }), 1000);
+  }
+  if (params.get('testvideo') === '1') {
+    setTimeout(() => showAlert({ nickname: '영상테스터', amount: 30000, message: '영상 후원 테스트입니다', citizenNumber: 4, donationType: '영상', videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ' }), 1000);
+  }
+  if (params.get('testimage') === '1') {
+    setTimeout(() => showAlert({ nickname: '이미지테스터', amount: 15000, message: '이미지 후원 테스트입니다', citizenNumber: 5, donationType: '이미지', imageUrl: 'https://picsum.photos/seed/unation/500/300' }), 1000);
+  }
+  if (params.get('testquiz') === '1') {
+    setTimeout(() => showAlert({ nickname: '퀴즈테스터', amount: 12000, message: '이 동물의 이름은 무엇일까요?', citizenNumber: 6, donationType: '퀴즈' }), 1000);
+  }
+  if (params.get('testroulette') === '1') {
+    setTimeout(() => showAlert({ nickname: '룰렛테스터', amount: 5000, citizenNumber: 7, donationType: '룰렛', rouletteResult: '대박! 한 마디 더' }), 1000);
+  }
+  if (params.get('teststicker') === '1') {
+    setTimeout(() => showAlert({ nickname: '스티커테스터', amount: 2000, message: '여기에 붙여요!', citizenNumber: 8, donationType: '스티커', stickerEmoji: '🎉', posX: 30, posY: 60 }), 1000);
+  }
+  if (params.get('testmini') === '1') {
+    setTimeout(() => showAlert({ nickname: '미니테스터', amount: 100, message: '화이팅!', citizenNumber: 9, donationType: '미니' }), 1000);
+  }
+})();
+</script>
+</body>
+</html>

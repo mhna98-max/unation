@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>크리에이터 시작하기 — UNATION</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="aurora-bg" aria-hidden="true">
+  <span class="blob blob-1"></span><span class="blob blob-2"></span><span class="blob blob-3"></span>
+</div>
+<div class="nav-wrap">
+  <nav class="nav">
+    <a href="index.html" class="logo">
+      <svg class="logo-mark" viewBox="0 0 32 32"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#22d3ee"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg)"/><text x="16" y="22" font-family="'Space Grotesk',sans-serif" font-weight="700" font-size="16" fill="#fff" text-anchor="middle">U</text></svg>
+      UNATION
+    </a>
+    <div class="nav-actions">
+      <a href="login.html" class="btn btn-outline btn-sm">이미 계정이 있어요</a>
+    </div>
+  </nav>
+</div>
+
+<main class="auth-main">
+  <div class="auth-wrap" style="max-width:480px;">
+    <div class="auth-header">
+      <h1 class="auth-title">유네이션 가입하고<br>나만의 네이션을 시작하세요 🚀</h1>
+      <p class="text-dim" style="margin-top:10px;">가입 즉시 후원 페이지와 OBS 위젯이 발급됩니다.</p>
+    </div>
+
+    <div class="card auth-card">
+      <div class="social-btn-row">
+        <button class="social-btn google" data-provider="google">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.52 12.27c0-.85-.08-1.67-.22-2.45H12v4.64h6.47a5.54 5.54 0 0 1-2.4 3.63v3h3.87c2.27-2.09 3.58-5.17 3.58-8.82z"/><path fill="#34A853" d="M12 24c3.24 0 5.96-1.07 7.94-2.91l-3.87-3a7.4 7.4 0 0 1-11-3.9H1.07v3.1A12 12 0 0 0 12 24z"/><path fill="#FBBC05" d="M5.07 14.19a7.2 7.2 0 0 1 0-4.38v-3.1H1.07a12 12 0 0 0 0 10.58z"/><path fill="#EA4335" d="M12 4.77c1.76 0 3.35.6 4.6 1.8l3.43-3.43A11.6 11.6 0 0 0 12 0 12 12 0 0 0 1.07 6.71l4 3.1A7.16 7.16 0 0 1 12 4.77z"/></svg>
+          Google로 시작하기
+        </button>
+        <button class="social-btn kakao" data-provider="kakao">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#191600" d="M12 3C6.48 3 2 6.48 2 10.78c0 2.74 1.84 5.15 4.6 6.52-.2.74-.74 2.74-.85 3.16 0 0-.02.14.08.2a.27.27 0 0 0 .22 0c.3-.04 3.36-2.23 3.9-2.6.66.1 1.35.15 2.05.15 5.52 0 10-3.48 10-7.78S17.52 3 12 3z"/></svg>
+          카카오로 시작하기
+        </button>
+        <button class="social-btn naver" data-provider="naver">
+          <svg width="16" height="16" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#03C75A"/><path fill="#fff" d="M13.7 12.4 9.9 6.5H6.5v11h3.4v-5.9l3.8 5.9h3.4v-11h-3.4z"/></svg>
+          네이버로 시작하기
+        </button>
+        <button class="social-btn apple" data-provider="apple">
+          <svg width="15" height="15" viewBox="0 0 24 24"><path fill="#fff" d="M16.7 1c.1 1.2-.4 2.4-1.1 3.2-.7.9-1.9 1.6-3.1 1.5-.1-1.1.5-2.3 1.1-3.1.8-.9 2-1.5 3.1-1.6zM20.9 17.2c-.5 1.2-1.1 2.3-1.9 3.3-1 1.4-2 2.8-3.6 2.8-1.6 0-2-1-3.8-1-1.8 0-2.4 1-3.9 1-1.6 0-2.7-1.5-3.7-2.9-2-2.9-3.5-8.1-1.5-11.6 1-1.7 2.8-2.8 4.7-2.9 1.5 0 2.9 1 3.8 1 .9 0 2.6-1.2 4.4-1 .8 0 2.9.3 4.3 2.4-.1.1-2.6 1.5-2.5 4.5 0 3.5 3.1 4.7 3.7 4.4z"/></svg>
+          Apple로 시작하기
+        </button>
+        <button class="social-btn microsoft" data-provider="microsoft">
+          <svg width="15" height="15" viewBox="0 0 24 24"><rect x="1" y="1" width="10" height="10" fill="#F35325"/><rect x="13" y="1" width="10" height="10" fill="#81BC06"/><rect x="1" y="13" width="10" height="10" fill="#05A6F0"/><rect x="13" y="13" width="10" height="10" fill="#FFBA08"/></svg>
+          Microsoft로 시작하기
+        </button>
+      </div>
+      <div class="auth-divider">또는</div>
+
+      <div class="auth-tabs">
+        <div class="auth-tab active" data-tab="email">이메일로 가입</div>
+        <div class="auth-tab" data-tab="phone">휴대폰 번호로 가입</div>
+      </div>
+
+      <div id="signup-error" class="field-error" style="display:none;"></div>
+
+      <div id="tab-email">
+        <div class="field">
+          <label class="field-label" for="handle">핸들 (후원 페이지 주소) <span class="field-hint">영문 소문자·숫자·_ 3~20자</span></label>
+          <div class="field-prefix-wrap">
+            <span class="field-prefix">unation.kr/</span>
+            <input class="field-input field-with-prefix" id="handle" type="text" placeholder="yourname" autocomplete="off" maxlength="20">
+          </div>
+          <p class="field-sub" id="handle-preview" style="display:none;color:var(--violet-l);"></p>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="displayName">방송명 (표시 이름)</label>
+          <input class="field-input" id="displayName" type="text" placeholder="UNATION 공식" maxlength="40">
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="email">이메일</label>
+          <input class="field-input" id="email" type="email" placeholder="your@email.com" autocomplete="email">
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="password">비밀번호 <span class="field-hint">8자 이상</span></label>
+          <input class="field-input" id="password" type="password" placeholder="8자 이상 입력" autocomplete="new-password">
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="password2">비밀번호 확인</label>
+          <input class="field-input" id="password2" type="password" placeholder="비밀번호 다시 입력" autocomplete="new-password">
+        </div>
+
+        <button class="btn btn-primary" id="signup-btn" style="width:100%;margin-top:4px;padding:12px;">유네이션 가입하기</button>
+      </div>
+
+      <div id="tab-phone" style="display:none;">
+        <div class="field">
+          <label class="field-label" for="phone">휴대폰 번호</label>
+          <input class="field-input" id="phone" type="tel" placeholder="010-1234-5678" autocomplete="tel">
+        </div>
+        <div class="field" id="otp-field" style="display:none;">
+          <label class="field-label" for="otp">인증번호 <span class="field-hint">6자리</span></label>
+          <div class="otp-row">
+            <input class="field-input" id="otp" type="text" inputmode="numeric" maxlength="6" placeholder="123456">
+            <button class="btn btn-outline" id="otp-resend-btn">재전송</button>
+          </div>
+          <div class="demo-otp-box" id="demo-otp-box" style="display:none;"></div>
+        </div>
+        <button class="btn btn-primary" id="phone-action-btn" style="width:100%;margin-top:4px;padding:12px;">인증번호 받기</button>
+      </div>
+
+      <p class="text-dim" style="text-align:center;margin-top:20px;font-size:14px;">
+        이미 계정이 있으신가요? <a href="login.html" class="link-purple">로그인</a>
+      </p>
+    </div>
+  </div>
+</main>
+
+<!-- 소셜/휴대폰 신규가입 시 핸들 입력 모달 -->
+<div id="handle-modal" class="modal-backdrop" style="display:none;">
+  <div class="modal-card" style="max-width:420px;text-align:left;">
+    <h3 style="font-family:var(--font-h);font-weight:700;font-size:18px;margin-bottom:6px;">네이션 핸들을 정해주세요</h3>
+    <p class="text-dim2" style="font-size:13px;margin-bottom:18px;" id="handle-modal-sub">후원 페이지 주소로 사용됩니다.</p>
+    <div class="field">
+      <label class="field-label" for="hm-handle">핸들 <span class="field-hint">영문 소문자·숫자·_ 3~20자</span></label>
+      <div class="field-prefix-wrap">
+        <span class="field-prefix">unation.kr/</span>
+        <input class="field-input field-with-prefix" id="hm-handle" type="text" placeholder="yourname" maxlength="20">
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label" for="hm-displayname">방송명 (표시 이름)</label>
+      <input class="field-input" id="hm-displayname" type="text" placeholder="UNATION 공식" maxlength="40">
+    </div>
+    <div id="handle-modal-error" class="field-error" style="display:none;"></div>
+    <button class="btn btn-primary" id="handle-modal-btn" style="width:100%;padding:12px;margin-top:6px;">시작하기</button>
+  </div>
+</div>
+</main>
+
+<script src="assets/script.js"></script>
+<script>
+(async () => {
+  try { await apiFetch('/api/auth/me'); location.href = 'dashboard.html'; return; } catch(e) {}
+
+  const handleEl = document.getElementById('handle');
+  const errEl = document.getElementById('signup-error');
+  const previewEl = document.getElementById('handle-preview');
+
+  handleEl.addEventListener('input', () => {
+    handleEl.value = handleEl.value.toLowerCase().replace(/[^a-z0-9_]/g,'');
+    if (handleEl.value.length >= 3) {
+      previewEl.style.display = '';
+      previewEl.textContent = `✓ 후원 페이지: unation.kr/creator?handle=${handleEl.value}`;
+    } else { previewEl.style.display = 'none'; }
+  });
+
+  document.getElementById('signup-btn').addEventListener('click', async () => {
+    errEl.style.display = 'none';
+    const btn = document.getElementById('signup-btn');
+    const password = document.getElementById('password').value;
+    if (password !== document.getElementById('password2').value) {
+      errEl.textContent = '비밀번호가 일치하지 않아요.'; errEl.style.display = ''; return;
+    }
+    btn.disabled = true; btn.textContent = '생성 중…';
+    try {
+      await apiFetch('/api/auth/signup', { method:'POST', body:{
+        handle: handleEl.value.trim(),
+        displayName: document.getElementById('displayName').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        password,
+      }});
+      location.href = 'dashboard.html';
+    } catch(e) {
+      errEl.textContent = e.message; errEl.style.display = '';
+      btn.disabled = false; btn.textContent = '유네이션 가입하기';
+    }
+  });
+
+  // ── 이메일 / 휴대폰 탭 ──
+  document.querySelectorAll('.auth-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('tab-email').style.display = tab.dataset.tab === 'email' ? '' : 'none';
+      document.getElementById('tab-phone').style.display = tab.dataset.tab === 'phone' ? '' : 'none';
+      errEl.style.display = 'none';
+    });
+  });
+
+  // ── 휴대폰 번호 가입 (모의 인증번호) ──
+  const phoneEl = document.getElementById('phone');
+  const otpEl = document.getElementById('otp');
+  const otpField = document.getElementById('otp-field');
+  const demoOtpBox = document.getElementById('demo-otp-box');
+  const phoneActionBtn = document.getElementById('phone-action-btn');
+  const otpResendBtn = document.getElementById('otp-resend-btn');
+  let otpRequested = false;
+
+  async function requestOtp() {
+    errEl.style.display = 'none';
+    phoneActionBtn.disabled = true;
+    try {
+      const data = await apiFetch('/api/auth/phone/request-otp', { method:'POST', body:{ phone: phoneEl.value.trim() } });
+      otpField.style.display = '';
+      demoOtpBox.style.display = '';
+      demoOtpBox.innerHTML = `🔑 <strong>${data.devCode}</strong> — ${data.demoNotice}`;
+      phoneActionBtn.textContent = '인증하고 가입하기';
+      otpRequested = true;
+      otpEl.focus();
+    } catch(e) {
+      errEl.textContent = e.message; errEl.style.display = '';
+    }
+    phoneActionBtn.disabled = false;
+  }
+
+  async function verifyOtp(extra) {
+    errEl.style.display = 'none';
+    phoneActionBtn.disabled = true; phoneActionBtn.textContent = '확인 중…';
+    try {
+      const data = await apiFetch('/api/auth/phone/verify', { method:'POST', body:{
+        phone: phoneEl.value.trim(), code: otpEl.value.trim(), ...extra
+      }});
+      if (data.needsHandle) {
+        openHandleModal({ suggestedDisplayName: data.suggestedDisplayName, onSubmit: (handle, displayName) => verifyOtp({ handle, displayName }) });
+        phoneActionBtn.disabled = false; phoneActionBtn.textContent = '인증하고 가입하기';
+        return;
+      }
+      location.href = 'dashboard.html';
+    } catch(e) {
+      errEl.textContent = e.message; errEl.style.display = '';
+      phoneActionBtn.disabled = false; phoneActionBtn.textContent = '인증하고 가입하기';
+    }
+  }
+
+  phoneActionBtn.addEventListener('click', () => { otpRequested ? verifyOtp() : requestOtp(); });
+  otpResendBtn.addEventListener('click', requestOtp);
+  otpEl.addEventListener('keydown', e => { if(e.key==='Enter') verifyOtp(); });
+
+  // ── 소셜 가입 (모의) ──
+  document.querySelectorAll('.social-btn').forEach(b => {
+    b.addEventListener('click', () => doSocial(b.dataset.provider));
+  });
+
+  async function doSocial(provider, extra) {
+    errEl.style.display = 'none';
+    try {
+      const data = await apiFetch('/api/auth/social', { method:'POST', body:{ provider, ...extra } });
+      if (data.needsHandle) {
+        openHandleModal({
+          suggestedDisplayName: data.suggestedDisplayName,
+          sub: `${data.providerLabel} 계정으로 처음 오셨네요! 네이션 핸들을 정해주세요.`,
+          onSubmit: (handle, displayName) => doSocial(provider, { handle, displayName }),
+        });
+        return;
+      }
+      location.href = 'dashboard.html';
+    } catch(e) {
+      errEl.textContent = e.message; errEl.style.display = '';
+    }
+  }
+
+  // ── 핸들 선택 모달 (소셜/휴대폰 가입 공통) ──
+  const handleModal = document.getElementById('handle-modal');
+  const hmHandle = document.getElementById('hm-handle');
+  const hmDisplayName = document.getElementById('hm-displayname');
+  const hmError = document.getElementById('handle-modal-error');
+  const hmBtn = document.getElementById('handle-modal-btn');
+  const hmSub = document.getElementById('handle-modal-sub');
+  let currentSubmit = null;
+
+  function openHandleModal({ suggestedDisplayName, sub, onSubmit }) {
+    hmDisplayName.value = suggestedDisplayName || '';
+    hmHandle.value = '';
+    hmError.style.display = 'none';
+    hmSub.textContent = sub || '후원 페이지 주소로 사용됩니다.';
+    currentSubmit = onSubmit;
+    handleModal.style.display = '';
+    hmHandle.focus();
+  }
+
+  hmBtn.addEventListener('click', () => {
+    hmError.style.display = 'none';
+    const handle = hmHandle.value.trim().toLowerCase();
+    const displayName = hmDisplayName.value.trim();
+    if (!/^[a-z0-9][a-z0-9_]{2,19}$/.test(handle)) {
+      hmError.textContent = '핸들은 영문 소문자/숫자/언더스코어 3~20자로 입력해주세요.';
+      hmError.style.display = '';
+      return;
+    }
+    if (!displayName) {
+      hmError.textContent = '방송명을 입력해주세요.';
+      hmError.style.display = '';
+      return;
+    }
+    hmBtn.disabled = true; hmBtn.textContent = '처리 중…';
+    Promise.resolve(currentSubmit && currentSubmit(handle, displayName)).finally(() => {
+      hmBtn.disabled = false; hmBtn.textContent = '시작하기';
+    });
+  });
+})();
+</script>
+</body>
+</html>

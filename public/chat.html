@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UNATION 채팅 위젯</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" media="print" onload="this.media='all'">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 100%; height: 100%;
+    background: transparent;
+    overflow: hidden;
+    font-family: 'Pretendard Variable', 'Pretendard', 'Apple SD Gothic Neo', -apple-system, sans-serif;
+  }
+  #chat-root { width: 100%; height: 100vh; }
+  iframe { width: 100%; height: 100%; border: 0; display: block; }
+  .chat-empty {
+    width: 100%; height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px; text-align: center;
+  }
+  .chat-empty-box {
+    background: rgba(13,10,28,.92);
+    border: 1px solid rgba(139,92,246,.4);
+    border-radius: 16px;
+    padding: 24px 28px;
+    color: #f3f1fb;
+    max-width: 360px;
+  }
+  .chat-empty-box h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+  .chat-empty-box p { font-size: 13px; color: rgba(243,241,251,.65); line-height: 1.6; }
+  .chat-empty-box code {
+    display: block; margin-top: 10px; padding: 8px 10px;
+    background: rgba(255,255,255,.06); border-radius: 8px;
+    font-size: 11.5px; color: #22d3ee; word-break: break-all;
+  }
+</style>
+</head>
+<body>
+<div id="chat-root"></div>
+<script src="assets/script.js"></script>
+<script>
+(async () => {
+  const params = new URLSearchParams(location.search);
+  const handle = params.get('handle');
+  const root = document.getElementById('chat-root');
+
+  function showMessage(title, desc, extra) {
+    root.innerHTML = `
+      <div class="chat-empty">
+        <div class="chat-empty-box">
+          <h3>${title}</h3>
+          <p>${desc}</p>
+          ${extra ? `<code>${extra}</code>` : ''}
+        </div>
+      </div>`;
+  }
+
+  if (!handle) {
+    showMessage('핸들이 필요해요', '채팅 위젯 주소에 ?handle=핸들 을 붙여주세요.');
+    return;
+  }
+
+  let creator;
+  try {
+    const data = await apiFetch(`/api/creators/${handle}`);
+    creator = data.creator;
+  } catch (e) {
+    showMessage('크리에이터를 찾을 수 없어요', '핸들을 다시 확인해주세요.');
+    return;
+  }
+
+  const platform = creator.platform;
+  const channel = (creator.platformChannel || '').trim();
+  const customUrl = (creator.chatEmbedUrl || '').trim();
+
+  if (platform === 'twitch' && channel) {
+    // 트위치 공식 채팅 임베드 — parent 파라미터는 현재 도메인과 일치해야 합니다
+    const parent = location.hostname || 'localhost';
+    const src = `https://www.twitch.tv/embed/${encodeURIComponent(channel)}/chat?parent=${encodeURIComponent(parent)}&darkpopout`;
+    root.innerHTML = `<iframe src="${src}" frameborder="0" scrolling="no"></iframe>`;
+    return;
+  }
+
+  if (customUrl) {
+    // SOOP(아프리카TV) / 치지직 등 — 공식 공개 임베드가 없어 직접 입력한 채팅 URL을 사용합니다
+    root.innerHTML = `<iframe src="${customUrl}" frameborder="0" scrolling="no"></iframe>`;
+    return;
+  }
+
+  if (platform === 'soop' || platform === 'chzzk' || platform === 'youtube') {
+    const platformName = platform === 'soop' ? 'SOOP(아프리카TV)' : (platform === 'chzzk' ? '치지직' : '유튜브');
+    showMessage(
+      `${platformName} 채팅 URL이 필요해요`,
+      `${platformName}은 공식 공개 채팅 임베드를 제공하지 않아, 대시보드 프로필 설정에서 채팅 임베드 URL을 직접 입력해주셔야 합니다.`,
+      '대시보드 → 프로필 설정 → 채팅 위젯'
+    );
+    return;
+  }
+
+  showMessage(
+    '연동된 플랫폼이 없어요',
+    '대시보드 프로필 설정에서 방송 플랫폼(트위치 / SOOP / 치지직)을 선택하고 채널 정보를 입력해주세요.'
+  );
+})();
+</script>
+</body>
+</html>

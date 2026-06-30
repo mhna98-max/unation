@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>유네이션 UNATION — 후원이 즐거워지는 라이브 세상</title>
+<meta name="description" content="후원, 알림, 위젯, 채널 페이지까지. 크리에이터를 위한 올인원 후원 플랫폼 유네이션.">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="aurora-bg" aria-hidden="true"><span class="blob blob-1"></span><span class="blob blob-2"></span><span class="blob blob-3"></span></div>
+<div class="nav-wrap">
+  <nav class="nav">
+    <a href="index.html" class="logo">
+      <svg class="logo-mark" viewBox="0 0 32 32" width="28" height="28"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#06b6d4"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg)"/><text x="16" y="22" font-family="Space Grotesk,sans-serif" font-weight="700" font-size="16" fill="#fff" text-anchor="middle">U</text></svg>
+      UNATION
+    </a>
+    <div class="nav-links">
+      <a href="#features">기능</a>
+      <a href="#how">이용 방법</a>
+    </div>
+    <div class="nav-actions">
+      <a href="login.html" class="btn btn-outline btn-sm">로그인</a>
+      <a href="signup.html" class="btn btn-primary btn-sm">무료 시작</a>
+    </div>
+  </nav>
+</div>
+<main>
+
+<!-- 히어로 (펀네이션 스타일 카피) -->
+<section class="hero-wrap">
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <div class="no-fee-badge">가입비 · 월 이용료 없음</div>
+        <h1 class="h-display hero-h" style="margin-bottom:0;">
+          라이브가 끝나는 곳이 아니라<br>
+          <span class="text-grad">시작되는 곳</span>
+        </h1>
+        <p class="hero-sub">후원, 알림, 위젯, 채널 페이지까지 — 하나의 네이션 안에서 모두 이어집니다. 후원 한 번으로 팬은 시민이 되고, 크리에이터는 자신만의 네이션을 키워갑니다.</p>
+        <div class="flex gap-12" style="flex-wrap:wrap;">
+          <a href="signup.html" class="btn btn-primary btn-lg">무료로 시작하기</a>
+          <a href="#features" class="btn btn-outline btn-lg">기능 둘러보기</a>
+        </div>
+      </div>
+      <div class="hero-right">
+        <div style="perspective:1000px;">
+          <div class="citizen-card">
+            <div class="cc-top">
+              <span class="cc-brand"><svg width="11" height="11" viewBox="0 0 32 32"><rect width="32" height="32" rx="9" fill="#06b6d4"/></svg> UNATION MEMBERSHIP</span>
+              <span class="cc-tier">GOLD CITIZEN</span>
+            </div>
+            <div>
+              <div class="cc-nation" id="h-nation">UNATION</div>
+              <div class="cc-id" id="h-id">No. 001</div>
+            </div>
+            <div class="cc-bottom">
+              <div class="cc-user">
+                <span class="avatar" style="width:26px;height:26px;font-size:11px;" id="h-avatar">U</span>
+                <span style="font-size:13px;"><strong id="h-name">유네이션 시민</strong></span>
+              </div>
+              <span class="chip-amount" id="h-amount">₩10,000</span>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="padding:18px;">
+          <div class="flex gap-12" style="margin-bottom:12px;">
+            <span class="eyebrow">실시간 입금 알림</span>
+          </div>
+          <ul class="feed-list" id="home-feed"></ul>
+          <p id="home-feed-empty" class="text-dim2" style="font-size:13px;margin-top:8px;">유네이션에서 새로운 후원 알림을 준비 중입니다.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6개 핵심 기능 그리드 (펀네이션 "이런 걸 할 수 있어요" 스타일) -->
+<section class="section-sm" id="features">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">주요 기능</span>
+      <h2 class="h-display" style="font-size:clamp(26px,4vw,40px);margin-top:12px;">이런 걸 할 수 있어요</h2>
+      <p>모든 기능을 내 방송 스타일에 맞게 설정할 수 있어요</p>
+    </div>
+    <div class="feat-grid6">
+      <div class="card feat-icon-card reveal">
+        <div class="f-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.8" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg></div>
+        <h4>후원 알림</h4>
+        <p>테마 · 효과 · 대기열 커스텀</p>
+      </div>
+      <div class="card feat-icon-card reveal">
+        <div class="f-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div>
+        <h4>위젯</h4>
+        <p>알림, 랭킹, 대결, 미션 외 7종</p>
+      </div>
+      <div class="card feat-icon-card reveal">
+        <div class="f-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></div>
+        <h4>수익 관리</h4>
+        <p>수익 확인 · 출금 신청</p>
+      </div>
+      <div class="card feat-icon-card reveal">
+        <div class="f-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.8" stroke-linecap="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><line x1="11" y1="18" x2="13" y2="18"/></svg></div>
+        <h4>리모컨</h4>
+        <p>폰에서 위젯 제어</p>
+      </div>
+      <div class="card feat-icon-card reveal">
+        <div class="f-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18 14 14 0 010-18z"/></svg></div>
+        <h4>채널 페이지</h4>
+        <p>내 URL · 프로필 · 후원</p>
+      </div>
+      <div class="card feat-icon-card reveal">
+        <div class="f-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+        <h4>플레이어</h4>
+        <p>영상 + 채팅 + 후원</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 상세 기능 1: 후원 알림 -->
+<section class="section-sm">
+  <div class="container">
+    <div class="feat-detail">
+      <div class="feat-detail-text reveal">
+        <span class="eyebrow">후원 알림</span>
+        <h3>후원이 오면<br>바로 화면에</h3>
+        <p class="text-dim" style="font-size:15px;margin-bottom:20px;line-height:1.7;">테마, 효과, 최소 금액까지. 내 방송에 맞게 설정하세요.</p>
+        <div class="feat-bullets">
+          <div class="feat-bullet"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>후원 즉시 화면 표시</div>
+          <div class="feat-bullet"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>대기열 순서 재생 · 스킵 · 거부</div>
+          <div class="feat-bullet"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>닉네임 + 메시지 음성 읽기</div>
+          <div class="feat-bullet"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>금액별 다른 알림 효과</div>
+          <div class="feat-bullet"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>욕설 · 광고 자동 차단</div>
+        </div>
+      </div>
+      <div class="feat-visual reveal">
+        <div class="mini-alert">
+          <span class="avatar" style="width:34px;height:34px;font-size:14px;">민</span>
+          <div style="flex:1;min-width:0;">
+            <div class="flex gap-8" style="margin-bottom:2px;"><strong style="font-size:13.5px;">민트보드</strong><span class="chip-amount" style="font-size:11px;">₩30,000</span></div>
+            <p style="font-size:12px;color:var(--dim);margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">오늘 방송 너무 재밌어요!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 상세 기능 2: 위젯 -->
+    <div class="feat-detail reverse">
+      <div class="feat-detail-text reveal">
+        <span class="eyebrow">위젯</span>
+        <h3>골라 쓰는<br>라이브 위젯</h3>
+        <p class="text-dim" style="font-size:15px;margin-bottom:20px;line-height:1.7;">필요한 위젯만 켜세요. 나머지는 꺼두면 됩니다.</p>
+        <div class="feat-bullets">
+          <div class="feat-bullet"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>후원 알림 · 후원자 랭킹(일간/주간/월간)</div>
+          <div class="feat-bullet"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>팀 대결 랭킹, 미션, 목표 달성</div>
+          <div class="feat-bullet"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>사다리, 영상 후원 외 다수</div>
+        </div>
+      </div>
+      <div class="feat-visual reveal">
+        <div class="mini-widget-grid">
+          <div class="mini-widget-chip on"><span class="dot"></span>후원 알림</div>
+          <div class="mini-widget-chip on"><span class="dot"></span>후원자 랭킹</div>
+          <div class="mini-widget-chip"><span class="dot"></span>팀 대결</div>
+          <div class="mini-widget-chip on"><span class="dot"></span>목표 달성</div>
+          <div class="mini-widget-chip"><span class="dot"></span>미션</div>
+          <div class="mini-widget-chip"><span class="dot"></span>사다리</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 상세 기능 3: 후원자 랭킹 -->
+    <div class="feat-detail">
+      <div class="feat-detail-text reveal">
+        <span class="eyebrow">후원자 랭킹</span>
+        <h3>이번 달 시민<br>랭킹으로 보기</h3>
+        <p class="text-dim" style="font-size:15px;margin-bottom:20px;line-height:1.7;">후원하면 바로 순위에 반영됩니다. 순위가 바뀔 때 애니메이션 효과까지.</p>
+        <div class="feat-bullets">
+          <div class="feat-bullet"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>후원 즉시 순위 자동 반영</div>
+          <div class="feat-bullet"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>일간 · 주간 · 월간 집계 전환</div>
+          <div class="feat-bullet"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>순위 변동 시 애니메이션 효과</div>
+        </div>
+      </div>
+      <div class="feat-visual reveal">
+        <div class="mini-rank">
+          <div class="mini-rank-row"><span class="rk">1</span><span class="nm">코드네임R</span><span class="amt">₩320,000</span></div>
+          <div class="mini-rank-row"><span class="rk">2</span><span class="nm">달빛고양이</span><span class="amt">₩180,000</span></div>
+          <div class="mini-rank-row"><span class="rk">3</span><span class="nm">두유노클럽</span><span class="amt">₩95,000</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 상세 기능 4: 채널 페이지 -->
+    <div class="feat-detail reverse">
+      <div class="feat-detail-text reveal">
+        <span class="eyebrow">채널 페이지</span>
+        <h3>내 이름으로 된<br>후원 페이지</h3>
+        <p class="text-dim" style="font-size:15px;margin-bottom:20px;line-height:1.7;">배너, 프로필, 소셜 링크까지. 내 브랜드에 맞게 꾸미세요.</p>
+        <div class="feat-bullets">
+          <div class="feat-bullet"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>내 닉네임으로 된 고유 URL</div>
+          <div class="feat-bullet"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>배너, 프로필 사진, 소개글 설정</div>
+          <div class="feat-bullet"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>목표 달성 진행률 실시간 표시</div>
+        </div>
+      </div>
+      <div class="feat-visual reveal">
+        <div class="mini-channel">
+          <div class="mini-channel-card">
+            <div class="mini-channel-banner"></div>
+            <div class="mini-channel-body">
+              <span class="avatar">루</span>
+              <div><h5>UNATION 공식</h5><p>@unation</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 왜 UNATION인가요 (4분할) -->
+<section class="section-sm">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">왜 UNATION인가요?</span>
+      <h2 class="h-display" style="font-size:clamp(26px,4vw,40px);margin-top:12px;">크리에이터가 선택하는 이유</h2>
+    </div>
+    <div class="why-grid">
+      <div class="card why-card reveal">
+        <div class="f-icon" style="margin:0 auto 14px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.8" stroke-linecap="round"><path d="M13 2L3 14h8l-1 8 10-12h-8z"/></svg></div>
+        <h4>실시간 후원</h4>
+        <p>좋아하는 크리에이터에게 바로 후원하고 응원 메시지를 전달하세요</p>
+      </div>
+      <div class="card why-card reveal">
+        <div class="f-icon" style="margin:0 auto 14px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.8" stroke-linecap="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+        <h4>즉시 연동</h4>
+        <p>간단한 설정으로 방송에 바로 후원 위젯을 연동할 수 있습니다</p>
+      </div>
+      <div class="card why-card reveal">
+        <div class="f-icon" style="margin:0 auto 14px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.8" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
+        <h4>커뮤니티</h4>
+        <p>크리에이터와 팬이 함께 만들어가는 따뜻한 커뮤니티</p>
+      </div>
+      <div class="card why-card reveal">
+        <div class="f-icon" style="margin:0 auto 14px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.8" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <h4>안전한 결제</h4>
+        <p>검증된 결제 시스템으로 안전하게 후원할 수 있습니다</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 이용 방법 -->
+<section class="section-sm" id="how">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">이용 방법</span>
+      <h2 class="h-display" style="font-size:clamp(26px,4vw,40px);margin-top:12px;">시작부터 정산까지,<br>세 단계면 충분합니다</h2>
+    </div>
+    <div class="steps-grid">
+      <div class="card step-card reveal"><div class="step-num">STEP 01</div><h3>네이션 만들기</h3><p>크리에이터가 프로필과 목표를 설정하면 고유한 후원 페이지와 위젯 주소가 즉시 발급됩니다.</p></div>
+      <div class="card step-card reveal" style="animation-delay:.07s;"><div class="step-num">STEP 02</div><h3>시민 모으기</h3><p>팬이 후원 페이지에서 메시지·금액·결제수단을 선택해 후원하면, 시민증이 발급되고 방송 알림이 울립니다.</p></div>
+      <div class="card step-card reveal" style="animation-delay:.14s;"><div class="step-num">STEP 03</div><h3>정산받기</h3><p>대시보드에서 후원 내역을 확인하고 정산 가능 금액을 등록한 계좌로 신청할 수 있어요.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 크리에이터 목록 -->
+<section class="section-sm">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">크리에이터</span>
+      <h2 class="h-display" style="font-size:clamp(26px,4vw,40px);margin-top:12px;">지금 성장하고 있는 네이션들</h2>
+    </div>
+    <div class="bento reveal" id="creators-grid"></div>
+    <p id="creators-empty" class="text-dim2" style="text-align:center;padding:32px;display:none;">아직 등록된 크리에이터가 없어요.</p>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section">
+  <div class="container">
+    <div class="card reveal" style="padding:68px 32px;text-align:center;border-color:rgba(124,58,237,.2);background:linear-gradient(135deg,rgba(18,14,44,.97),rgba(10,8,24,.99));">
+      <span class="eyebrow" style="justify-content:center;">지금 시작하기</span>
+      <h2 class="h-display" style="font-size:clamp(28px,4vw,48px);margin:16px 0 10px;">당신의 네이션을<br>오늘 만들어보세요.</h2>
+      <p class="text-dim" style="margin-bottom:26px;">가입비 · 월 이용료 없음</p>
+      <div class="flex gap-12" style="justify-content:center;flex-wrap:wrap;">
+        <a href="signup.html" class="btn btn-primary btn-lg">무료로 시작하기</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="container">
+    <div class="footer-row">
+      <div>
+        <a href="index.html" class="logo" style="margin-bottom:12px;">
+          <svg class="logo-mark" viewBox="0 0 32 32" width="24" height="24"><defs><linearGradient id="lg-f" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#06b6d4"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg-f)"/><text x="16" y="22" font-family="Space Grotesk,sans-serif" font-weight="700" font-size="16" fill="#fff" text-anchor="middle">U</text></svg>
+          UNATION
+        </a>
+        <p class="text-dim2" style="max-width:220px;font-size:13px;line-height:1.65;">후원이 즐거워지는 라이브 세상, 유네이션.</p>
+      </div>
+      <div class="footer-cols">
+        <div class="footer-col"><h4>플랫폼</h4><a href="#features">기능 소개</a><a href="#how">이용 방법</a></div>
+        <div class="footer-col"><h4>크리에이터</h4><a href="signup.html">시작하기</a><a href="dashboard.html">대시보드</a></div>
+        <div class="footer-col"><h4>지원</h4><a href="faq.html">자주 묻는 질문</a><a href="terms.html">이용약관</a><a href="privacy.html">개인정보처리방침</a></div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 UNATION. All rights reserved.</span>
+      <span class="demo-note">테스트(모의) 결제 모드 — 실제 결제가 발생하지 않습니다</span>
+    </div>
+  </div>
+</footer>
+<script src="assets/script.js"></script>
+<script>
+(async()=>{
+  try{
+    const{totalCreators,totalCitizens,thisMonthTotal}=await apiFetch('/api/stats');
+    const f=n=>n.toLocaleString('ko-KR');
+    const creatorsStat = document.getElementById('s-creators');
+    const citizensStat = document.getElementById('s-citizens');
+    const totalStat = document.getElementById('s-total');
+    if (creatorsStat) creatorsStat.textContent=f(totalCreators);
+    if (citizensStat) citizensStat.textContent=f(totalCitizens);
+    if (totalStat) totalStat.textContent='₩'+f(thisMonthTotal);
+  }catch(e){}
+
+  try{
+    const{creators}=await apiFetch('/api/creators?limit=6');
+    const grid=document.getElementById('creators-grid');
+    document.getElementById('creators-empty').style.display=creators.length?'none':'';
+    creators.forEach(c=>{
+      const a=document.createElement('a');
+      const isDemoCreator = c.handle === 'lunajam';
+      const displayName = isDemoCreator ? 'UNATION 공식' : c.displayName;
+      const bio = isDemoCreator ? '유네이션의 공식 네이션입니다.' : (c.bio || '');
+      a.href=`creator.html?handle=${c.handle}`;
+      a.className='card feature-card';
+      a.style.textDecoration='none';
+      const init=(displayName||c.handle)[0].toUpperCase();
+      a.innerHTML=`
+        <div class="flex gap-12" style="align-items:center;">
+          <span class="avatar" style="width:46px;height:46px;font-size:18px;">${escapeHtml(init)}</span>
+          <div>
+            <h3 style="font-family:var(--font-h);font-weight:600;font-size:14.5px;margin-bottom:3px;">${escapeHtml(displayName)}</h3>
+            <p style="margin:0;font-size:12px;color:var(--dim-2);">${escapeHtml(bio.slice(0,28))}${bio.length>28?'…':''}</p>
+          </div>
+        </div>
+        <div class="flex gap-14">
+          <span style="font-size:12px;color:var(--dim-2);">시민 ${c.citizenCount.toLocaleString()}명</span>
+          <span style="font-size:12px;color:var(--dim-2);">월 ${formatWon(c.totalAmount)}</span>
+        </div>`;
+      grid.appendChild(a);
+    });
+  }catch(e){}
+
+  const feedEl=document.getElementById('home-feed');
+  const emptyEl=document.getElementById('home-feed-empty');
+  const demoDonations=[
+    { nickname:'하늘별', amount:5000, message:'오늘 방송도 응원합니다!' },
+    { nickname:'민트초코', amount:10000, message:'유네이션 시민증 발급 완료!' },
+    { nickname:'달빛서포터', amount:30000, message:'좋은 콘텐츠 계속 부탁드려요.' },
+    { nickname:'코드네임U', amount:50000, message:'공식 네이션 입금 알림 테스트!' },
+    { nickname:'새벽시청자', amount:100000, message:'큰 응원 보내고 갑니다.' },
+    { nickname:'유니온팬', amount:200000, message:'오늘의 스페셜 후원입니다.' },
+    { nickname:'별사탕', amount:5000, message:'작지만 마음은 크게!' },
+    { nickname:'라이브메이트', amount:10000, message:'실시간 알림 잘 보여요.' },
+  ];
+  let demoIndex=0;
+  function showHomeDonation(d){
+    if(!feedEl)return;
+    if(emptyEl)emptyEl.style.display='none';
+    prependFeedItem(feedEl,d,5);
+    const updates={
+      'h-nation':formatNationName(d.creatorDisplayName),
+      'h-id':'No. '+String(d.citizenNumber||1).padStart(3,'0'),
+      'h-avatar':(d.nickname||'U')[0],
+      'h-name':d.nickname||'유네이션 시민',
+      'h-amount':formatWon(d.amount),
+    };
+    Object.entries(updates).forEach(([id,value])=>{
+      const el=document.getElementById(id);
+      if(el)el.textContent=value;
+    });
+  }
+  function showNextDemoDonation(){
+    const base=demoDonations[demoIndex%demoDonations.length];
+    demoIndex+=1;
+    showHomeDonation({
+      ...base,
+      creatorDisplayName:'UNATION',
+      citizenNumber:demoIndex,
+      createdAt:new Date().toISOString(),
+    });
+  }
+  showNextDemoDonation();
+  setInterval(showNextDemoDonation, 4200);
+  connectStream('global',d=>{
+    showHomeDonation(d);
+  });
+})();
+</script>
+</body>
+</html>

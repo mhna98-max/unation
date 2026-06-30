@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>후원하기 — UNATION</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="aurora-bg" aria-hidden="true"><span class="blob blob-1"></span><span class="blob blob-2"></span><span class="blob blob-3"></span></div>
+<div class="nav-wrap">
+  <nav class="nav">
+    <a href="index.html" class="logo">
+      <svg class="logo-mark" viewBox="0 0 32 32" width="28" height="28"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#06b6d4"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg)"/><text x="16" y="22" font-family="Space Grotesk,sans-serif" font-weight="700" font-size="16" fill="#fff" text-anchor="middle">U</text></svg>
+      UNATION
+    </a>
+    <div class="nav-actions">
+      <a id="back-btn" href="creator.html" class="btn btn-outline btn-sm">← 돌아가기</a>
+    </div>
+  </nav>
+</div>
+
+<div class="mock-banner">
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+  <span><strong>테스트(모의) 결제</strong> — 실제 금액이 청구되지 않습니다</span>
+</div>
+
+<main>
+<div class="container donate-wrap">
+
+  <!-- 크리에이터 바 (투네이션 스타일) -->
+  <div class="donate-creator-bar">
+    <span class="avatar" style="width:48px;height:48px;font-size:20px;" id="dc-avatar">?</span>
+    <div class="donate-creator-info">
+      <h2 id="dc-name">크리에이터</h2>
+      <p id="dc-sub">후원 페이지</p>
+    </div>
+    <a id="dc-link" href="creator.html" class="btn btn-outline btn-sm" style="margin-left:auto;">페이지 보기</a>
+  </div>
+
+  <div class="donate-grid">
+    <!-- 좌: 폼 -->
+    <div>
+      <div id="donate-error" class="field-error" style="display:none;margin-bottom:16px;"></div>
+
+      <div class="field">
+        <label class="field-label" for="nickname">닉네임 <span class="field-hint">방송에 표시 · 최대 20자</span></label>
+        <input class="field-input" id="nickname" type="text" placeholder="익명의 시민" maxlength="20">
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="message">메시지 <span class="field-hint" id="msg-cnt">0/150</span></label>
+        <textarea class="field-input field-textarea" id="message" placeholder="크리에이터에게 전할 메시지를 입력해주세요" maxlength="150" rows="3"></textarea>
+      </div>
+
+      <!-- 후원 방식 -->
+      <div class="field">
+        <label class="field-label">후원 방식</label>
+        <div class="donation-type-row">
+          <label class="dtype-chip active"><input type="radio" name="dtype" value="일반" checked><span>💬 일반</span></label>
+          <label class="dtype-chip"><input type="radio" name="dtype" value="음성"><span>🔊 TTS로 읽어주기</span></label>
+          <label class="dtype-chip"><input type="radio" name="dtype" value="영상"><span>🎬 영상 후원</span></label>
+          <label class="dtype-chip"><input type="radio" name="dtype" value="이미지"><span>🖼️ 이미지 후원</span></label>
+          <label class="dtype-chip"><input type="radio" name="dtype" value="퀴즈"><span>❓ 퀴즈 후원</span></label>
+          <label class="dtype-chip"><input type="radio" name="dtype" value="미니"><span>✏️ 미니후원</span></label>
+          <label class="dtype-chip"><input type="radio" name="dtype" value="룰렛"><span>🎰 룰렛 후원</span></label>
+          <label class="dtype-chip"><input type="radio" name="dtype" value="스티커"><span>🏷️ 스티커 후원</span></label>
+        </div>
+        <p class="text-dim2" id="dtype-hint" style="font-size:12px;margin-top:8px;">방송 위젯에서 메시지가 화면에 표시됩니다.</p>
+        <input class="field-input" id="video-url-input" type="text" placeholder="유튜브 영상 주소 (예: https://youtube.com/watch?v=...)" style="display:none;margin-top:10px;">
+        <input class="field-input" id="image-url-input" type="text" placeholder="이미지 주소 (예: https://i.imgur.com/...)" style="display:none;margin-top:10px;">
+
+        <!-- 스티커 후원 전용: 이모지 선택 + 위치 지정 -->
+        <div id="sticker-picker" style="display:none;margin-top:12px;">
+          <p class="text-dim2" style="font-size:12px;margin-bottom:8px;">스티커 선택</p>
+          <div id="sticker-emoji-row" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;">
+            <button type="button" class="dtype-chip sticker-emoji-btn" data-emoji="🎉">🎉</button>
+            <button type="button" class="dtype-chip sticker-emoji-btn" data-emoji="💜">💜</button>
+            <button type="button" class="dtype-chip sticker-emoji-btn" data-emoji="🔥">🔥</button>
+            <button type="button" class="dtype-chip sticker-emoji-btn" data-emoji="⭐">⭐</button>
+            <button type="button" class="dtype-chip sticker-emoji-btn" data-emoji="🎊">🎊</button>
+            <button type="button" class="dtype-chip sticker-emoji-btn" data-emoji="💎">💎</button>
+            <button type="button" class="dtype-chip sticker-emoji-btn" data-emoji="👑">👑</button>
+            <button type="button" class="dtype-chip sticker-emoji-btn" data-emoji="🍀">🍀</button>
+            <button type="button" class="dtype-chip sticker-emoji-btn" data-emoji="🌈">🌈</button>
+            <button type="button" class="dtype-chip sticker-emoji-btn" data-emoji="💌">💌</button>
+            <button type="button" class="dtype-chip sticker-emoji-btn" data-emoji="🐰">🐰</button>
+            <button type="button" class="dtype-chip sticker-emoji-btn" data-emoji="🐱">🐱</button>
+          </div>
+          <p class="text-dim2" style="font-size:12px;margin-bottom:8px;">방송 화면에서 스티커가 나타날 위치 — 아래 미리보기를 클릭해주세요</p>
+          <div id="sticker-pos-preview" style="position:relative;width:100%;aspect-ratio:16/9;background:rgba(255,255,255,.04);border:1px dashed var(--border);border-radius:10px;cursor:crosshair;overflow:hidden;">
+            <div id="sticker-pos-marker" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:28px;display:none;">📍</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 금액 선택 (투네이션 스타일) -->
+      <div class="field amount-section">
+        <label class="field-label">후원 금액</label>
+        <div class="amount-row">
+          <button class="amt-btn" data-v="1000">₩1,000</button>
+          <button class="amt-btn" data-v="3000">₩3,000</button>
+          <button class="amt-btn" data-v="5000">₩5,000</button>
+          <button class="amt-btn" data-v="10000">₩10,000</button>
+          <button class="amt-btn" data-v="30000">₩30,000</button>
+          <button class="amt-btn" data-v="50000">₩50,000</button>
+          <button class="amt-btn" data-v="100000">₩100,000</button>
+          <button class="amt-btn custom-btn" id="custom-toggle">직접 입력</button>
+        </div>
+        <input class="field-input" id="custom-input" type="number" placeholder="금액 직접 입력 (원)" min="1000" max="5000000" style="display:none;margin-top:8px;">
+      </div>
+
+      <!-- 결제 수단 -->
+      <div class="field">
+        <label class="field-label">결제 수단</label>
+        <div class="pay-grid">
+          <label class="pay-chip"><input type="radio" name="pay" value="card" checked><span>💳 카드</span></label>
+          <label class="pay-chip"><input type="radio" name="pay" value="kakaopay"><span>💛 카카오페이</span></label>
+          <label class="pay-chip"><input type="radio" name="pay" value="tosspay"><span>🔵 토스</span></label>
+          <label class="pay-chip"><input type="radio" name="pay" value="mobile"><span>📱 휴대폰</span></label>
+          <label class="pay-chip"><input type="radio" name="pay" value="transfer"><span>🏦 계좌이체</span></label>
+        </div>
+      </div>
+
+      <label class="terms-row" style="margin-bottom:20px;">
+        <input type="checkbox" id="terms">
+        <span><a href="terms.html" target="_blank" class="link-purple">이용약관</a> 및 <a href="privacy.html" target="_blank" class="link-purple">개인정보처리방침</a>에 동의합니다. 이 후원은 <strong>테스트(모의) 결제</strong>이며 실제 금액이 청구되지 않습니다.</span>
+      </label>
+
+      <button class="btn btn-primary" id="submit-btn" style="width:100%;padding:14px;font-size:16px;" disabled>
+        금액을 선택해주세요
+      </button>
+    </div>
+
+    <!-- 우: 미리보기 (데스크탑만) -->
+    <div class="preview-sticky">
+      <div class="preview-label">시민증 미리보기</div>
+      <div class="citizen-card">
+        <div class="cc-top">
+          <span class="cc-brand"><svg width="10" height="10" viewBox="0 0 32 32"><rect width="32" height="32" rx="9" fill="#06b6d4"/></svg> UNATION MEMBERSHIP</span>
+          <span class="cc-tier" id="prev-tier">NEW CITIZEN</span>
+        </div>
+        <div>
+          <div class="cc-nation" id="prev-nation">— NATION</div>
+          <div class="cc-id" id="prev-id">No. ???</div>
+        </div>
+        <div class="cc-bottom">
+          <div class="cc-user">
+            <span class="avatar" style="width:26px;height:26px;font-size:11px;" id="prev-avatar">시</span>
+            <span style="font-size:13px;"><strong id="prev-name">익명의 시민</strong> 시민</span>
+          </div>
+          <span class="chip-amount" id="prev-amount">₩—</span>
+        </div>
+      </div>
+      <div class="mock-note">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+        테스트(모의) 결제 — 실제 청구 없음
+      </div>
+    </div>
+  </div>
+</div>
+</main>
+
+<!-- 성공 모달 -->
+<div id="modal" class="modal-backdrop" style="display:none;">
+  <div class="modal-card">
+    <div class="modal-icon">🎉</div>
+    <h2 class="modal-title">시민이 되셨어요!</h2>
+    <p id="modal-desc" class="text-dim" style="text-align:center;font-size:14px;line-height:1.7;margin-bottom:22px;"></p>
+    <div class="citizen-card" style="margin-bottom:16px;">
+      <div class="cc-top">
+        <span class="cc-brand"><svg width="10" height="10" viewBox="0 0 32 32"><rect width="32" height="32" rx="9" fill="#06b6d4"/></svg> UNATION MEMBERSHIP</span>
+        <span class="cc-tier" id="modal-tier">CITIZEN</span>
+      </div>
+      <div>
+        <div class="cc-nation" id="modal-nation">— NATION</div>
+        <div class="cc-id" id="modal-id">No. ???</div>
+      </div>
+      <div class="cc-bottom">
+        <div class="cc-user">
+          <span class="avatar" style="width:26px;height:26px;font-size:11px;" id="modal-avatar">시</span>
+          <span style="font-size:13px;"><strong id="modal-name">—</strong> 시민</span>
+        </div>
+        <span class="chip-amount" id="modal-amount">₩—</span>
+      </div>
+    </div>
+    <div class="mock-note" style="margin-bottom:20px;justify-content:center;">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+      테스트(모의) 결제로 처리됨 — 실제 청구 없음
+    </div>
+    <div class="flex gap-10" style="justify-content:center;">
+      <button class="btn btn-outline" id="modal-back">크리에이터 페이지로</button>
+      <button class="btn btn-primary" id="modal-again">다시 후원하기</button>
+    </div>
+  </div>
+</div>
+
+<script src="assets/script.js"></script>
+<script>
+(async()=>{
+  const handle = new URLSearchParams(location.search).get('handle')||'unation_official';
+  document.getElementById('back-btn').href = `creator.html?handle=${handle}`;
+  document.getElementById('dc-link').href = `creator.html?handle=${handle}`;
+
+  // 서버 없이 파일을 직접 연 경우(file://) — 데모용 가짜 데이터로 화면을 채워줍니다.
+  const isDemoMode = location.protocol === 'file:';
+  if (isDemoMode) {
+    const banner = document.createElement('div');
+    banner.style.cssText = 'background:rgba(249,115,22,.12);border-bottom:1px solid rgba(249,115,22,.25);color:rgba(249,115,22,.9);font-size:12.5px;text-align:center;padding:7px;';
+    banner.textContent = '미리보기 모드 — 서버 없이 파일을 직접 열어서 보고 있어요. 후원하기를 눌러도 실제로 저장되지 않습니다.';
+    document.querySelector('.mock-banner').after(banner);
+  }
+
+  let creatorName=handle, nextNo='???';
+  try{
+    const{creator,stats} = isDemoMode
+      ? { creator:{ handle:'unation_official', displayName:'UNATION 공식' }, stats:{ citizenCount:7 } }
+      : await apiFetch(`/api/creators/${handle}`);
+    creatorName=creator.displayName;
+    nextNo=String(stats.citizenCount+1).padStart(3,'0');
+    document.getElementById('dc-avatar').textContent=(creatorName||handle)[0];
+    document.getElementById('dc-name').textContent=creatorName;
+    document.getElementById('dc-sub').textContent=`@${creator.handle} · 후원 페이지`;
+    document.getElementById('prev-nation').textContent=formatNationName(creatorName);
+    document.getElementById('prev-id').textContent='No. '+nextNo;
+    document.getElementById('modal-nation').textContent=formatNationName(creatorName);
+  }catch(e){document.getElementById('dc-sub').textContent='크리에이터를 찾을 수 없어요.';}
+
+  // 메시지 글자수
+  const msgEl=document.getElementById('message');
+  msgEl.addEventListener('input',()=>document.getElementById('msg-cnt').textContent=msgEl.value.length+'/150');
+
+  // 닉네임 미리보기
+  const nickEl=document.getElementById('nickname');
+  nickEl.addEventListener('input',()=>{
+    const n=nickEl.value.trim()||'익명의 시민';
+    document.getElementById('prev-name').textContent=n;
+    document.getElementById('prev-avatar').textContent=n[0];
+  });
+
+  // 금액
+  let amt=0;
+  const custEl=document.getElementById('custom-input');
+  const submitBtn=document.getElementById('submit-btn');
+
+  // 후원 방식 (일반 / TTS / 영상 / 이미지 / 퀴즈)
+  let dtype='일반';
+  const videoUrlInput=document.getElementById('video-url-input');
+  const imageUrlInput=document.getElementById('image-url-input');
+  const dtypeHint=document.getElementById('dtype-hint');
+  const DTYPE_HINTS={
+    '일반':'방송 위젯에서 메시지가 화면에 표시됩니다.',
+    '음성':'방송 위젯에서 닉네임과 메시지를 음성으로 읽어드려요.',
+    '영상':'방송 위젯에서 입력하신 유튜브 영상이 함께 재생됩니다.',
+    '이미지':'방송 위젯에서 입력하신 이미지가 함께 표시됩니다.',
+    '퀴즈':'메시지에 입력한 문제가 방송 위젯에 퀴즈 형태로 표시됩니다.',
+    '미니':'짧은 텍스트만 가볍게 보내는 후원이에요 (최소 100원, 음성으로 읽지 않아요).',
+    '룰렛':'결제 후 서버가 무작위로 결과를 뽑아요. 결과는 연출용이며 정산 금액에는 영향이 없어요.',
+    '스티커':'방송 화면 원하는 위치에 스티커가 나타나요.',
+  };
+  const stickerPicker = document.getElementById('sticker-picker');
+  const stickerPosPreview = document.getElementById('sticker-pos-preview');
+  const stickerPosMarker = document.getElementById('sticker-pos-marker');
+  let selectedEmoji = null;
+  let stickerPos = null; // {x, y} in percent
+
+  document.querySelectorAll('.sticker-emoji-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.sticker-emoji-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedEmoji = btn.dataset.emoji;
+      sync();
+    });
+  });
+  stickerPosPreview.addEventListener('click', (e) => {
+    const rect = stickerPosPreview.getBoundingClientRect();
+    const x = Math.round(((e.clientX - rect.left) / rect.width) * 100);
+    const y = Math.round(((e.clientY - rect.top) / rect.height) * 100);
+    stickerPos = { x: Math.max(0, Math.min(100, x)), y: Math.max(0, Math.min(100, y)) };
+    stickerPosMarker.style.left = stickerPos.x + '%';
+    stickerPosMarker.style.top = stickerPos.y + '%';
+    stickerPosMarker.style.display = '';
+    sync();
+  });
+
+  document.querySelectorAll('input[name="dtype"]').forEach(r=>{
+    r.addEventListener('change',()=>{
+      document.querySelectorAll('.dtype-chip').forEach(c=>c.classList.remove('active'));
+      r.closest('.dtype-chip').classList.add('active');
+      dtype=r.value;
+      dtypeHint.textContent=DTYPE_HINTS[dtype];
+      videoUrlInput.style.display=dtype==='영상'?'':'none';
+      imageUrlInput.style.display=dtype==='이미지'?'':'none';
+      stickerPicker.style.display=dtype==='스티커'?'':'none';
+      document.getElementById('custom-input').min = dtype==='미니' ? 100 : 1000;
+      sync();
+    });
+  });
+
+  const sync=()=>{
+    const stickerReady = dtype!=='스티커' || (selectedEmoji && stickerPos);
+    submitBtn.disabled = amt<=0 || !stickerReady;
+    submitBtn.textContent = !stickerReady ? '스티커와 위치를 선택해주세요' : (amt>0?`${formatWon(amt)} 후원하기`:'금액을 선택해주세요');
+    document.getElementById('prev-amount').textContent=amt>0?formatWon(amt):'₩—';
+    const previewTier=getTier(amt);
+    const prevTierEl=document.getElementById('prev-tier');
+    prevTierEl.textContent=`${previewTier.icon} ${previewTier.short} CITIZEN`;
+    prevTierEl.className='cc-tier '+previewTier.cls;
+  };
+
+  document.querySelectorAll('.amt-btn:not(#custom-toggle)').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('.amt-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      custEl.style.display='none';
+      amt=parseInt(btn.dataset.v,10);
+      sync();
+    });
+  });
+  document.getElementById('custom-toggle').addEventListener('click',function(){
+    document.querySelectorAll('.amt-btn').forEach(b=>b.classList.remove('active'));
+    this.classList.add('active');
+    custEl.style.display='';custEl.focus();
+    amt=parseInt(custEl.value,10)||0;sync();
+  });
+  custEl.addEventListener('input',()=>{amt=parseInt(custEl.value,10)||0;sync();});
+
+  // 제출
+  const errEl=document.getElementById('donate-error');
+  submitBtn.addEventListener('click',async()=>{
+    errEl.style.display='none';
+    if(!document.getElementById('terms').checked){errEl.textContent='이용약관에 동의해주세요.';errEl.style.display='';return;}
+    if(dtype==='영상'){
+      const yt=videoUrlInput.value.trim();
+      if(!/(?:youtube\.com\/(?:watch\?v=|shorts\/)|youtu\.be\/)[a-zA-Z0-9_-]{11}/.test(yt)){
+        errEl.textContent='유효한 유튜브 영상 주소를 입력해주세요.';errEl.style.display='';return;
+      }
+    }
+    if(dtype==='이미지'){
+      const img=imageUrlInput.value.trim();
+      if(!/^https?:\/\/.+/.test(img)){
+        errEl.textContent='유효한 이미지 주소를 입력해주세요. (http:// 또는 https://로 시작)';errEl.style.display='';return;
+      }
+    }
+    if(dtype==='퀴즈' && !msgEl.value.trim()){
+      errEl.textContent='퀴즈 후원은 메시지에 문제를 입력해주세요.';errEl.style.display='';return;
+    }
+    if(dtype==='스티커' && (!selectedEmoji || !stickerPos)){
+      errEl.textContent='스티커와 위치를 선택해주세요.';errEl.style.display='';return;
+    }
+    const pay=document.querySelector('input[name="pay"]:checked')?.value||'card';
+    const nick=nickEl.value.trim()||'익명의 시민';
+    submitBtn.disabled=true;submitBtn.textContent='결제 처리 중…';
+    try{
+      const{donation} = isDemoMode
+        ? { donation: { citizenNumber: parseInt(nextNo,10)||8, amount: amt } }
+        : await apiFetch('/api/donations',{method:'POST',body:{
+            handle,nickname:nick,amount:amt,
+            message:msgEl.value.trim(),donationType:dtype,
+            videoUrl:dtype==='영상'?videoUrlInput.value.trim():undefined,
+            imageUrl:dtype==='이미지'?imageUrlInput.value.trim():undefined,
+            stickerEmoji:dtype==='스티커'?selectedEmoji:undefined,
+            posX:dtype==='스티커'?stickerPos.x:undefined,
+            posY:dtype==='스티커'?stickerPos.y:undefined,
+            paymentMethod:pay
+          }});
+      document.getElementById('modal-id').textContent='No. '+String(donation.citizenNumber).padStart(3,'0');
+      document.getElementById('modal-name').textContent=nick;
+      document.getElementById('modal-avatar').textContent=nick[0];
+      document.getElementById('modal-amount').textContent=formatWon(donation.amount);
+      const modalTier=getTier(donation.amount);
+      const modalTierEl=document.getElementById('modal-tier');
+      modalTierEl.textContent=`${modalTier.icon} ${modalTier.short} CITIZEN`;
+      modalTierEl.className='cc-tier '+modalTier.cls;
+      const baseDesc = `${creatorName} 네이션의 ${donation.citizenNumber}번 시민이 되셨습니다. 진심으로 감사해요!`;
+      document.getElementById('modal-desc').textContent = donation.rouletteResult
+        ? `${baseDesc} 🎰 룰렛 결과: ${donation.rouletteResult}`
+        : baseDesc;
+      document.getElementById('modal').style.display='';
+    }catch(e){
+      errEl.textContent=e.message;errEl.style.display='';
+      submitBtn.disabled=false;sync();
+    }
+  });
+
+  document.getElementById('modal-back').addEventListener('click',()=>location.href=`creator.html?handle=${handle}`);
+  document.getElementById('modal-again').addEventListener('click',()=>{
+    document.getElementById('modal').style.display='none';
+    document.querySelectorAll('.amt-btn').forEach(b=>b.classList.remove('active'));
+    custEl.style.display='none';custEl.value='';
+    nickEl.value='';msgEl.value='';
+    document.getElementById('msg-cnt').textContent='0/150';
+    document.getElementById('terms').checked=false;
+    document.getElementById('prev-name').textContent='익명의 시민';
+    document.getElementById('prev-avatar').textContent='시';
+    amt=0;sync();
+  });
+})();
+</script>
+</body>
+</html>

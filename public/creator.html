@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>크리에이터 — UNATION</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="aurora-bg" aria-hidden="true">
+  <span class="blob blob-1"></span><span class="blob blob-2"></span><span class="blob blob-3"></span>
+</div>
+
+<div class="nav-wrap">
+  <nav class="nav">
+    <a href="index.html" class="logo">
+      <svg class="logo-mark" viewBox="0 0 32 32"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#22d3ee"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg)"/><text x="16" y="22" font-family="'Space Grotesk',sans-serif" font-weight="700" font-size="16" fill="#fff" text-anchor="middle">U</text></svg>
+      UNATION
+    </a>
+    <div class="nav-links"><a href="index.html">홈</a></div>
+    <div class="nav-actions">
+      <a id="nav-donate-btn" href="donate.html" class="btn btn-primary btn-sm">후원하기</a>
+    </div>
+  </nav>
+</div>
+
+<main>
+  <!-- 404 -->
+  <div id="not-found" class="container" style="display:none;padding-top:120px;text-align:center;">
+    <p style="font-size:52px;margin-bottom:16px;">😶‍🌫️</p>
+    <h2 class="h-display" style="font-size:28px;">크리에이터를 찾을 수 없어요</h2>
+    <p class="text-dim" style="margin-top:12px;">주소를 다시 확인해주세요.</p>
+    <a href="index.html" class="btn btn-outline" style="margin-top:28px;">홈으로</a>
+  </div>
+
+  <!-- 메인 -->
+  <div id="creator-main" class="container" style="padding-top:32px;padding-bottom:80px;">
+
+    <!-- 커버 배너 -->
+    <div class="creator-cover"></div>
+
+    <!-- 프로필 행 -->
+    <div class="profile-row">
+      <span class="avatar" style="width:88px;height:88px;font-size:32px;" id="profile-avatar">?</span>
+      <div class="profile-meta">
+        <h1 id="profile-name" style="font-size:22px;font-family:var(--font-h);font-weight:700;">—</h1>
+        <div class="flex gap-8" style="align-items:center;margin-top:3px;">
+          <div class="handle" id="profile-handle" style="margin-top:0;">@—</div>
+          <span id="platform-badge" style="display:none;"></span>
+        </div>
+      </div>
+      <div class="social-row" style="margin-left:auto;">
+        <a href="#" class="social-icon" aria-label="유튜브">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="6" width="20" height="12" rx="3"/><path d="M11 9.5l4 2.5-4 2.5z" fill="currentColor" stroke="none"/></svg>
+        </a>
+      </div>
+      <a id="store-btn" href="store.html" class="btn btn-outline" style="display:none;">스토어</a>
+      <a id="donate-btn" href="donate.html" class="btn btn-primary">후원하기</a>
+    </div>
+
+    <!-- 통계 스트립 -->
+    <div class="stat-strip">
+      <div class="card"><div class="num" id="stat-citizens">—</div><div class="label">시민(후원자)</div></div>
+      <div class="card"><div class="num" id="stat-month">—</div><div class="label">이번 달 후원금</div></div>
+      <div class="card"><div class="num" id="stat-lifetime">—</div><div class="label">누적 후원금</div></div>
+    </div>
+
+    <!-- 2컬럼 레이아웃 -->
+    <div class="creator-layout">
+      <!-- 좌: 탭 + 소개 -->
+      <div>
+        <div class="tabs">
+          <button class="tab active" data-tab="about">소개</button>
+          <button class="tab" data-tab="rank">이번 달 랭킹</button>
+        </div>
+
+        <div id="tab-about" class="card content-card">
+          <h3 id="about-title">소개</h3>
+          <p id="about-bio" class="text-dim" style="margin-top:8px;font-size:14.5px;line-height:1.8;">로딩 중…</p>
+        </div>
+
+        <div id="tab-rank" class="card content-card" style="display:none;">
+          <h3 style="margin-bottom:16px;">이번 달 후원 랭킹</h3>
+          <div id="rank-list">
+            <p class="text-dim2" style="font-size:14px;">아직 이번 달 후원이 없어요.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 우: 사이드바 -->
+      <div>
+        <!-- 목표 -->
+        <div class="card sidebar-card" id="goal-card" style="display:none;">
+          <span class="eyebrow" id="goal-label">목표</span>
+          <div class="flex" style="justify-content:space-between;margin-top:16px;align-items:baseline;">
+            <span class="chip-amount" id="goal-current">₩0</span>
+            <span class="text-dim2" style="font-size:13px;" id="goal-target">/ ₩0</span>
+          </div>
+          <div class="progress-track"><div class="progress-fill" id="goal-bar" style="width:0%"></div></div>
+          <p class="text-dim2" style="font-size:12.5px;margin-top:10px;" id="goal-pct">집계 중…</p>
+        </div>
+
+        <!-- 실시간 피드 -->
+        <div class="card sidebar-card">
+          <span class="eyebrow" style="display:flex;align-items:center;gap:6px;">
+            실시간 입국 알림
+            <span class="badge-live" style="margin-left:6px;">LIVE</span>
+          </span>
+          <ul class="feed-list" id="creator-feed" style="margin-top:14px;"></ul>
+          <p class="text-dim2" id="feed-empty" style="font-size:13px;margin-top:10px;">아직 후원 알림이 없어요.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA 배너 -->
+    <div class="card" id="cta-section" style="margin-top:48px;padding:56px 40px;text-align:center;background:linear-gradient(135deg,rgba(22,18,50,.95),rgba(13,10,28,.98));border-color:rgba(139,92,246,.2);">
+      <span class="eyebrow" style="justify-content:center;">UNATION CITIZENSHIP</span>
+      <h2 class="h-display" style="font-size:28px;margin-top:14px;margin-bottom:28px;" id="cta-title">네이션의<br>시민이 되어보세요.</h2>
+      <a id="cta-donate-btn" href="donate.html" class="btn btn-primary" style="padding:12px 28px;font-size:15px;">후원하기</a>
+    </div>
+
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>© 2026 UNATION. All rights reserved.</span>
+      <span class="demo-note">테스트(모의) 결제 모드 — 실제 결제가 발생하지 않습니다</span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/script.js"></script>
+<script>
+(async () => {
+  const handle = new URLSearchParams(location.search).get('handle') || 'unation_official';
+  const donateUrl = `donate.html?handle=${encodeURIComponent(handle)}`;
+  ['nav-donate-btn','donate-btn','cta-donate-btn'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.href = donateUrl;
+  });
+
+  // 스토어 버튼 — 판매 중인 상품이 있을 때만 표시
+  const storeBtn = document.getElementById('store-btn');
+  if (storeBtn) {
+    storeBtn.href = `store.html?handle=${encodeURIComponent(handle)}`;
+    if (location.protocol !== 'file:') {
+      apiFetch(`/api/creators/${handle}/products`).then(({ products }) => {
+        if (products && products.length) storeBtn.style.display = '';
+      }).catch(() => {});
+    }
+  }
+
+  // 탭 전환
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('tab-about').style.display = tab.dataset.tab === 'about' ? '' : 'none';
+      document.getElementById('tab-rank').style.display  = tab.dataset.tab === 'rank'  ? '' : 'none';
+    });
+  });
+
+  // 서버 없이 파일을 직접 연 경우(file://) — 데모용 가짜 데이터로 화면을 채워줍니다.
+  // (서버를 통해 접속한 경우엔 이 분기를 타지 않고 항상 실제 데이터를 사용합니다)
+  const isDemoMode = location.protocol === 'file:';
+  const demoCreator = {
+    creator: {
+      handle: 'unation_official', displayName: 'UNATION 공식', platform: 'chzzk',
+      bio: '매일 저녁 9시, 노래와 게임으로 하루의 끝을 함께하는 방송을 켭니다. 시민분들의 작은 후원 하나하나가 방송을 이어가는 큰 힘이 됩니다.',
+      goalLabel: '마이크 교체', goalAmount: 500000,
+    },
+    stats: { citizenCount: 7, thisMonthTotal: 224000, lifetimeTotal: 224000 },
+  };
+  const demoDonations = [
+    { nickname:'후원자7', amount:56000, message:'화이팅', citizenNumber:7 },
+    { nickname:'후원자6', amount:48000, message:'화이팅', citizenNumber:6 },
+    { nickname:'후원자5', amount:40000, message:'화이팅', citizenNumber:5 },
+    { nickname:'후원자4', amount:32000, message:'화이팅', citizenNumber:4 },
+    { nickname:'후원자3', amount:24000, message:'화이팅', citizenNumber:3 },
+  ];
+
+  // 프로필 + 통계
+  let creator, lifetimeTotal = 0;
+  try {
+    const data = isDemoMode ? demoCreator : await apiFetch(`/api/creators/${handle}`);
+    creator = data.creator;
+    const stats = data.stats;
+    lifetimeTotal = stats.lifetimeTotal;
+
+    document.title = `${creator.displayName} — UNATION`;
+    if (isDemoMode) {
+      const banner = document.createElement('div');
+      banner.style.cssText = 'position:fixed;top:var(--nav-h);left:0;right:0;z-index:90;background:rgba(249,115,22,.12);border-bottom:1px solid rgba(249,115,22,.25);color:rgba(249,115,22,.9);font-size:12.5px;text-align:center;padding:7px;';
+      banner.textContent = '미리보기 모드 — 서버 없이 파일을 직접 열어서 보고 있어요. 보이는 데이터는 예시입니다.';
+      document.body.prepend(banner);
+    }
+    document.getElementById('profile-avatar').textContent = (creator.displayName||handle)[0];
+    document.getElementById('profile-name').textContent = creator.displayName;
+    document.getElementById('profile-handle').textContent = `@${creator.handle}`;
+    const PLATFORM_INFO = {
+      twitch: { label: '트위치', cls: 'twitch' },
+      soop: { label: 'SOOP', cls: 'soop' },
+      chzzk: { label: '치지직', cls: 'chzzk' },
+      youtube: { label: '유튜브', cls: 'youtube' },
+    };
+    const badgeEl = document.getElementById('platform-badge');
+    const pInfo = PLATFORM_INFO[creator.platform];
+    if (pInfo) {
+      badgeEl.textContent = pInfo.label;
+      badgeEl.className = 'platform-badge ' + pInfo.cls;
+      badgeEl.style.display = '';
+    } else {
+      badgeEl.style.display = 'none';
+    }
+    document.getElementById('about-title').textContent = `안녕하세요, ${creator.displayName}입니다`;
+    document.getElementById('about-bio').textContent = creator.bio || '아직 소개가 작성되지 않았어요.';
+    document.getElementById('cta-title').innerHTML = `${escapeHtml(creator.displayName)} 네이션의<br>시민이 되어보세요.`;
+    document.getElementById('stat-citizens').textContent = stats.citizenCount.toLocaleString('ko-KR') + '명';
+    document.getElementById('stat-month').textContent = formatWon(stats.thisMonthTotal);
+    document.getElementById('stat-lifetime').textContent = formatWon(stats.lifetimeTotal);
+
+    // 목표
+    if (creator.goalLabel && creator.goalAmount) {
+      document.getElementById('goal-card').style.display = '';
+      document.getElementById('goal-label').textContent = '목표: ' + creator.goalLabel;
+      document.getElementById('goal-current').textContent = formatWon(lifetimeTotal);
+      document.getElementById('goal-target').textContent = '/ ' + formatWon(creator.goalAmount);
+      const pct = Math.min(100, Math.round((lifetimeTotal / creator.goalAmount) * 100));
+      document.getElementById('goal-bar').style.width = pct + '%';
+      document.getElementById('goal-pct').textContent = `목표의 ${pct}%를 시민들과 함께 채웠어요.`;
+    }
+  } catch(e) {
+    document.getElementById('creator-main').style.display = 'none';
+    document.getElementById('not-found').style.display = '';
+    return;
+  }
+
+  // 최근 피드
+  const feedList = document.getElementById('creator-feed');
+  const feedEmpty = document.getElementById('feed-empty');
+  try {
+    const { donations, hidden } = isDemoMode
+      ? { donations: demoDonations }
+      : await apiFetch(`/api/creators/${handle}/donations?sort=recent&limit=5`);
+    if (hidden) {
+      feedEmpty.textContent = '크리에이터가 후원 내역을 비공개로 설정했어요.';
+    } else if (donations.length) {
+      feedEmpty.style.display = 'none';
+      donations.forEach(d => feedList.appendChild(buildFeedItem(d)));
+    }
+  } catch(e) {}
+
+  // 랭킹
+  try {
+    const { donations, hidden } = isDemoMode
+      ? { donations: demoDonations }
+      : await apiFetch(`/api/creators/${handle}/donations?sort=top&limit=5`);
+    const rankList = document.getElementById('rank-list');
+    if (hidden) {
+      rankList.innerHTML = `<p class="text-dim2" style="font-size:13px;">크리에이터가 후원 내역을 비공개로 설정했어요.</p>`;
+    } else if (donations.length) {
+      rankList.innerHTML = donations.map((d,i) => {
+        const tier = getTier(d.amount);
+        return `
+        <div class="rank-row">
+          <span class="rank-num">${i+1}</span>
+          <span style="flex:1;font-size:14px;">${escapeHtml(d.nickname)}</span>
+          <span class="cc-tier ${tier.cls}">${tier.icon} ${tier.short}</span>
+          <span class="chip-amount">${formatWon(d.amount)}</span>
+        </div>`;
+      }).join('');
+    }
+  } catch(e) {}
+
+  // 실시간 SSE (데모 모드에서는 서버가 없으므로 연결하지 않음)
+  if (!isDemoMode) connectStream(handle, (donation) => {
+    feedEmpty.style.display = 'none';
+    prependFeedItem(feedList, donation, 5);
+    lifetimeTotal += donation.amount;
+    if (creator.goalAmount) {
+      document.getElementById('goal-current').textContent = formatWon(lifetimeTotal);
+      const pct = Math.min(100, Math.round((lifetimeTotal / creator.goalAmount) * 100));
+      document.getElementById('goal-bar').style.width = pct + '%';
+      document.getElementById('goal-pct').textContent = `목표의 ${pct}%를 시민들과 함께 채웠어요.`;
+    }
+    const el = document.getElementById('stat-citizens');
+    const cur = parseInt(el.textContent.replace(/[^0-9]/g,''),10)||0;
+    el.textContent = (cur+1).toLocaleString('ko-KR') + '명';
+  });
+})();
+</script>
+</body>
+</html>
