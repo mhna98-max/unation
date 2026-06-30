@@ -40,6 +40,10 @@ module.exports = function registerAdminRoutes(router) {
       "SELECT COALESCE(SUM(amount),0) AS total, COUNT(*) AS cnt FROM donations WHERE status='completed'"
     ).get();
 
+    const unators = db.prepare(
+      "SELECT COUNT(DISTINCT LOWER(TRIM(nickname))) AS c FROM donations WHERE status='completed' AND TRIM(nickname) != ''"
+    ).get();
+
     const thisMonth = db.prepare(`
       SELECT COALESCE(SUM(amount),0) AS total, COUNT(*) AS cnt FROM donations
       WHERE status='completed' AND strftime('%Y-%m', created_at) = strftime('%Y-%m','now')
@@ -91,6 +95,9 @@ module.exports = function registerAdminRoutes(router) {
 
     sendJson(res, 200, {
       creatorCount,
+      unatorCount: unators.c,
+      receivedTotal: lifetime.total,
+      chargedTotal: lifetime.total,
       lifetimeTotal: lifetime.total,
       lifetimeCount: lifetime.cnt,
       thisMonthTotal: thisMonth.total,

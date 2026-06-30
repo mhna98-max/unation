@@ -28,6 +28,13 @@
   .notice-row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:14px 0;border-bottom:1px solid var(--border);}
   .notice-row:last-child{border-bottom:none;}
   .notice-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;}
+  .admin-mini-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:-4px 0 16px;}
+  .admin-mini-card{padding:14px;border-radius:var(--r-md);border:1px solid var(--border);background:rgba(255,255,255,.035);}
+  .admin-mini-card span{display:block;color:var(--dim-2);font-size:11.5px;margin-bottom:7px;}
+  .admin-mini-card strong{display:block;font-family:var(--font-h);font-size:17px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .admin-mini-card em{display:block;color:var(--dim-2);font-style:normal;font-size:11px;margin-top:4px;}
+  @media(max-width:900px){.admin-mini-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+  @media(max-width:560px){.admin-mini-grid{grid-template-columns:1fr;}}
   @media(max-width:480px){.drawer{padding:20px 16px;}.notice-row{flex-direction:column;}.notice-actions{justify-content:flex-start;}}
 </style>
 </head>
@@ -118,6 +125,13 @@
           <div class="stat-val" id="a-pending">—</div>
           <div class="stat-delta" style="color:var(--dim-2);" id="a-pending-cnt"></div>
         </div>
+      </div>
+
+      <div class="admin-mini-grid">
+        <div class="admin-mini-card"><span>유네이터 현황</span><strong id="a-unators">—</strong><em>완료 후원 닉네임 기준</em></div>
+        <div class="admin-mini-card"><span>받은금액</span><strong id="a-received">—</strong><em>완료된 후원 합계</em></div>
+        <div class="admin-mini-card"><span>충전금액</span><strong id="a-charged">—</strong><em>결제 완료 금액 기준</em></div>
+        <div class="admin-mini-card"><span>관리 범위</span><strong>크리에이터·유네이터</strong><em>후원/정산/공지 확인</em></div>
       </div>
 
       <div class="card chart-card" style="margin-bottom:16px;">
@@ -268,6 +282,9 @@
       document.getElementById('a-creators').textContent = s.creatorCount.toLocaleString() + '명';
       document.getElementById('a-pending').textContent = formatWon(s.pendingSettlementTotal);
       document.getElementById('a-pending-cnt').textContent = `${s.pendingSettlementCount}건 대기중`;
+      document.getElementById('a-unators').textContent = (s.unatorCount || 0).toLocaleString() + '명';
+      document.getElementById('a-received').textContent = formatWon(s.receivedTotal || s.lifetimeTotal);
+      document.getElementById('a-charged').textContent = formatWon(s.chargedTotal || s.lifetimeTotal);
 
       const chart = document.getElementById('a-bar-chart');
       const max = Math.max(...s.last7.map(d => d.total), 1);
