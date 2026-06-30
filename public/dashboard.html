@@ -58,6 +58,35 @@
         프로필 설정
       </a>
 
+      <a class="sb-link" data-section="quick" href="#">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 000 7H14a3.5 3.5 0 010 7H6"/></svg>
+        간편설정
+      </a>
+      <a class="sb-link" data-section="alerts" href="#">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M18 8a6 6 0 00-12 0c0 7-3 7-3 7h18s-3 0-3-7"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+        통합 알림창
+      </a>
+      <a class="sb-link" data-section="widgets" href="#">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        위젯
+      </a>
+      <a class="sb-link" data-section="remote" href="#">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="7" y="2" width="10" height="20" rx="3"/><circle cx="12" cy="8" r="1"/><path d="M10 13h4"/><path d="M10 17h4"/></svg>
+        리모컨
+      </a>
+      <a class="sb-link" data-section="voices" href="#">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><path d="M12 19v4"/><path d="M8 23h8"/></svg>
+        모두의 보이스
+      </a>
+      <a class="sb-link" data-section="ranking" href="#">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v5a5 5 0 01-10 0V4z"/><path d="M5 5H3v2a4 4 0 004 4"/><path d="M19 5h2v2a4 4 0 01-4 4"/></svg>
+        랭킹
+      </a>
+      <a class="sb-link" data-section="support" href="#">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 15a4 4 0 01-4 4H7l-4 4V7a4 4 0 014-4h10a4 4 0 014 4z"/></svg>
+        고객센터
+      </a>
+
       <div class="sb-divider"></div>
 
       <a id="view-page-btn" href="creator.html" class="sb-link">
@@ -321,6 +350,168 @@
       </div>
     </div>
 
+    <div id="section-quick" class="dash-section" style="display:none;">
+      <div class="dash-header"><h1 class="dash-title">간편설정</h1></div>
+      <div class="dashboard-grid-2">
+        <div class="card ops-card">
+          <h3>통합 알림창 URL</h3>
+          <p class="text-dim2">OBS, XSplit 브라우저 소스에 넣으면 후원 알림이 표시됩니다.</p>
+          <code class="widget-url-box" id="quick-alert-url">—</code>
+          <div class="ops-actions">
+            <button class="btn btn-outline btn-sm" data-copy-target="quick-alert-url">URL 복사</button>
+            <button class="btn btn-primary btn-sm" data-open-target="quick-alert-url">열기</button>
+          </div>
+        </div>
+        <div class="card ops-card">
+          <h3>후원 링크 URL</h3>
+          <p class="text-dim2">방송 프로필, 트위치 패널, 공지 링크에 연결할 수 있습니다.</p>
+          <code class="widget-url-box" id="quick-donate-url">—</code>
+          <div class="ops-actions">
+            <button class="btn btn-outline btn-sm" data-copy-target="quick-donate-url">URL 복사</button>
+            <button class="btn btn-primary btn-sm" data-open-target="quick-donate-url">열기</button>
+          </div>
+        </div>
+      </div>
+      <div class="card ops-card" style="margin-top:16px;">
+        <h3>방송 프로그램 세팅</h3>
+        <div class="ops-guide-grid">
+          <div class="ops-guide"><strong>OBS</strong><span>소스 추가 → 브라우저 → 통합 알림창 URL 붙여넣기 → 크기 800x600 권장</span></div>
+          <div class="ops-guide"><strong>XSplit</strong><span>소스 추가 → 웹 페이지 → 통합 알림창 URL 붙여넣기 → 투명 배경 유지</span></div>
+          <div class="ops-guide"><strong>트위치</strong><span>채널 정보 패널에 후원 링크 URL을 등록하면 시청자가 후원 페이지로 이동합니다.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="section-alerts" class="dash-section" style="display:none;">
+      <div class="dash-header"><h1 class="dash-title">통합 알림창</h1></div>
+      <div class="dashboard-grid-2">
+        <div class="card ops-card">
+          <h3>후원 알림 미리보기</h3>
+          <div class="alert-preview" id="alert-preview-card">
+            <span class="avatar" style="width:34px;height:34px;font-size:14px;">U</span>
+            <div><strong id="alert-preview-name">테스트시민</strong>님이 <strong id="alert-preview-amount">₩5,000</strong>을 후원했습니다.<br><span id="alert-preview-message">유네이션 테스트 알림입니다.</span></div>
+          </div>
+          <div class="ops-test-row">
+            <select class="field-input" id="alert-test-type">
+              <option value="일반">텍스트 후원</option>
+              <option value="음성">음성 후원</option>
+              <option value="영상">영상 후원</option>
+              <option value="룰렛">룰렛 후원</option>
+            </select>
+            <input class="field-input" id="alert-test-amount" type="number" min="100" value="5000">
+          </div>
+          <input class="field-input" id="alert-test-message" type="text" maxlength="80" value="유네이션 테스트 알림입니다.">
+          <div class="ops-actions">
+            <button class="btn btn-outline btn-sm" id="alert-preview-btn">미리보기 갱신</button>
+            <button class="btn btn-primary btn-sm" id="alert-widget-test-btn">OBS 테스트 열기</button>
+          </div>
+        </div>
+        <div class="card ops-card">
+          <h3>알림창 URL</h3>
+          <code class="widget-url-box" id="alertbox-url">—</code>
+          <div class="ops-actions">
+            <button class="btn btn-outline btn-sm" data-copy-target="alertbox-url">URL 복사</button>
+            <button class="btn btn-primary btn-sm" data-open-target="alertbox-url">열기</button>
+          </div>
+          <h3 style="margin-top:18px;">테스트 위젯 URL</h3>
+          <code class="widget-url-box" id="alertbox-test-url">—</code>
+          <div class="ops-actions">
+            <button class="btn btn-outline btn-sm" data-copy-target="alertbox-test-url">URL 복사</button>
+            <button class="btn btn-primary btn-sm" data-open-target="alertbox-test-url">열기</button>
+          </div>
+        </div>
+      </div>
+      <div class="card ops-card" style="margin-top:16px;">
+        <h3>알림 유형</h3>
+        <div class="ops-chip-grid">
+          <span>텍스트 후원 알림</span><span>게임 후원</span><span>시그니처 후원 알림</span><span>음성 후원 알림</span><span>영상 후원 알림</span><span>룰렛 후원 알림</span><span>투표 알림</span><span>퀘스트 알림</span><span>그림 후원 알림</span><span>럭키박스 알림</span><span>플레이 후원 알림</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="section-widgets" class="dash-section" style="display:none;">
+      <div class="dash-header"><h1 class="dash-title">위젯</h1></div>
+      <div class="dashboard-grid-2">
+        <div class="card ops-card">
+          <h3>통합 알림창</h3>
+          <p class="text-dim2">후원 알림을 방송 화면에 띄웁니다.</p>
+          <code class="widget-url-box" id="widget-alert-url">—</code>
+          <div class="ops-actions"><button class="btn btn-outline btn-sm" data-copy-target="widget-alert-url">복사</button><button class="btn btn-primary btn-sm" data-open-target="widget-alert-url">열기</button></div>
+        </div>
+        <div class="card ops-card">
+          <h3>채팅 오버레이</h3>
+          <p class="text-dim2">연동된 방송 채팅을 OBS 브라우저 소스로 보여줍니다.</p>
+          <code class="widget-url-box" id="widget-chat-url">—</code>
+          <div class="ops-actions"><button class="btn btn-outline btn-sm" data-copy-target="widget-chat-url">복사</button><button class="btn btn-primary btn-sm" data-open-target="widget-chat-url">열기</button></div>
+        </div>
+        <div class="card ops-card">
+          <h3>웹 리모컨</h3>
+          <p class="text-dim2">방송 중 알림 테스트, 일시정지, 스킵, 볼륨 상태를 확인합니다.</p>
+          <code class="widget-url-box" id="widget-remote-url">—</code>
+          <div class="ops-actions"><button class="btn btn-outline btn-sm" data-copy-target="widget-remote-url">복사</button><button class="btn btn-primary btn-sm" data-open-target="widget-remote-url">열기</button></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="section-remote" class="dash-section" style="display:none;">
+      <div class="dash-header"><h1 class="dash-title">리모컨</h1></div>
+      <div class="dashboard-grid-2">
+        <div class="card ops-card">
+          <h3>웹 리모컨 URL</h3>
+          <p class="text-dim2">방송 중 알림 일시정지, 스킵, 테스트 재생을 확인하는 컨트롤 화면입니다.</p>
+          <code class="widget-url-box" id="remote-url">—</code>
+          <div class="ops-actions"><button class="btn btn-outline btn-sm" data-copy-target="remote-url">URL 복사</button><button class="btn btn-primary btn-sm" data-open-target="remote-url">열기</button></div>
+        </div>
+        <div class="card ops-card">
+          <h3>알림 제어</h3>
+          <div class="remote-panel">
+            <button class="btn btn-outline btn-sm" id="remote-pause-btn">알림 일시정지</button>
+            <button class="btn btn-outline btn-sm" id="remote-skip-btn">스킵</button>
+            <button class="btn btn-primary btn-sm" id="remote-test-btn">테스트 재생</button>
+          </div>
+          <div class="remote-volume">
+            <label>TTS 볼륨 <input id="remote-tts-volume" type="range" min="0" max="100" value="80"></label>
+            <label>영상 볼륨 <input id="remote-video-volume" type="range" min="0" max="100" value="60"></label>
+            <label>효과음 볼륨 <input id="remote-effect-volume" type="range" min="0" max="100" value="100"></label>
+          </div>
+          <p class="text-dim2" id="remote-status" style="font-size:12.5px;margin-top:12px;">실제 방송 제어 API 연결 전, 현재 화면에서는 안전한 로컬 테스트 상태만 변경합니다.</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="section-voices" class="dash-section" style="display:none;">
+      <div class="dash-header"><h1 class="dash-title">모두의 보이스</h1></div>
+      <div class="card ops-card">
+        <h3>보이스 설정</h3>
+        <div class="voice-grid">
+          <label><input type="checkbox" checked> 인터뷰</label><label><input type="checkbox"> 사이렌</label><label><input type="checkbox"> 휴대폰</label><label><input type="checkbox"> 안드로이드</label><label><input type="checkbox"> 전부모아마트</label><label><input type="checkbox"> 졸라맨</label><label><input type="checkbox"> 붕대맨</label>
+        </div>
+        <div class="ops-test-row" style="margin-top:16px;">
+          <select class="field-input" id="voice-speed"><option>느리게</option><option selected>보통</option><option>빠르게</option><option>매우 빠르게</option></select>
+          <button class="btn btn-primary btn-sm" id="voice-preview-btn">미리듣기</button>
+        </div>
+        <p class="text-dim2" style="font-size:12.5px;margin-top:12px;">현재는 알림 테스트용 화면 설정입니다. 실제 음성 엔진 연동은 별도 승인 후 단계적으로 연결합니다.</p>
+      </div>
+    </div>
+
+    <div id="section-ranking" class="dash-section" style="display:none;">
+      <div class="dash-header"><h1 class="dash-title">랭킹</h1></div>
+      <div class="card" style="padding:24px;">
+        <h3 style="font-family:var(--font-h);font-weight:600;font-size:15px;margin-bottom:14px;">후원 순위</h3>
+        <div id="ranking-list"><p class="text-dim2" style="font-size:14px;">아직 후원 받은 내역이 없습니다.</p></div>
+      </div>
+    </div>
+
+    <div id="section-support" class="dash-section" style="display:none;">
+      <div class="dash-header"><h1 class="dash-title">고객센터</h1></div>
+      <div class="dashboard-grid-2">
+        <a class="card ops-card support-card" href="faq.html"><h3>자주 묻는 질문</h3><p class="text-dim2">후원, 위젯, 정산 관련 안내를 확인합니다.</p></a>
+        <a class="card ops-card support-card" href="terms.html"><h3>이용약관</h3><p class="text-dim2">서비스 이용 기준을 확인합니다.</p></a>
+        <a class="card ops-card support-card" href="privacy.html"><h3>개인정보 처리방침</h3><p class="text-dim2">개인정보 처리 기준을 확인합니다.</p></a>
+        <div class="card ops-card support-card"><h3>문의</h3><p class="text-dim2">운영 문의는 unation.co.kr 도메인 기준 고객 응대 채널로 연결 예정입니다.</p></div>
+      </div>
+    </div>
+
   </main>
 </div>
 
@@ -341,8 +532,38 @@
   document.getElementById('view-page-btn').href = `creator.html?handle=${me.handle}`;
 
   const widgetUrl = `${location.origin}/widget.html?handle=${me.handle}`;
+  const donateUrl = `${location.origin}/donate.html?handle=${me.handle}`;
+  const widgetTestUrl = `${location.origin}/widget.html?handle=${me.handle}&test=1`;
+  const chatWidgetUrl = `${location.origin}/chat.html?handle=${me.handle}`;
+  const remoteUrl = `${location.origin}/remote.html?handle=${me.handle}`;
   document.getElementById('widget-url').textContent = widgetUrl;
   document.getElementById('copy-widget-btn').addEventListener('click', () => copyToClipboard(widgetUrl, document.getElementById('copy-widget-btn')));
+  [
+    ['quick-alert-url', widgetUrl],
+    ['quick-donate-url', donateUrl],
+    ['alertbox-url', widgetUrl],
+    ['alertbox-test-url', widgetTestUrl],
+    ['widget-alert-url', widgetUrl],
+    ['widget-chat-url', chatWidgetUrl],
+    ['widget-remote-url', remoteUrl],
+    ['remote-url', remoteUrl],
+  ].forEach(([id, value]) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = value;
+  });
+  document.querySelectorAll('[data-copy-target]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = document.getElementById(btn.dataset.copyTarget);
+      copyToClipboard(target?.textContent || '', btn);
+    });
+  });
+  document.querySelectorAll('[data-open-target]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = document.getElementById(btn.dataset.openTarget);
+      const url = target?.textContent || '';
+      if (url) window.open(url, '_blank', 'noopener');
+    });
+  });
 
   document.getElementById('logout-btn').addEventListener('click', async () => {
     await apiFetch('/api/auth/logout',{method:'POST'}).catch(()=>{});
@@ -350,7 +571,7 @@
   });
 
   // 섹션 전환
-  const sections = ['overview','donations','settlement','store','profile'];
+  const sections = ['overview','donations','settlement','store','profile','quick','alerts','widgets','remote','voices','ranking','support'];
   function switchSection(sec) {
     document.querySelectorAll('.sb-link').forEach(l => l.classList.remove('active'));
     document.querySelector(`.sb-link[data-section="${sec}"]`)?.classList.add('active');
@@ -360,6 +581,7 @@
     if (sec === 'donations') loadDonations();
     if (sec === 'settlement') loadSettlement();
     if (sec === 'store') loadStore();
+    if (sec === 'ranking') loadRanking();
   }
   document.querySelectorAll('.sb-link[data-section]').forEach(link => {
     link.addEventListener('click', e => { e.preventDefault(); switchSection(link.dataset.section); });
@@ -755,6 +977,68 @@
   }
 
   // ── 실시간 SSE ──
+  function refreshAlertPreview() {
+    const amount = parseInt(document.getElementById('alert-test-amount')?.value, 10) || 5000;
+    const message = document.getElementById('alert-test-message')?.value.trim() || '유네이션 테스트 알림입니다.';
+    const type = document.getElementById('alert-test-type')?.value || '일반';
+    const names = ['테스트시민', '라온시청자', '유네팬', '방송응원단', '오늘의시민'];
+    const name = names[Math.floor(Date.now() / 1000) % names.length];
+    document.getElementById('alert-preview-name').textContent = `${name} (${type})`;
+    document.getElementById('alert-preview-amount').textContent = formatWon(amount);
+    document.getElementById('alert-preview-message').textContent = message;
+  }
+  document.getElementById('alert-preview-btn')?.addEventListener('click', refreshAlertPreview);
+  document.getElementById('alert-widget-test-btn')?.addEventListener('click', () => window.open(widgetTestUrl, '_blank', 'noopener'));
+
+  document.getElementById('remote-pause-btn')?.addEventListener('click', () => {
+    const status = document.getElementById('remote-status');
+    const btn = document.getElementById('remote-pause-btn');
+    const paused = btn.dataset.paused === '1';
+    btn.dataset.paused = paused ? '0' : '1';
+    btn.textContent = paused ? '알림 일시정지' : '알림 재개';
+    status.textContent = paused ? '알림 대기 상태입니다.' : '알림이 일시정지된 테스트 상태입니다.';
+  });
+  document.getElementById('remote-skip-btn')?.addEventListener('click', () => {
+    document.getElementById('remote-status').textContent = '현재 대기 중인 테스트 알림을 스킵했습니다.';
+  });
+  document.getElementById('remote-test-btn')?.addEventListener('click', () => window.open(widgetTestUrl, '_blank', 'noopener'));
+  document.querySelectorAll('#section-remote input[type="range"]').forEach(input => {
+    input.addEventListener('input', () => {
+      document.getElementById('remote-status').textContent = `볼륨 테스트 값이 저장 없이 변경되었습니다. TTS ${document.getElementById('remote-tts-volume').value}%, 영상 ${document.getElementById('remote-video-volume').value}%, 효과음 ${document.getElementById('remote-effect-volume').value}%`;
+    });
+  });
+  document.getElementById('voice-preview-btn')?.addEventListener('click', () => {
+    showToast(`보이스 미리듣기: ${document.getElementById('voice-speed').value}`);
+  });
+
+  async function loadRanking() {
+    const list = document.getElementById('ranking-list');
+    if (!list) return;
+    list.innerHTML = '<p class="text-dim2" style="font-size:14px;">불러오는 중...</p>';
+    try {
+      const { donations } = await apiFetch('/api/donations/me?limit=100');
+      const totals = new Map();
+      donations.forEach(d => {
+        const name = d.nickname || '익명의 시민';
+        totals.set(name, (totals.get(name) || 0) + (Number(d.amount) || 0));
+      });
+      const rows = [...totals.entries()].sort((a,b) => b[1] - a[1]).slice(0, 10);
+      if (!rows.length) {
+        list.innerHTML = '<p class="text-dim2" style="font-size:14px;">아직 후원 받은 내역이 없습니다.</p>';
+        return;
+      }
+      list.innerHTML = rows.map(([name, amount], idx) => `
+        <div class="ranking-row">
+          <span class="ranking-rank">${idx + 1}</span>
+          <strong>${escapeHtml(name)}</strong>
+          <span>${formatWon(amount)}</span>
+        </div>
+      `).join('');
+    } catch (e) {
+      list.innerHTML = '<p class="text-dim2" style="font-size:14px;">랭킹을 불러오지 못했습니다.</p>';
+    }
+  }
+
   connectStream(me.handle, async () => {
     await loadStats();
     await loadOverviewFeed();

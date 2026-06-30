@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>리모컨 — UNATION</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  body{padding-top:0;background:#0c0f17;}
+  .remote-shell{min-height:100vh;display:grid;grid-template-columns:1fr 260px;}
+  .remote-main{padding:18px;min-width:0;}
+  .remote-side{border-left:1px solid var(--border);background:rgba(255,255,255,.035);padding:18px;display:flex;flex-direction:column;gap:14px;}
+  .remote-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap;}
+  .remote-tabs{display:flex;gap:6px;flex-wrap:wrap;}
+  .remote-tab{border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--dim);border-radius:999px;padding:7px 12px;font-size:12px;font-weight:700;}
+  .remote-tab.active{background:rgba(34,211,238,.15);color:var(--cyan);border-color:rgba(34,211,238,.3);}
+  .remote-queue{border:1px solid var(--border);border-radius:12px;overflow:hidden;background:rgba(255,255,255,.035);}
+  .remote-row{display:grid;grid-template-columns:1fr 90px 92px 58px;gap:8px;align-items:center;padding:12px 14px;border-bottom:1px solid var(--border);font-size:13px;}
+  .remote-row:last-child{border-bottom:none;}
+  .remote-row strong{color:var(--text);}
+  .remote-row span{color:var(--dim);}
+  .remote-pill{border-radius:999px;background:rgba(124,58,237,.18);color:var(--purple-2)!important;padding:5px 8px;text-align:center;font-size:11px;font-weight:700;}
+  .remote-control{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0;}
+  .remote-control .btn{width:100%;}
+  .remote-volume-card{border:1px solid var(--border);border-radius:12px;padding:14px;background:rgba(255,255,255,.035);}
+  .remote-volume-card label{display:grid;gap:7px;color:var(--dim);font-size:12.5px;margin-bottom:14px;}
+  .remote-volume-card label:last-child{margin-bottom:0;}
+  .remote-bottom{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto;}
+  @media(max-width:760px){
+    .remote-shell{grid-template-columns:1fr;}
+    .remote-side{border-left:0;border-top:1px solid var(--border);}
+    .remote-row{grid-template-columns:1fr;align-items:start;}
+  }
+</style>
+</head>
+<body>
+<div class="remote-shell">
+  <main class="remote-main">
+    <div class="remote-top">
+      <a href="index.html" class="logo">
+        <svg class="logo-mark" viewBox="0 0 32 32" style="width:28px;height:28px;"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#22d3ee"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg)"/><text x="16" y="22" font-family="Pretendard,sans-serif" font-weight="700" font-size="16" fill="#fff" text-anchor="middle">U</text></svg>
+        UNATION 리모컨
+      </a>
+      <div class="remote-tabs">
+        <button class="remote-tab active">메시지</button>
+        <button class="remote-tab">게임</button>
+        <button class="remote-tab">퀘스트</button>
+        <button class="remote-tab">룰렛</button>
+        <button class="remote-tab">플레이</button>
+      </div>
+    </div>
+
+    <section class="remote-queue" id="remote-queue"></section>
+
+    <div class="remote-control">
+      <button class="btn btn-outline" id="pause-btn">알림 일시정지</button>
+      <button class="btn btn-outline" id="skip-btn">스킵</button>
+      <button class="btn btn-primary" id="test-btn">테스트 알림 열기</button>
+      <button class="btn btn-outline" id="clear-btn">대기열 비우기</button>
+    </div>
+  </main>
+
+  <aside class="remote-side">
+    <div>
+      <h1 class="dash-title" style="font-size:18px;margin-bottom:6px;">볼륨제어</h1>
+      <p class="text-dim2" style="font-size:12.5px;line-height:1.6;">방송 중 컨트롤을 위한 안전한 테스트 리모컨입니다.</p>
+    </div>
+    <div class="remote-volume-card">
+      <label>TTS 볼륨 <input type="range" min="0" max="100" value="80"></label>
+      <label>영상 볼륨 <input type="range" min="0" max="100" value="60"></label>
+      <label>효과음 볼륨 <input type="range" min="0" max="100" value="100"></label>
+      <label>룰렛 볼륨 <input type="range" min="0" max="100" value="100"></label>
+      <label>플레이 볼륨 <input type="range" min="0" max="100" value="100"></label>
+    </div>
+    <div class="remote-bottom">
+      <button class="btn btn-outline btn-sm" id="inventory-btn">인벤토리</button>
+      <button class="btn btn-outline btn-sm" id="vote-btn">투표</button>
+      <button class="btn btn-primary btn-sm" id="dashboard-btn">대시보드</button>
+    </div>
+    <p class="text-dim2" id="remote-note" style="font-size:12px;line-height:1.6;">실제 후원/정산 데이터는 변경하지 않습니다.</p>
+  </aside>
+</div>
+
+<script>
+const qs = new URLSearchParams(location.search);
+const handle = qs.get('handle') || 'unation_official';
+const widgetUrl = `${location.origin}/widget.html?handle=${encodeURIComponent(handle)}&test=1`;
+const queueEl = document.getElementById('remote-queue');
+const sampleQueue = [
+  ['단합', '500', '텍스트후원'],
+  ['leepsung', '3,000', '영상 후원'],
+  ['성현', '500', '텍스트후원'],
+  ['유네팬', '10,000', '룰렛 후원'],
+  ['라온시민', '5,000', '음성 후원'],
+];
+function renderQueue(rows = sampleQueue) {
+  queueEl.innerHTML = rows.length ? rows.map(([name, amount, type]) => `
+    <div class="remote-row">
+      <strong>${name}</strong>
+      <span>${amount}</span>
+      <span class="remote-pill">${type}</span>
+      <button class="btn btn-outline btn-sm replay-btn">재생</button>
+    </div>
+  `).join('') : '<div class="remote-row"><span>대기 중인 알림이 없습니다.</span></div>';
+  queueEl.querySelectorAll('.replay-btn').forEach(btn => btn.addEventListener('click', () => window.open(widgetUrl, '_blank', 'noopener')));
+}
+renderQueue();
+document.getElementById('pause-btn').addEventListener('click', e => {
+  const paused = e.currentTarget.dataset.paused === '1';
+  e.currentTarget.dataset.paused = paused ? '0' : '1';
+  e.currentTarget.textContent = paused ? '알림 일시정지' : '알림 재개';
+});
+document.getElementById('skip-btn').addEventListener('click', () => {
+  sampleQueue.shift();
+  renderQueue(sampleQueue);
+});
+document.getElementById('clear-btn').addEventListener('click', () => renderQueue([]));
+document.getElementById('test-btn').addEventListener('click', () => window.open(widgetUrl, '_blank', 'noopener'));
+document.getElementById('dashboard-btn').addEventListener('click', () => location.href = 'dashboard.html');
+document.getElementById('inventory-btn').addEventListener('click', () => document.getElementById('remote-note').textContent = '인벤토리 패널은 대시보드의 스토어/인벤토리와 단계적으로 연결됩니다.');
+document.getElementById('vote-btn').addEventListener('click', () => document.getElementById('remote-note').textContent = '투표 패널은 알림 테스트 범위에서 준비된 화면입니다.');
+</script>
+</body>
+</html>
