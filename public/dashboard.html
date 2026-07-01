@@ -882,7 +882,7 @@
           <div class="ops-card card">
             <h3>후원 페이지 링크 설정</h3>
             <label class="field-label">후원 페이지 URL</label>
-            <div class="ops-inline-control"><code class="widget-url-box">${donateUrl}</code><button class="btn btn-outline btn-sm" type="button" data-copy-value="${donateUrl}">복사</button><button class="btn btn-outline btn-sm" type="button">중복확인</button></div>
+            <div class="ops-inline-control"><code class="widget-url-box">${donateUrl}</code><button class="btn btn-outline btn-sm" type="button" data-copy-value="${donateUrl}">복사</button><button class="btn btn-outline btn-sm" type="button" id="check-donate-url-btn">중복확인</button></div>
             <label class="field-label" style="margin-top:14px;">한 줄 메시지</label>
             <input class="field-input" maxlength="80" placeholder="후원 페이지에 표시할 짧은 안내 문구">
           </div>
@@ -993,7 +993,7 @@
     addOnce('section-voices', `
       <div class="ops-deep-panel" data-mounted-panel>
         <div class="ops-section-head"><h3>모두의 보이스 진행 단계</h3><p>녹음, 학습, 등록 완료의 3단계 플로우를 준비했습니다.</p></div>
-        <div class="voice-step-grid"><div class="card voice-step-card"><b>1</b><strong>보이스 녹음</strong><p>크리에이터 본인의 목소리를 녹음합니다.</p><button class="btn btn-outline btn-sm">녹음하러 가기</button></div><div class="card voice-step-card"><b>2</b><strong>보이스 학습</strong><p>학습은 최대 3일 정도 소요될 수 있습니다.</p><button class="btn btn-outline btn-sm">학습 상태 확인</button></div><div class="card voice-step-card"><b>3</b><strong>보이스 등록 완료</strong><p>학습 후 등록 및 알림 설정에 사용할 수 있습니다.</p><button class="btn btn-primary btn-sm">보이스 설정</button></div></div>
+        <div class="voice-step-grid"><div class="card voice-step-card"><b>1</b><strong>보이스 녹음</strong><p>크리에이터 본인의 목소리를 녹음합니다.</p><button class="btn btn-outline btn-sm" data-voice-action="record">녹음하러 가기</button></div><div class="card voice-step-card"><b>2</b><strong>보이스 학습</strong><p>학습은 최대 3일 정도 소요될 수 있습니다.</p><button class="btn btn-outline btn-sm" data-voice-action="status">학습 상태 확인</button></div><div class="card voice-step-card"><b>3</b><strong>보이스 등록 완료</strong><p>학습 후 등록 및 알림 설정에 사용할 수 있습니다.</p><button class="btn btn-primary btn-sm" data-voice-action="settings">보이스 설정</button></div></div>
       </div>
     `);
 
@@ -1025,6 +1025,24 @@
 
     document.querySelectorAll('[data-copy-value]').forEach(btn => btn.addEventListener('click', () => copyToClipboard(btn.dataset.copyValue, btn)));
     document.querySelectorAll('[data-open-url]').forEach(btn => btn.addEventListener('click', () => window.open(btn.dataset.openUrl, '_blank', 'noopener')));
+    document.getElementById('check-donate-url-btn')?.addEventListener('click', () => {
+      showToast('현재 후원 페이지 주소는 고유하게 발급되어 사용할 수 있습니다.');
+    });
+    document.querySelectorAll('.ops-tab-strip button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        btn.parentElement.querySelectorAll('button').forEach(item => item.classList.remove('active'));
+        btn.classList.add('active');
+        showToast(`${btn.textContent.trim()} 화면으로 전환했습니다.`);
+      });
+    });
+    document.querySelectorAll('[data-voice-action]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const action = btn.dataset.voiceAction;
+        if (action === 'record') showToast('보이스 녹음 준비 상태입니다. 마이크 권한 연동은 다음 단계에서 연결합니다.');
+        if (action === 'status') showToast('현재 보이스 학습 대기 상태입니다.');
+        if (action === 'settings') showToast('보이스 알림 설정은 음성 후원 설정과 함께 저장됩니다.');
+      });
+    });
     document.getElementById('issue-integration-key')?.addEventListener('click', () => {
       const key = `UNATION-${me.handle}-${Math.random().toString(36).slice(2, 10).toUpperCase()}`;
       document.getElementById('integration-key-box').textContent = key;
@@ -1177,7 +1195,7 @@
     btn.addEventListener('click', () => showToast(btn.dataset.news));
   });
   document.getElementById('floating-remote-web')?.addEventListener('click', () => window.open(remoteUrl, '_blank', 'noopener'));
-  document.getElementById('floating-remote-test')?.addEventListener('click', () => window.open(widgetTestUrl, '_blank', 'noopener'));
+  document.getElementById('floating-remote-test')?.addEventListener('click', () => sendWidgetTest('음성'));
   document.querySelectorAll('.stats-periods button, .stats-mode-row button').forEach(btn => {
     btn.addEventListener('click', () => {
       btn.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('active'));

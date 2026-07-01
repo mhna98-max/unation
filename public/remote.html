@@ -44,11 +44,11 @@
         UNATION 리모컨
       </a>
       <div class="remote-tabs">
-        <button class="remote-tab active">메시지</button>
-        <button class="remote-tab">게임</button>
-        <button class="remote-tab">퀘스트</button>
-        <button class="remote-tab">룰렛</button>
-        <button class="remote-tab">플레이</button>
+        <button class="remote-tab active" data-remote-type="message">메시지</button>
+        <button class="remote-tab" data-remote-type="game">게임</button>
+        <button class="remote-tab" data-remote-type="quest">퀘스트</button>
+        <button class="remote-tab" data-remote-type="roulette">룰렛</button>
+        <button class="remote-tab" data-remote-type="play">플레이</button>
       </div>
     </div>
 
@@ -87,15 +87,23 @@
 const qs = new URLSearchParams(location.search);
 const handle = qs.get('handle') || 'unation_official';
 const widgetUrl = `${location.origin}/widget.html?handle=${encodeURIComponent(handle)}&test=1`;
+const widgetTests = {
+  message: `${location.origin}/widget.html?handle=${encodeURIComponent(handle)}&test=1`,
+  game: `${location.origin}/widget.html?handle=${encodeURIComponent(handle)}&testvideo=1`,
+  quest: `${location.origin}/widget.html?handle=${encodeURIComponent(handle)}&testquiz=1`,
+  roulette: `${location.origin}/widget.html?handle=${encodeURIComponent(handle)}&testroulette=1`,
+  play: `${location.origin}/widget.html?handle=${encodeURIComponent(handle)}&teststicker=1`,
+};
 const queueEl = document.getElementById('remote-queue');
-const sampleQueue = [
-  ['단합', '500', '텍스트후원'],
-  ['leepsung', '3,000', '영상 후원'],
-  ['성현', '500', '텍스트후원'],
-  ['유네팬', '10,000', '룰렛 후원'],
-  ['라온시민', '5,000', '음성 후원'],
-];
-function renderQueue(rows = sampleQueue) {
+let activeType = 'message';
+const sampleQueues = {
+  message: [['단합', '500', '텍스트 후원'], ['성현', '500', '텍스트 후원'], ['라온시민', '5,000', '음성 후원']],
+  game: [['leepsung', '3,000', '영상 후원'], ['게임왕', '10,000', '게임 후원']],
+  quest: [['퀘스트팬', '2,000', '퀘스트 후원'], ['미션러', '5,000', '미션 요청']],
+  roulette: [['유네팬', '10,000', '룰렛 후원'], ['행운시민', '3,000', '룰렛 후원']],
+  play: [['스티커왕', '2,000', '스티커 후원'], ['플레이어', '1,000', '플레이 후원']],
+};
+function renderQueue(rows = sampleQueues[activeType] || []) {
   queueEl.innerHTML = rows.length ? rows.map(([name, amount, type]) => `
     <div class="remote-row">
       <strong>${name}</strong>
@@ -104,20 +112,30 @@ function renderQueue(rows = sampleQueue) {
       <button class="btn btn-outline btn-sm replay-btn">재생</button>
     </div>
   `).join('') : '<div class="remote-row"><span>대기 중인 알림이 없습니다.</span></div>';
-  queueEl.querySelectorAll('.replay-btn').forEach(btn => btn.addEventListener('click', () => window.open(widgetUrl, '_blank', 'noopener')));
+  queueEl.querySelectorAll('.replay-btn').forEach(btn => btn.addEventListener('click', () => window.open(widgetTests[activeType] || widgetUrl, '_blank', 'noopener')));
 }
-renderQueue();
+function switchRemoteType(type) {
+  activeType = type;
+  document.querySelectorAll('.remote-tab').forEach(tab => tab.classList.toggle('active', tab.dataset.remoteType === type));
+  renderQueue([...(sampleQueues[type] || [])]);
+  document.getElementById('remote-note').textContent = `${document.querySelector(`.remote-tab[data-remote-type="${type}"]`)?.textContent || '알림'} 대기열을 보고 있습니다.`;
+}
+renderQueue([...(sampleQueues[activeType] || [])]);
+document.querySelectorAll('.remote-tab').forEach(tab => {
+  tab.addEventListener('click', () => switchRemoteType(tab.dataset.remoteType));
+});
 document.getElementById('pause-btn').addEventListener('click', e => {
   const paused = e.currentTarget.dataset.paused === '1';
   e.currentTarget.dataset.paused = paused ? '0' : '1';
   e.currentTarget.textContent = paused ? '알림 일시정지' : '알림 재개';
 });
 document.getElementById('skip-btn').addEventListener('click', () => {
-  sampleQueue.shift();
-  renderQueue(sampleQueue);
+  const rows = sampleQueues[activeType] || [];
+  rows.shift();
+  renderQueue([...rows]);
 });
 document.getElementById('clear-btn').addEventListener('click', () => renderQueue([]));
-document.getElementById('test-btn').addEventListener('click', () => window.open(widgetUrl, '_blank', 'noopener'));
+document.getElementById('test-btn').addEventListener('click', () => window.open(widgetTests[activeType] || widgetUrl, '_blank', 'noopener'));
 document.getElementById('dashboard-btn').addEventListener('click', () => location.href = 'dashboard.html');
 document.getElementById('inventory-btn').addEventListener('click', () => document.getElementById('remote-note').textContent = '인벤토리 패널은 대시보드의 스토어/인벤토리와 단계적으로 연결됩니다.');
 document.getElementById('vote-btn').addEventListener('click', () => document.getElementById('remote-note').textContent = '투표 패널은 알림 테스트 범위에서 준비된 화면입니다.');
