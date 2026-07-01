@@ -419,6 +419,7 @@
   async function showVideoCard(d) {
     const name = d.nickname || '익명의 시민';
     const msg = d.message || '영상 후원을 보냈어요!';
+    const targetId = `yt-target-${String(d.id || Date.now()).replace(/[^a-zA-Z0-9_-]/g, '-')}`;
 
     const card = document.createElement('div');
     card.className = 'video-card';
@@ -434,7 +435,7 @@
           <div class="alert-msg">${escapeHtml(msg)}</div>
         </div>
       </div>
-      <div class="video-frame-wrap" id="yt-target-${d.id || Date.now()}"></div>
+      <div class="video-frame-wrap" id="${targetId}"></div>
     `;
     root.appendChild(card);
 
@@ -447,7 +448,6 @@
     };
 
     await loadYouTubeApi();
-    const targetId = `yt-target-${d.id || Date.now()}`;
     const targetEl = document.getElementById(targetId);
     const videoIdMatch = (d.videoUrl || '').match(/embed\/([a-zA-Z0-9_-]{11})/);
     const videoId = videoIdMatch ? videoIdMatch[1] : null;
@@ -458,8 +458,11 @@
     if (window.YT && window.YT.Player && videoId && targetEl) {
       new window.YT.Player(targetId, {
         videoId,
-        playerVars: { autoplay: 1, mute: 0, controls: 0, rel: 0 },
+        playerVars: { autoplay: 1, mute: 0, controls: 0, rel: 0, playsinline: 1 },
         events: {
+          onReady: (e) => {
+            try { e.target.unMute(); e.target.playVideo(); } catch (err) {}
+          },
           onStateChange: (e) => { if (e.data === window.YT.PlayerState.ENDED) safeFinish(); },
           onError: () => safeFinish(),
         },
@@ -467,7 +470,8 @@
       setTimeout(safeFinish, 60000); // 최대 60초 안전장치
     } else if (targetEl && d.videoUrl) {
       // YouTube API 로드 실패 시 일반 iframe으로 대체
-      targetEl.innerHTML = `<iframe src="${d.videoUrl}?autoplay=1" allow="autoplay" allowfullscreen></iframe>`;
+      const sep = d.videoUrl.includes('?') ? '&' : '?';
+      targetEl.innerHTML = `<iframe src="${d.videoUrl}${sep}autoplay=1&playsinline=1" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
       setTimeout(safeFinish, 30000);
     } else {
       safeFinish();

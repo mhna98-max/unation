@@ -646,6 +646,9 @@
               <option value="일반">텍스트 후원</option>
               <option value="음성">음성 후원</option>
               <option value="영상">영상 후원</option>
+              <option value="스티커">이모티콘 후원</option>
+              <option value="이미지">이미지 후원</option>
+              <option value="미니">미니 후원</option>
               <option value="룰렛">룰렛 후원</option>
             </select>
             <input class="field-input" id="alert-test-amount" type="number" min="100" value="5000">
@@ -653,8 +656,8 @@
           <input class="field-input" id="alert-test-message" type="text" maxlength="80" value="유네이션 테스트 알림입니다.">
           <div class="ops-actions">
             <button class="btn btn-outline btn-sm" id="alert-preview-btn">미리보기 갱신</button>
-            <button class="btn btn-primary btn-sm" id="alert-widget-test-btn">OBS 테스트 열기</button>
-            <button class="btn btn-outline btn-sm" id="alert-video-test-btn" type="button">영상 테스트</button>
+            <button class="btn btn-primary btn-sm" id="alert-widget-test-btn">OBS로 테스트 전송</button>
+            <button class="btn btn-outline btn-sm" id="alert-video-test-btn" type="button">영상 테스트 전송</button>
           </div>
         </div>
         <div class="card ops-card">
@@ -1582,8 +1585,32 @@
     document.getElementById('alert-preview-message').textContent = message;
   }
   document.getElementById('alert-preview-btn')?.addEventListener('click', refreshAlertPreview);
-  document.getElementById('alert-widget-test-btn')?.addEventListener('click', () => window.open(widgetTestUrl, '_blank', 'noopener'));
-  document.getElementById('alert-video-test-btn')?.addEventListener('click', () => window.open(`${widgetUrl}&testvideo=1`, '_blank', 'noopener'));
+  async function sendWidgetTest(forceType) {
+    const type = forceType || document.getElementById('alert-test-type')?.value || '일반';
+    const amount = parseInt(document.getElementById('alert-test-amount')?.value, 10) || 5000;
+    const message = document.getElementById('alert-test-message')?.value.trim() || '유네이션 테스트 알림입니다.';
+    const btn = forceType === '영상' ? document.getElementById('alert-video-test-btn') : document.getElementById('alert-widget-test-btn');
+    const oldText = btn?.textContent;
+    if (btn) { btn.disabled = true; btn.textContent = '전송 중...'; }
+    try {
+      await apiFetch('/api/donations/test', { method: 'POST', body: {
+        donationType: ({ 일반: 'text', 음성: 'tts', 영상: 'video', 이미지: 'image', 퀴즈: 'quiz', 미니: 'mini', 룰렛: 'roulette', 스티커: 'sticker' })[type] || 'text',
+        amount,
+        message,
+        videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+        imageUrl: 'https://picsum.photos/seed/unation-test/640/360',
+        stickerEmoji: '🎉',
+        posX: 50,
+        posY: 50,
+      }});
+      showToast(`${type} 테스트를 OBS 위젯으로 전송했습니다.`);
+    } catch (e) {
+      showToast(e.message || '테스트 전송에 실패했습니다.');
+    }
+    if (btn) { btn.disabled = false; btn.textContent = oldText; }
+  }
+  document.getElementById('alert-widget-test-btn')?.addEventListener('click', () => sendWidgetTest());
+  document.getElementById('alert-video-test-btn')?.addEventListener('click', () => sendWidgetTest('영상'));
 
   document.getElementById('remote-pause-btn')?.addEventListener('click', () => {
     const status = document.getElementById('remote-status');
@@ -1596,7 +1623,7 @@
   document.getElementById('remote-skip-btn')?.addEventListener('click', () => {
     document.getElementById('remote-status').textContent = '현재 대기 중인 테스트 알림을 스킵했습니다.';
   });
-  document.getElementById('remote-test-btn')?.addEventListener('click', () => window.open(widgetTestUrl, '_blank', 'noopener'));
+  document.getElementById('remote-test-btn')?.addEventListener('click', () => sendWidgetTest('음성'));
   document.querySelectorAll('#section-remote input[type="range"]').forEach(input => {
     input.addEventListener('input', () => {
       document.getElementById('remote-status').textContent = `볼륨 테스트 값이 저장 없이 변경되었습니다. TTS ${document.getElementById('remote-tts-volume').value}%, 영상 ${document.getElementById('remote-video-volume').value}%, 효과음 ${document.getElementById('remote-effect-volume').value}%`;

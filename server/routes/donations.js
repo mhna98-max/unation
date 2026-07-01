@@ -85,7 +85,79 @@ function isValidImageUrl(url) {
   }
 }
 
+function normalizeDonationType(value) {
+  const raw = String(value || '').trim().toLowerCase();
+  const aliases = {
+    text: '일반',
+    normal: '일반',
+    tts: '음성',
+    voice: '음성',
+    video: '영상',
+    image: '이미지',
+    quiz: '퀴즈',
+    mini: '미니',
+    roulette: '룰렛',
+    sticker: '스티커',
+    emoji: '스티커',
+  };
+  if (aliases[raw]) return aliases[raw];
+  return ['일반', '음성', '영상', '이미지', '퀴즈', '미니', '룰렛', '스티커'].includes(value) ? value : '일반';
+}
+
 module.exports = function registerDonationRoutes(router) {
+  router.post('/api/donations/test', async (req, res) => {
+    const auth = getCreatorFromRequest(req);
+    if (!auth) return sendError(res, 401, '크리에이터 로그인이 필요해요.');
+
+    const body = await readJsonBody(req);
+    const donationType = normalizeDonationType(body.donationType);
+    const amount = Math.min(Math.max(parseInt(body.amount, 10) || 5000, 100), MAX_AMOUNT);
+    const message = String(body.message || '유네이션 테스트 알림입니다.').trim().slice(0, 150);
+    const nickname = String(body.nickname || '테스트시민').trim().slice(0, 20) || '테스트시민';
+    const id = `test-${Date.now()}`;
+    let videoUrl = null;
+    let imageUrl = null;
+    let rouletteResult = null;
+    let stickerEmoji = null;
+    let posX = null;
+    let posY = null;
+
+    if (donationType === '영상') {
+      const youtubeId = extractYouTubeId(body.videoUrl) || 'dQw4w9WgXcQ';
+      videoUrl = `https://www.youtube.com/embed/${youtubeId}`;
+    }
+    if (donationType === '이미지') {
+      imageUrl = isValidImageUrl(body.imageUrl) ? String(body.imageUrl).trim() : 'https://picsum.photos/seed/unation-test/640/360';
+    }
+    if (donationType === '룰렛') {
+      rouletteResult = '테스트 성공';
+    }
+    if (donationType === '스티커') {
+      stickerEmoji = STICKER_EMOJIS.has(body.stickerEmoji) ? body.stickerEmoji : '🎉';
+      posX = Number.isFinite(Number(body.posX)) ? Number(body.posX) : 50;
+      posY = Number.isFinite(Number(body.posY)) ? Number(body.posY) : 50;
+    }
+
+    const payload = {
+      id,
+      citizenNumber: 0,
+      nickname,
+      amount,
+      message,
+      donationType,
+      videoUrl,
+      imageUrl,
+      rouletteResult,
+      stickerEmoji,
+      posX,
+      posY,
+      createdAt: new Date().toISOString(),
+      test: true,
+    };
+    sse.publish(auth.handle, 'donation', payload);
+    sendJson(res, 200, { ok: true, donation: payload });
+  });
+
   // 후원 생성 (모의 결제를 통과해야 실제로 기록됨)
   router.post('/api/donations', async (req, res) => {
     if (!rateLimit(req, res, 'donation-create', 20, 10 * 60 * 1000)) return; // 10분에 20회
@@ -95,7 +167,7 @@ module.exports = function registerDonationRoutes(router) {
     const nickname = String(body.nickname || '').trim().slice(0, 20) || '익명의 시민';
     const amount = parseInt(body.amount, 10);
     const message = String(body.message || '').trim().slice(0, 150);
-    const donationType = ['일반', '음성', '영상', '이미지', '퀴즈', '미니', '룰렛', '스티커'].includes(body.donationType) ? body.donationType : '일반';
+    const donationType = normalizeDonationType(body.donationType);
     const paymentMethod = PAYMENT_METHODS.has(body.paymentMethod) ? body.paymentMethod : null;
 
     let videoUrl = null;
