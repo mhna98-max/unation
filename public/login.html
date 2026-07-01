@@ -87,6 +87,8 @@
 
       <p class="text-dim" style="text-align:center;margin-top:20px;font-size:14px;">
         아직 계정이 없으신가요? <a href="signup.html" class="link-purple">크리에이터로 시작하기</a>
+        <span class="text-dim2"> · </span>
+        <a href="signup.html?type=unator" class="link-purple">유네이터로 가입하기</a>
       </p>
     </div>
   </div>
@@ -118,7 +120,7 @@
 (async () => {
   try {
     const data = await apiFetch('/api/auth/me');
-    location.href = data.creator?.role === 'admin' ? 'admin.html' : 'dashboard.html';
+    location.href = data.creator?.role === 'admin' ? 'admin.html' : (data.creator?.role === 'unator' ? 'unator.html' : 'dashboard.html');
     return;
   } catch(e) {}
 
@@ -137,7 +139,7 @@
     btn.disabled = true; btn.textContent = '로그인 중…';
     try {
       const { creator } = await apiFetch('/api/auth/login', { method:'POST', body:{ email: emailEl.value.trim(), password: passEl.value } });
-      location.href = creator?.role === 'admin' ? 'admin.html' : 'dashboard.html';
+      location.href = creator?.role === 'admin' ? 'admin.html' : (creator?.role === 'unator' ? 'unator.html' : 'dashboard.html');
     } catch(e) {
       errEl.textContent = e.message; errEl.style.display = '';
       btn.disabled = false; btn.textContent = '로그인';

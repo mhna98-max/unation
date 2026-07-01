@@ -33,7 +33,7 @@ module.exports = function registerAdminRoutes(router) {
     if (!requireAdmin(req, res)) return;
 
     const creatorCount = db.prepare(
-      "SELECT COUNT(*) AS c FROM creators WHERE role != 'admin'"
+      "SELECT COUNT(*) AS c FROM creators WHERE role = 'creator'"
     ).get().c;
 
     const lifetime = db.prepare(
@@ -87,7 +87,7 @@ module.exports = function registerAdminRoutes(router) {
       FROM creators c
       LEFT JOIN donations d ON d.creator_id = c.id AND d.status='completed'
         AND strftime('%Y-%m', d.created_at) = strftime('%Y-%m','now')
-      WHERE c.role != 'admin'
+      WHERE c.role = 'creator'
       GROUP BY c.id
       ORDER BY total DESC
       LIMIT 5
@@ -119,7 +119,7 @@ module.exports = function registerAdminRoutes(router) {
     const url = new URL(req.url, 'http://x');
     const q = String(url.searchParams.get('q') || '').trim().toLowerCase().slice(0, 40);
     const params = [];
-    let where = "WHERE role != 'admin'";
+    let where = "WHERE role = 'creator'";
     if (q) {
       where += " AND (LOWER(handle) LIKE ? OR LOWER(display_name) LIKE ? OR LOWER(COALESCE(email,'')) LIKE ? OR LOWER(COALESCE(phone,'')) LIKE ?)";
       const like = `%${q}%`;

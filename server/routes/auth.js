@@ -72,8 +72,10 @@ function redirect(res, location) {
   res.end();
 }
 
-function redirectWithError(res, req, message) {
-  redirect(res, `${getBaseUrl(req)}/login.html?oauth_error=${encodeURIComponent(message)}`);
+function redirectWithError(res, req, message, role = 'creator') {
+  const target = role === 'unator' ? 'signup.html?type=unator' : 'login.html';
+  const joiner = target.includes('?') ? '&' : '?';
+  redirect(res, `${getBaseUrl(req)}/${target}${joiner}oauth_error=${encodeURIComponent(message)}`);
 }
 
 function setOAuthStateCookie(res, state) {
@@ -190,8 +192,15 @@ async function exchangeOAuthProfile(provider, code, config) {
   throw new Error('Unsupported OAuth provider');
 }
 
-function findOrCreateSocialCreator(profile) {
+function getPostLoginPath(account) {
+  if (account?.role === 'admin') return '/admin.html';
+  if (account?.role === 'unator') return '/unator.html';
+  return '/dashboard.html';
+}
+
+function findOrCreateSocialCreator(profile, requestedRole = 'creator') {
   if (!profile.socialId) throw new Error('Social profile id was not returned');
+  const role = requestedRole === 'unator' ? 'unator' : 'creator';
 
   const existingSocial = db.prepare('SELECT * FROM creators WHERE social_provider = ? AND social_id = ?').get(profile.provider, profile.socialId);
   if (existingSocial) return existingSocial;
@@ -211,20 +220,22 @@ function findOrCreateSocialCreator(profile) {
   const handle = makeUniqueHandle(email || profile.displayName, profile.provider);
   const displayName = String(profile.displayName || `${SOCIAL_LABELS[profile.provider]} User`).trim().slice(0, 40);
   const result = db.prepare(`
-    INSERT INTO creators (handle, display_name, email, social_provider, social_id)
-    VALUES (?, ?, ?, ?, ?)
-  `).run(handle, displayName || handle, email, profile.provider, profile.socialId);
+    INSERT INTO creators (handle, display_name, email, social_provider, social_id, role)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `).run(handle, displayName || handle, email, profile.provider, profile.socialId, role);
   return db.prepare('SELECT * FROM creators WHERE id = ?').get(result.lastInsertRowid);
 }
 
 module.exports = function registerAuthRoutes(router) {
   router.get('/api/auth/oauth/:provider/start', async (req, res, params) => {
     const provider = String(params.provider || '');
-    if (!SOCIAL_PROVIDERS.has(provider)) return redirectWithError(res, req, '지원하지 않는 SNS 로그인입니다.');
+    const url = new URL(req.url, getBaseUrl(req));
+    const role = url.searchParams.get('role') === 'unator' ? 'unator' : 'creator';
+    if (!SOCIAL_PROVIDERS.has(provider)) return redirectWithError(res, req, '지원하지 않는 SNS 로그인입니다.', role);
     const config = getOAuthConfig(provider, req);
-    if (!config || !config.clientId) return redirectWithError(res, req, `${SOCIAL_LABELS[provider]} 로그인 설정이 아직 완료되지 않았습니다.`);
+    if (!config || !config.clientId) return redirectWithError(res, req, `${SOCIAL_LABELS[provider]} 로그인 설정이 아직 완료되지 않았습니다.`, role);
 
-    const state = `${provider}:${crypto.randomBytes(18).toString('hex')}`;
+    const state = `${provider}:${role}:${crypto.randomBytes(18).toString('hex')}`;
     setOAuthStateCookie(res, state);
     const query = new URLSearchParams({
       response_type: 'code',
@@ -256,12 +267,13 @@ module.exports = function registerAuthRoutes(router) {
       if (!state || cookies[OAUTH_STATE_COOKIE] !== state || !state.startsWith(`${provider}:`)) {
         throw new Error('OAuth state verification failed');
       }
+      const role = state.split(':')[1] === 'unator' ? 'unator' : 'creator';
 
       const config = getOAuthConfig(provider, req);
       const profile = await exchangeOAuthProfile(provider, code, config);
-      const creator = findOrCreateSocialCreator(profile);
+      const creator = findOrCreateSocialCreator(profile, role);
       logCreatorIn(res, creator);
-      redirect(res, `${getBaseUrl(req)}/dashboard.html`);
+      redirect(res, `${getBaseUrl(req)}${getPostLoginPath(creator)}`);
     } catch (e) {
       redirectWithError(res, req, e.message || 'SNS 로그인에 실패했습니다.');
     }
@@ -275,22 +287,24 @@ module.exports = function registerAuthRoutes(router) {
     const displayName = String(body.displayName || '').trim();
     const email = String(body.email || '').trim().toLowerCase();
     const password = String(body.password || '');
+    const role = body.role === 'unator' ? 'unator' : 'creator';
+    const finalHandle = role === 'unator' ? makeUniqueHandle(email || displayName, 'unator') : handle;
 
-    if (!HANDLE_RE.test(handle) || RESERVED_HANDLES.has(handle)) {
+    if (!HANDLE_RE.test(finalHandle) || RESERVED_HANDLES.has(finalHandle)) {
       return sendError(res, 400, '핸들은 영문 소문자/숫자/언더스코어 3~20자로 입력해주세요 (일부 단어는 예약되어 있어요).');
     }
     if (!displayName) return sendError(res, 400, '표시 이름(방송명)을 입력해주세요.');
     if (!email.includes('@')) return sendError(res, 400, '올바른 이메일을 입력해주세요.');
     if (password.length < 8) return sendError(res, 400, '비밀번호는 8자 이상이어야 해요.');
 
-    const existing = db.prepare('SELECT id FROM creators WHERE handle = ? OR email = ?').get(handle, email);
+    const existing = db.prepare('SELECT id FROM creators WHERE handle = ? OR email = ?').get(finalHandle, email);
     if (existing) return sendError(res, 409, '이미 사용 중인 핸들 또는 이메일이에요.');
 
     const passwordHash = hashPassword(password);
     const result = db.prepare(`
-      INSERT INTO creators (handle, display_name, email, password_hash)
-      VALUES (?, ?, ?, ?)
-    `).run(handle, displayName, email, passwordHash);
+      INSERT INTO creators (handle, display_name, email, password_hash, role)
+      VALUES (?, ?, ?, ?, ?)
+    `).run(finalHandle, displayName, email, passwordHash, role);
 
     const creator = db.prepare('SELECT * FROM creators WHERE id = ?').get(result.lastInsertRowid);
     logCreatorIn(res, creator);
@@ -392,20 +406,22 @@ module.exports = function registerAuthRoutes(router) {
 
     const handle = String(body.handle || '').trim().toLowerCase();
     const displayName = String(body.displayName || '').trim();
+    const role = body.role === 'unator' ? 'unator' : 'creator';
+    const finalHandle = role === 'unator' ? makeUniqueHandle(phone || displayName, 'unator') : handle;
     if (!handle && !displayName) {
       return sendJson(res, 200, { needsHandle: true, suggestedDisplayName: '새 크리에이터' });
     }
-    if (!HANDLE_RE.test(handle) || RESERVED_HANDLES.has(handle)) {
+    if (!HANDLE_RE.test(finalHandle) || RESERVED_HANDLES.has(finalHandle)) {
       return sendError(res, 400, '핸들은 영문 소문자/숫자/언더스코어 3~20자로 입력해주세요 (일부 단어는 예약되어 있어요).');
     }
     if (!displayName) return sendError(res, 400, '표시 이름(방송명)을 입력해주세요.');
-    const dupHandle = db.prepare('SELECT id FROM creators WHERE handle = ?').get(handle);
+    const dupHandle = db.prepare('SELECT id FROM creators WHERE handle = ?').get(finalHandle);
     if (dupHandle) return sendError(res, 409, '이미 사용 중인 핸들이에요.');
 
     const result = db.prepare(`
-      INSERT INTO creators (handle, display_name, phone)
-      VALUES (?, ?, ?)
-    `).run(handle, displayName, phone);
+      INSERT INTO creators (handle, display_name, phone, role)
+      VALUES (?, ?, ?, ?)
+    `).run(finalHandle, displayName, phone, role);
 
     otpStore.delete(phone);
     const creator = db.prepare('SELECT * FROM creators WHERE id = ?').get(result.lastInsertRowid);

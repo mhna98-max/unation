@@ -24,6 +24,7 @@
     </a>
     <div class="nav-actions">
       <a href="index.html" class="btn btn-outline btn-sm">홈</a>
+      <a id="unator-auth-link" href="signup.html?type=unator" class="btn btn-outline btn-sm">유네이터 가입</a>
       <a id="lounge-donate-link" href="donate.html" class="btn btn-primary btn-sm">후원하기</a>
     </div>
   </nav>
@@ -114,10 +115,25 @@
 
 <script src="assets/script.js"></script>
 <script>
-(() => {
+(async () => {
   const params = new URLSearchParams(location.search);
   const handle = params.get('handle') || 'unation_official';
   document.getElementById('lounge-donate-link').href = `donate.html?handle=${encodeURIComponent(handle)}`;
+  try {
+    const data = await apiFetch('/api/auth/me');
+    const account = data.creator;
+    if (account?.role === 'unator') {
+      document.getElementById('unator-name').textContent = account.displayName || '유네이터';
+      document.getElementById('unator-avatar').textContent = (account.displayName || 'U').slice(0, 1).toUpperCase();
+      document.getElementById('unator-meta').textContent = '유네이터 계정 · 전역 레벨 준비 중';
+      const authLink = document.getElementById('unator-auth-link');
+      authLink.textContent = '내 라운지';
+      authLink.href = 'unator.html';
+    } else if (account?.role === 'creator') {
+      document.getElementById('unator-auth-link').textContent = '대시보드';
+      document.getElementById('unator-auth-link').href = 'dashboard.html';
+    }
+  } catch (e) {}
   document.querySelectorAll('[data-unator-tab]').forEach((btn) => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('[data-unator-tab]').forEach(item => item.classList.remove('active'));

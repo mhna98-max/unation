@@ -30,11 +30,15 @@
 <main class="auth-main">
   <div class="auth-wrap" style="max-width:480px;">
     <div class="auth-header">
-      <h1 class="auth-title">유네이션 가입하고<br>나만의 네이션을 시작하세요 🚀</h1>
-      <p class="text-dim" style="margin-top:10px;">가입 즉시 후원 페이지와 OBS 위젯이 발급됩니다.</p>
+      <h1 class="auth-title" id="signup-title">유네이션 가입하고<br>나만의 네이션을 시작하세요 🚀</h1>
+      <p class="text-dim" id="signup-subtitle" style="margin-top:10px;">가입 즉시 후원 페이지와 OBS 위젯이 발급됩니다.</p>
     </div>
 
     <div class="card auth-card">
+      <div class="auth-tabs" style="margin-bottom:16px;">
+        <a class="auth-tab active" id="creator-type-tab" href="signup.html">크리에이터</a>
+        <a class="auth-tab" id="unator-type-tab" href="signup.html?type=unator">유네이터</a>
+      </div>
       <div class="social-btn-row">
         <button class="social-btn google" data-provider="google">
           <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.52 12.27c0-.85-.08-1.67-.22-2.45H12v4.64h6.47a5.54 5.54 0 0 1-2.4 3.63v3h3.87c2.27-2.09 3.58-5.17 3.58-8.82z"/><path fill="#34A853" d="M12 24c3.24 0 5.96-1.07 7.94-2.91l-3.87-3a7.4 7.4 0 0 1-11-3.9H1.07v3.1A12 12 0 0 0 12 24z"/><path fill="#FBBC05" d="M5.07 14.19a7.2 7.2 0 0 1 0-4.38v-3.1H1.07a12 12 0 0 0 0 10.58z"/><path fill="#EA4335" d="M12 4.77c1.76 0 3.35.6 4.6 1.8l3.43-3.43A11.6 11.6 0 0 0 12 0 12 12 0 0 0 1.07 6.71l4 3.1A7.16 7.16 0 0 1 12 4.77z"/></svg>
@@ -59,7 +63,7 @@
       <div id="signup-error" class="field-error" style="display:none;"></div>
 
       <div id="tab-email">
-        <div class="field">
+        <div class="field" id="creator-handle-field">
           <label class="field-label" for="handle">핸들 (후원 페이지 주소) <span class="field-hint">영문 소문자·숫자·_ 3~20자</span></label>
           <div class="field-prefix-wrap">
             <span class="field-prefix">unation.kr/</span>
@@ -69,7 +73,7 @@
         </div>
 
         <div class="field">
-          <label class="field-label" for="displayName">방송명 (표시 이름)</label>
+          <label class="field-label" for="displayName" id="display-name-label">방송명 (표시 이름)</label>
           <input class="field-input" id="displayName" type="text" placeholder="UNATION 공식" maxlength="40">
         </div>
 
@@ -139,16 +143,43 @@
 <script src="assets/script.js"></script>
 <script>
 (async () => {
-  try { await apiFetch('/api/auth/me'); location.href = 'dashboard.html'; return; } catch(e) {}
+  const params = new URLSearchParams(location.search);
+  const accountRole = params.get('type') === 'unator' ? 'unator' : 'creator';
+  const postLoginPath = (creator) => creator?.role === 'unator' ? 'unator.html' : (creator?.role === 'admin' ? 'admin.html' : 'dashboard.html');
+  try {
+    const data = await apiFetch('/api/auth/me');
+    location.href = postLoginPath(data.creator);
+    return;
+  } catch(e) {}
 
   const handleEl = document.getElementById('handle');
   const errEl = document.getElementById('signup-error');
   const previewEl = document.getElementById('handle-preview');
-  const oauthError = new URLSearchParams(location.search).get('oauth_error');
+  const oauthError = params.get('oauth_error');
   if (oauthError) {
     errEl.textContent = oauthError;
     errEl.style.display = '';
   }
+
+  function applyAccountMode() {
+    const isUnator = accountRole === 'unator';
+    document.getElementById('creator-type-tab')?.classList.toggle('active', !isUnator);
+    document.getElementById('unator-type-tab')?.classList.toggle('active', isUnator);
+    document.getElementById('creator-handle-field').style.display = isUnator ? 'none' : '';
+    document.getElementById('signup-title').innerHTML = isUnator
+      ? '유네이터 가입하고<br>좋아하는 네이션을 응원하세요'
+      : '유네이션 가입하고<br>나만의 네이션을 시작하세요 🚀';
+    document.getElementById('signup-subtitle').textContent = isUnator
+      ? '후원 내역, 전역 레벨, 칭호와 혜택을 유네이터 라운지에서 확인할 수 있습니다.'
+      : '가입 즉시 후원 페이지와 OBS 위젯이 발급됩니다.';
+    document.getElementById('display-name-label').textContent = isUnator ? '닉네임 (표시 이름)' : '방송명 (표시 이름)';
+    document.getElementById('signup-btn').textContent = isUnator ? '유네이터 가입하기' : '유네이션 가입하기';
+    if (isUnator) {
+      handleEl.value = '';
+      previewEl.style.display = 'none';
+    }
+  }
+  applyAccountMode();
 
   handleEl.addEventListener('input', () => {
     handleEl.value = handleEl.value.toLowerCase().replace(/[^a-z0-9_]/g,'');
@@ -168,15 +199,16 @@
     btn.disabled = true; btn.textContent = '생성 중…';
     try {
       await apiFetch('/api/auth/signup', { method:'POST', body:{
-        handle: handleEl.value.trim(),
+        role: accountRole,
+        handle: accountRole === 'unator' ? '' : handleEl.value.trim(),
         displayName: document.getElementById('displayName').value.trim(),
         email: document.getElementById('email').value.trim(),
         password,
       }});
-      location.href = 'dashboard.html';
+      location.href = accountRole === 'unator' ? 'unator.html' : 'dashboard.html';
     } catch(e) {
       errEl.textContent = e.message; errEl.style.display = '';
-      btn.disabled = false; btn.textContent = '유네이션 가입하기';
+      btn.disabled = false; btn.textContent = accountRole === 'unator' ? '유네이터 가입하기' : '유네이션 가입하기';
     }
   });
 
@@ -222,14 +254,14 @@
     phoneActionBtn.disabled = true; phoneActionBtn.textContent = '확인 중…';
     try {
       const data = await apiFetch('/api/auth/phone/verify', { method:'POST', body:{
-        phone: phoneEl.value.trim(), code: otpEl.value.trim(), ...extra
+        phone: phoneEl.value.trim(), code: otpEl.value.trim(), role: accountRole, ...extra
       }});
       if (data.needsHandle) {
         openHandleModal({ suggestedDisplayName: data.suggestedDisplayName, onSubmit: (handle, displayName) => verifyOtp({ handle, displayName }) });
         phoneActionBtn.disabled = false; phoneActionBtn.textContent = '인증하고 가입하기';
         return;
       }
-      location.href = 'dashboard.html';
+      location.href = accountRole === 'unator' ? 'unator.html' : 'dashboard.html';
     } catch(e) {
       errEl.textContent = e.message; errEl.style.display = '';
       phoneActionBtn.disabled = false; phoneActionBtn.textContent = '인증하고 가입하기';
@@ -244,7 +276,7 @@
   document.querySelectorAll('.social-btn').forEach(b => {
     b.addEventListener('click', () => {
       errEl.style.display = 'none';
-      location.href = `/api/auth/oauth/${encodeURIComponent(b.dataset.provider)}/start`;
+      location.href = `/api/auth/oauth/${encodeURIComponent(b.dataset.provider)}/start?role=${encodeURIComponent(accountRole)}`;
     });
   });
 

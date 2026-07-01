@@ -586,6 +586,7 @@ html[data-payment-mode="live"] .demo-note{
 
 .auth-tabs{display:flex;gap:6px;background:rgba(255,255,255,.04);border:1px solid var(--border-2);border-radius:var(--r-md);padding:4px;margin-bottom:18px;}
 .auth-tab{flex:1;text-align:center;padding:8px;border-radius:7px;font-size:13.5px;font-weight:600;color:var(--dim);cursor:pointer;transition:.14s;}
+a.auth-tab{text-decoration:none;}
 .auth-tab.active{background:rgba(124,58,237,.22);color:#fff;}
 
 .otp-row{display:flex;gap:8px;}

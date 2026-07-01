@@ -8,7 +8,7 @@ const { getAuthFromRequest } = require('../auth');
 module.exports = function registerCreatorRoutes(router) {
   // 플랫폼 전체 현황 (랜딩 페이지 통계용 — 실제 DB 값)
   router.get('/api/stats', async (req, res) => {
-    const totalCreators = db.prepare("SELECT COUNT(*) AS c FROM creators WHERE role != 'admin'").get().c;
+    const totalCreators = db.prepare("SELECT COUNT(*) AS c FROM creators WHERE role = 'creator'").get().c;
     const totalCitizens = db.prepare("SELECT COUNT(*) AS c FROM donations WHERE status='completed'").get().c;
     const thisMonth = db.prepare(`
       SELECT COALESCE(SUM(amount),0) AS total FROM donations
@@ -43,7 +43,7 @@ module.exports = function registerCreatorRoutes(router) {
     const limit = Math.min(parseInt(url.searchParams.get('limit') || '6', 10) || 6, 20);
     const q = String(url.searchParams.get('q') || '').trim().toLowerCase().slice(0, 40);
     const params = [];
-    let where = "WHERE c.role != 'admin'";
+    let where = "WHERE c.role = 'creator'";
     if (q) {
       where += " AND (LOWER(c.handle) LIKE ? OR LOWER(c.display_name) LIKE ? OR LOWER(COALESCE(c.bio,'')) LIKE ?)";
       const like = `%${q}%`;
@@ -133,7 +133,7 @@ module.exports = function registerCreatorRoutes(router) {
 
   // 공개 프로필 (핸들 기준) — 통계 포함
   router.get('/api/creators/:handle', async (req, res, params) => {
-    const creator = db.prepare('SELECT * FROM creators WHERE handle = ?').get(params.handle);
+    const creator = db.prepare("SELECT * FROM creators WHERE handle = ? AND role = 'creator'").get(params.handle);
     if (!creator) return sendError(res, 404, '크리에이터를 찾을 수 없어요.');
 
     const citizenCount = db.prepare(
