@@ -3,7 +3,7 @@
 // ============================================================
 const db = require('../db');
 const { readJsonBody, sendJson, sendError, publicCreator, privateCreator } = require('../helpers');
-const { getAuthFromRequest } = require('../auth');
+const { getCreatorFromRequest } = require('../auth');
 
 module.exports = function registerCreatorRoutes(router) {
   // 플랫폼 전체 현황 (랜딩 페이지 통계용 — 실제 DB 값)
@@ -66,7 +66,7 @@ module.exports = function registerCreatorRoutes(router) {
 
   // 내 프로필 수정 (로그인 필요) — /:handle 패턴보다 먼저 등록되어야 'me'가 핸들로 오인되지 않음
   router.put('/api/creators/me', async (req, res) => {
-    const auth = getAuthFromRequest(req);
+    const auth = getCreatorFromRequest(req);
     if (!auth) return sendError(res, 401, '로그인이 필요해요.');
     const body = await readJsonBody(req);
 

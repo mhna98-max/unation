@@ -3,7 +3,7 @@
 // ============================================================
 const db = require('../db');
 const { sendJson, sendError } = require('../helpers');
-const { getAuthFromRequest } = require('../auth');
+const { getCreatorFromRequest } = require('../auth');
 const { computeBalance, MIN_SETTLEMENT_AMOUNT } = require('../ledger');
 const { rateLimit } = require('../rateLimit');
 
@@ -11,7 +11,7 @@ module.exports = function registerSettlementRoutes(router) {
   router.post('/api/settlements', async (req, res) => {
     if (!rateLimit(req, res, 'settlement-request', 10, 60 * 60 * 1000)) return; // 1시간에 10회
 
-    const auth = getAuthFromRequest(req);
+    const auth = getCreatorFromRequest(req);
     if (!auth) return sendError(res, 401, '로그인이 필요해요.');
 
     const creator = db.prepare('SELECT * FROM creators WHERE id = ?').get(auth.uid);
@@ -44,7 +44,7 @@ module.exports = function registerSettlementRoutes(router) {
   });
 
   router.get('/api/settlements/me', async (req, res) => {
-    const auth = getAuthFromRequest(req);
+    const auth = getCreatorFromRequest(req);
     if (!auth) return sendError(res, 401, '로그인이 필요해요.');
     const rows = db.prepare(`
       SELECT * FROM settlements WHERE creator_id = ? ORDER BY requested_at DESC LIMIT 50

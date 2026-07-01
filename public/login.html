@@ -197,7 +197,7 @@
         phoneActionBtn.disabled = false; phoneActionBtn.textContent = '인증하고 계속하기';
         return;
       }
-      location.href = 'dashboard.html';
+      location.href = data.creator?.role === 'admin' ? 'admin.html' : (data.creator?.role === 'unator' ? 'unator.html' : 'dashboard.html');
     } catch(e) {
       errEl.textContent = e.message; errEl.style.display = '';
       phoneActionBtn.disabled = false; phoneActionBtn.textContent = '인증하고 계속하기';
@@ -228,7 +228,7 @@
         });
         return;
       }
-      location.href = 'dashboard.html';
+      location.href = data.creator?.role === 'admin' ? 'admin.html' : (data.creator?.role === 'unator' ? 'unator.html' : 'dashboard.html');
     } catch(e) {
       errEl.textContent = e.message; errEl.style.display = '';
     }

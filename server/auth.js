@@ -126,6 +126,14 @@ function getAdminFromRequest(req) {
   return { uid: creator.id, handle: creator.handle, role: creator.role };
 }
 
+function getCreatorFromRequest(req) {
+  const auth = getAuthFromRequest(req);
+  if (!auth) return null;
+  const creator = db.prepare('SELECT id, handle, role FROM creators WHERE id = ?').get(auth.uid);
+  if (!creator || creator.role !== 'creator') return null;
+  return { uid: creator.id, handle: creator.handle, role: creator.role };
+}
+
 module.exports = {
   hashPassword,
   verifyPassword,
@@ -136,4 +144,5 @@ module.exports = {
   clearSessionCookie,
   getAuthFromRequest,
   getAdminFromRequest,
+  getCreatorFromRequest,
 };

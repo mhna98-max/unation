@@ -260,7 +260,7 @@
   try {
     const data = await apiFetch('/api/auth/me');
     me = data.creator;
-    if (me.role !== 'admin') { location.href = 'dashboard.html'; return; }
+    if (me.role !== 'admin') { location.href = me.role === 'unator' ? 'unator.html' : 'dashboard.html'; return; }
   } catch (e) { location.href = 'login.html'; return; }
 
   document.getElementById('sb-name').textContent = me.displayName || '관리자';

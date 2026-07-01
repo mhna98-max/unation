@@ -3,7 +3,7 @@
 // ============================================================
 const db = require('../db');
 const { readJsonBody, sendJson, sendError } = require('../helpers');
-const { getAuthFromRequest } = require('../auth');
+const { getCreatorFromRequest } = require('../auth');
 const { getPaymentProvider, assertPaymentProviderSafeForRequest } = require('../paymentProvider');
 const { rateLimit } = require('../rateLimit');
 
@@ -92,7 +92,7 @@ module.exports = function registerOrderRoutes(router) {
 
   // 내 주문내역 (크리에이터 대시보드용)
   router.get('/api/orders/me', async (req, res) => {
-    const auth = getAuthFromRequest(req);
+    const auth = getCreatorFromRequest(req);
     if (!auth) return sendError(res, 401, '로그인이 필요해요.');
     const url = new URL(req.url, 'http://x');
     const limit = Math.min(parseInt(url.searchParams.get('limit') || '50', 10) || 50, 200);

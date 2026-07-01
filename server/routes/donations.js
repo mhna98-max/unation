@@ -3,7 +3,7 @@
 // ============================================================
 const db = require('../db');
 const { readJsonBody, sendJson, sendError, parseRouletteSegments } = require('../helpers');
-const { getAuthFromRequest } = require('../auth');
+const { getCreatorFromRequest } = require('../auth');
 const { getPaymentProvider, assertPaymentProviderSafeForRequest } = require('../paymentProvider');
 const { computeBalance, MIN_SETTLEMENT_AMOUNT } = require('../ledger');
 const { rateLimit } = require('../rateLimit');
@@ -216,7 +216,7 @@ module.exports = function registerDonationRoutes(router) {
 
   // 내 후원내역 (대시보드 테이블)
   router.get('/api/donations/me', async (req, res) => {
-    const auth = getAuthFromRequest(req);
+    const auth = getCreatorFromRequest(req);
     if (!auth) return sendError(res, 401, '로그인이 필요해요.');
     const url = new URL(req.url, 'http://x');
     const limit = Math.min(parseInt(url.searchParams.get('limit') || '10', 10) || 10, 100);
@@ -228,7 +228,7 @@ module.exports = function registerDonationRoutes(router) {
 
   // 대시보드 통계 (이번 달/저번 달 비교, 최근 7일 차트, 정산 가능 금액)
   router.get('/api/me/stats', async (req, res) => {
-    const auth = getAuthFromRequest(req);
+    const auth = getCreatorFromRequest(req);
     if (!auth) return sendError(res, 401, '로그인이 필요해요.');
     const id = auth.uid;
 

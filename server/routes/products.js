@@ -3,7 +3,7 @@
 // ============================================================
 const db = require('../db');
 const { readJsonBody, sendJson, sendError } = require('../helpers');
-const { getAuthFromRequest } = require('../auth');
+const { getCreatorFromRequest } = require('../auth');
 
 const MAX_PRICE = 5_000_000;
 
@@ -33,7 +33,7 @@ function isValidImageUrl(url) {
 module.exports = function registerProductRoutes(router) {
   // 공개 스토어 — 특정 크리에이터의 활성 상품 목록
   router.get('/api/creators/:handle/products', async (req, res, params) => {
-    const creator = db.prepare('SELECT id, display_name FROM creators WHERE handle = ?').get(params.handle);
+    const creator = db.prepare("SELECT id, display_name FROM creators WHERE handle = ? AND role = 'creator'").get(params.handle);
     if (!creator) return sendError(res, 404, '크리에이터를 찾을 수 없어요.');
     const rows = db.prepare(`
       SELECT * FROM products WHERE creator_id = ? AND is_active = 1
@@ -44,7 +44,7 @@ module.exports = function registerProductRoutes(router) {
 
   // 내 상품 관리 (활성/비활성 모두) — 로그인 필요. /:handle 패턴보다 먼저 등록.
   router.get('/api/products/me', async (req, res) => {
-    const auth = getAuthFromRequest(req);
+    const auth = getCreatorFromRequest(req);
     if (!auth) return sendError(res, 401, '로그인이 필요해요.');
     const rows = db.prepare('SELECT * FROM products WHERE creator_id = ? ORDER BY created_at DESC').all(auth.uid);
     sendJson(res, 200, { products: rows.map(mapProductRow) });
@@ -52,7 +52,7 @@ module.exports = function registerProductRoutes(router) {
 
   // 상품 등록
   router.post('/api/products', async (req, res) => {
-    const auth = getAuthFromRequest(req);
+    const auth = getCreatorFromRequest(req);
     if (!auth) return sendError(res, 401, '로그인이 필요해요.');
     const body = await readJsonBody(req);
 
@@ -84,7 +84,7 @@ module.exports = function registerProductRoutes(router) {
 
   // 상품 수정 (가격/재고/활성 여부 등)
   router.put('/api/products/:id', async (req, res, params) => {
-    const auth = getAuthFromRequest(req);
+    const auth = getCreatorFromRequest(req);
     if (!auth) return sendError(res, 401, '로그인이 필요해요.');
     const id = parseInt(params.id, 10);
     const existing = db.prepare('SELECT * FROM products WHERE id = ?').get(id);
@@ -134,7 +134,7 @@ module.exports = function registerProductRoutes(router) {
 
   // 상품 삭제 — 이미 주문이 있는 상품은 주문 내역 보존을 위해 비활성화만 합니다.
   router.delete('/api/products/:id', async (req, res, params) => {
-    const auth = getAuthFromRequest(req);
+    const auth = getCreatorFromRequest(req);
     if (!auth) return sendError(res, 401, '로그인이 필요해요.');
     const id = parseInt(params.id, 10);
     const existing = db.prepare('SELECT * FROM products WHERE id = ?').get(id);

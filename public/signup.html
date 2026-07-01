@@ -205,7 +205,8 @@
         email: document.getElementById('email').value.trim(),
         password,
       }});
-      location.href = accountRole === 'unator' ? 'unator.html' : 'dashboard.html';
+      const role = data.creator?.role || accountRole;
+      location.href = role === 'admin' ? 'admin.html' : (role === 'unator' ? 'unator.html' : 'dashboard.html');
     } catch(e) {
       errEl.textContent = e.message; errEl.style.display = '';
       btn.disabled = false; btn.textContent = accountRole === 'unator' ? '유네이터 가입하기' : '유네이션 가입하기';
@@ -283,7 +284,7 @@
   async function doSocial(provider, extra) {
     errEl.style.display = 'none';
     try {
-      const data = await apiFetch('/api/auth/social', { method:'POST', body:{ provider, ...extra } });
+      const data = await apiFetch('/api/auth/social', { method:'POST', body:{ provider, role: accountRole, ...extra } });
       if (data.needsHandle) {
         openHandleModal({
           suggestedDisplayName: data.suggestedDisplayName,
@@ -292,7 +293,8 @@
         });
         return;
       }
-      location.href = 'dashboard.html';
+      const role = data.creator?.role || accountRole;
+      location.href = role === 'admin' ? 'admin.html' : (role === 'unator' ? 'unator.html' : 'dashboard.html');
     } catch(e) {
       errEl.textContent = e.message; errEl.style.display = '';
     }

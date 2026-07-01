@@ -809,6 +809,8 @@
     const data = await apiFetch('/api/auth/me');
     me = data.creator;
   } catch(e) { location.href = 'login.html'; return; }
+  if (me.role === 'admin') { location.href = 'admin.html'; return; }
+  if (me.role === 'unator') { location.href = 'unator.html'; return; }
 
   // 사이드바
   document.getElementById('sb-avatar').textContent = (me.displayName||me.handle)[0];

@@ -198,17 +198,29 @@ function getPostLoginPath(account) {
   return '/dashboard.html';
 }
 
+function assertRequestedRole(account, requestedRole) {
+  if (!account || !requestedRole || !account.role || account.role === requestedRole) return;
+  const labels = { admin: '관리자', creator: '크리에이터', unator: '유네이터' };
+  const currentLabel = labels[account.role] || '기존';
+  const requestedLabel = labels[requestedRole] || '요청한';
+  throw new Error(`이미 ${currentLabel} 계정으로 가입된 이메일입니다. ${requestedLabel} 가입이 아니라 ${currentLabel} 로그인으로 이용해주세요.`);
+}
+
 function findOrCreateSocialCreator(profile, requestedRole = 'creator') {
   if (!profile.socialId) throw new Error('Social profile id was not returned');
   const role = requestedRole === 'unator' ? 'unator' : 'creator';
 
   const existingSocial = db.prepare('SELECT * FROM creators WHERE social_provider = ? AND social_id = ?').get(profile.provider, profile.socialId);
-  if (existingSocial) return existingSocial;
+  if (existingSocial) {
+    assertRequestedRole(existingSocial, role);
+    return existingSocial;
+  }
 
   const email = profile.email ? String(profile.email).toLowerCase() : null;
   if (email) {
     const existingEmail = db.prepare('SELECT * FROM creators WHERE email = ?').get(email);
     if (existingEmail) {
+      assertRequestedRole(existingEmail, role);
       if (!existingEmail.social_provider && !existingEmail.social_id) {
         db.prepare('UPDATE creators SET social_provider = ?, social_id = ? WHERE id = ?').run(profile.provider, profile.socialId, existingEmail.id);
         return db.prepare('SELECT * FROM creators WHERE id = ?').get(existingEmail.id);
@@ -333,12 +345,14 @@ module.exports = function registerAuthRoutes(router) {
   router.post('/api/auth/social', async (req, res) => {
     const body = await readJsonBody(req);
     const provider = String(body.provider || '');
+    const role = body.role === 'unator' ? 'unator' : 'creator';
     if (!SOCIAL_PROVIDERS.has(provider)) return sendError(res, 400, '지원하지 않는 소셜 로그인이에요.');
 
     // 데모 환경: 같은 서버에서는 항상 같은 모의 계정으로 연결됩니다 (실제 OAuth 미연동).
     const socialId = `mock_${provider}_demo`;
     const existing = db.prepare('SELECT * FROM creators WHERE social_provider = ? AND social_id = ?').get(provider, socialId);
     if (existing) {
+      assertRequestedRole(existing, role);
       logCreatorIn(res, existing);
       return sendJson(res, 200, { creator: privateCreator(existing), isNew: false });
     }
@@ -362,9 +376,9 @@ module.exports = function registerAuthRoutes(router) {
     if (dupHandle) return sendError(res, 409, '이미 사용 중인 핸들이에요.');
 
     const result = db.prepare(`
-      INSERT INTO creators (handle, display_name, social_provider, social_id)
-      VALUES (?, ?, ?, ?)
-    `).run(handle, displayName, provider, socialId);
+      INSERT INTO creators (handle, display_name, social_provider, social_id, role)
+      VALUES (?, ?, ?, ?, ?)
+    `).run(handle, displayName, provider, socialId, role);
 
     const creator = db.prepare('SELECT * FROM creators WHERE id = ?').get(result.lastInsertRowid);
     logCreatorIn(res, creator);
@@ -399,6 +413,8 @@ module.exports = function registerAuthRoutes(router) {
 
     const existing = db.prepare('SELECT * FROM creators WHERE phone = ?').get(phone);
     if (existing) {
+      const requestedRole = body.role === 'unator' ? 'unator' : 'creator';
+      assertRequestedRole(existing, requestedRole);
       otpStore.delete(phone);
       logCreatorIn(res, existing);
       return sendJson(res, 200, { creator: privateCreator(existing), isNew: false });
